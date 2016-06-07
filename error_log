@@ -1,0 +1,1 @@
+[05-Apr-2016 15:25:34 UTC] PHP Fatal error:  Cannot redeclare class CreateUsersTable in /home/xmenworkday888/public_html/rsapp/rsapp/database/migrations/2015_10_12_000000_create_users_table.php on line 58
