@@ -39,8 +39,7 @@ $(document).ready(function () {
         headerTag: "h3",
         bodyTag: "fieldset",
         titleTemplate: '#title#',
-        startIndex: 3,
-        //startIndex: activestep,
+        startIndex: activestep,
         labels: {
             cancel: "Cancel",
             current: "current step:",
