@@ -44,7 +44,7 @@ $(document).ready(function () {
             cancel: "Cancel",
             current: "current step:",
             pagination: "Pagination",
-            finish: "เสร็จสิ้น",
+            finish: "ส่งข้อเสนอโครงการ",
             next: "ถัดไป",
             previous: "ย้อนกลับ",
             loading: "Loading ..."

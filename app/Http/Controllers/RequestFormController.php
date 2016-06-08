@@ -67,7 +67,7 @@ class RequestFormController extends Controller {
                 $fdepartment = $freq[0]->FormReqOtherDepartment;
             } else {
                 $alldepartment = Department::where('id', '=', $freq[0]->FormReqDepartment)->get();
-                $fdepartment = $alldepartment[0]->name;
+                $fdepartment = stristr($alldepartment[0]->name, " ", true);
             }
             $templateProcessor->setValue('FormReqTopic', $freq[0]->FormReqTopic);
             $templateProcessor->setValue('FormReqDepartment', $fdepartment);
@@ -76,14 +76,15 @@ class RequestFormController extends Controller {
             if ($user[0]->sex == 1) {
                 $mainTitle = 'ดิฉัน';
             }
+            $thaimonth = array("", "มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม");
             $templateProcessor->setValue('FormReqTo', $freq[0]->FormReqTo);
             $templateProcessor->setValue('mainTitle', $mainTitle);
             $templateProcessor->setValue('FormReqHeadProjectPerson', $freq[0]->FormReqHeadProjectPerson);
             $templateProcessor->setValue('FormReqSponser', $freq[0]->FormReqSponser);
             $templateProcessor->setValue('FormReqBudgetScholarship', number_format($freq[0]->FormReqBudgetScholarship, 2));
             $templateProcessor->setValue('FormReqBudgetScholarshipText', $this->ThaiBahtConversion($freq[0]->FormReqBudgetScholarship));
-            $templateProcessor->setValue('FormReqStartDateScholarship', date("d-m-Y", strtotime($freq[0]->FormReqStartDateScholarship)));
-            $templateProcessor->setValue('FormReqEndDateScholarship', date("d-m-Y", strtotime($freq[0]->FormReqEndDateScholarship)));
+            $templateProcessor->setValue('FormReqStartDateScholarship', date("j", strtotime($freq[0]->FormReqStartDateScholarship)) . ' ' . $thaimonth[date("n", strtotime($freq[0]->FormReqStartDateScholarship))] . ' ' . (date("Y", strtotime($freq[0]->FormReqStartDateScholarship)) + 543));
+            $templateProcessor->setValue('FormReqEndDateScholarship', date("j", strtotime($freq[0]->FormReqEndDateScholarship)) . ' ' . $thaimonth[date("n", strtotime($freq[0]->FormReqEndDateScholarship))] . ' ' . (date("Y", strtotime($freq[0]->FormReqEndDateScholarship)) + 543));
 
             $date1 = new DateTime($freq[0]->FormReqEndDateScholarship);
             $date2 = new DateTime($freq[0]->FormReqStartDateScholarship);

@@ -166,6 +166,25 @@ class AuthController extends Controller
 
         $user->save();
         
+        //for upload file
+        $destinationPath = 'uploads'; // upload path
+        $files = $data['documents'];
+        $descriptions = $data['filedesc'];
+
+        for($i = 0; $i < count($files); $i++){
+            if($files[$i] != null){
+            $filename = rand(11111111,99999999).'_'.date('Ymdhis').'.'.$files[$i]->getClientOriginalExtension();
+            $files[$i] -> move($destinationPath, $filename);
+            
+
+            $userDoc = new UserDocument();
+            $userDoc->path = $destinationPath.'/'.$filename;
+            $userDoc->description = $descriptions[$i];
+            $userDoc->get_user()->associate($user);
+            $userDoc->save();
+            }
+        }
+                
         //for module
         foreach (Module::all() as $module) {
             if(array_key_exists('module_'.$module->id, $data)){
@@ -186,24 +205,7 @@ class AuthController extends Controller
             }
         }
 
-        //for upload file
-        $destinationPath = 'uploads'; // upload path
-        $files = $data['documents'];
-        $descriptions = $data['filedesc'];
-
-        for($i = 0; $i < count($files); $i++){
-            if($files[$i] != null){
-            $filename = rand(11111111,99999999).'_'.date('Ymdhis').'.'.$files[$i]->getClientOriginalExtension();
-            $files[$i] -> move($destinationPath, $filename);
-            
-
-            $userDoc = new UserDocument();
-            $userDoc->path = $destinationPath.'/'.$filename;
-            $userDoc->description = $descriptions[$i];
-            $userDoc->get_user()->associate($user);
-            $userDoc->save();
-            }
-        }
+        Utility::sendRegisterAcknowledgedEmailtoUser($user);
 
         return $user;
     }

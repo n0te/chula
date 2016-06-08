@@ -72,9 +72,9 @@ class ModulesTableSeeder extends Seeder {
         DB::statement("SET foreign_key_checks=1");
 
         Module::create(array('name' => 'Clinical Research Funds'));
-        Module::create(array('name' => 'MRC'));
-        Module::create(array('name' => 'Biostatistics'));
-        Module::create(array('name' => 'Animal House'));
+        //Module::create(array('name' => 'MRC'));
+        //Module::create(array('name' => 'Biostatistics'));
+        //Module::create(array('name' => 'Animal House'));
     }
 }
 
@@ -85,14 +85,14 @@ class RolesTableSeeder extends Seeder {
         DB::table('roles')->truncate();
         DB::statement("SET foreign_key_checks=1");
 
-        Role::create(array('name' => 'MRC admin','module'=>2,'role_type'=>1));
+        //Role::create(array('name' => 'MRC admin','module'=>2,'role_type'=>1));
         Role::create(array('name' => 'Clinical Reseatch Funds admin','module'=>1,'role_type'=>1));
-        Role::create(array('name' => 'Biostatistics admin','module'=>3,'role_type'=>1));
-        Role::create(array('name' => 'Animal House admin','module'=>4,'role_type'=>1));
-        Role::create(array('name' => 'MRC member','module'=>2,'role_type'=>2));
+        //Role::create(array('name' => 'Biostatistics admin','module'=>3,'role_type'=>1));
+        //Role::create(array('name' => 'Animal House admin','module'=>4,'role_type'=>1));
+        //Role::create(array('name' => 'MRC member','module'=>2,'role_type'=>2));
         Role::create(array('name' => 'Clinical Reseatch Funds member','module'=>1,'role_type'=>2));
-        Role::create(array('name' => 'Biostatistics member','module'=>3,'role_type'=>2));
-        Role::create(array('name' => 'Animal House member','module'=>4,'role_type'=>2));
+        //Role::create(array('name' => 'Biostatistics member','module'=>3,'role_type'=>2));
+        //Role::create(array('name' => 'Animal House member','module'=>4,'role_type'=>2));
     }
 }
 
@@ -102,10 +102,10 @@ class UserRolesTableSeeder extends Seeder {
     {
         DB::statement("SET foreign_key_checks=0");
         DB::table('user_roles')->truncate();
-        UserRole::create( array ('user' => 1,'role' => 1) );
-        UserRole::create(array('user' => 1,'role'=> 2));
-        UserRole::create(array('user' => 1,'role'=> 3));
-        UserRole::create(array('user' => 1,'role'=> 4));
+        UserRole::create(array('user' => 1,'role' => 1) );//add admin as CRC admin
+        //UserRole::create(array('user' => 1,'role'=> 2));
+        //UserRole::create(array('user' => 1,'role'=> 3));
+        //UserRole::create(array('user' => 1,'role'=> 4));
         DB::statement("SET foreign_key_checks=1");
     }
 }
@@ -182,6 +182,7 @@ class DepartmentsTableSeeder extends Seeder {
         Department::create(array('name' => 'สูติศาสตร์-นรีเวชวิทยา (Obstetrics and Gynecology)'));
         Department::create(array('name' => 'โสต ศอ นาสิกวิทยา (Otolaryngology)'));
         Department::create(array('name' => 'อายุรศาสตร์ (Medicine)'));
+        Department::create(array('name' => 'อื่นๆ'));
     }
 
 }

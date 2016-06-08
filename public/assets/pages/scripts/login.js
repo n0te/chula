@@ -307,6 +307,9 @@ var Login = function() {
                     required: true,
                     email: true
                 },
+                dob:{
+                    required:true
+                },
                 nationality: {
                     required: true
                 },
@@ -332,7 +335,8 @@ var Login = function() {
                     required: true
                 },
                 citizen_id: {
-                    required: true
+                    required: true,
+                    number: true
                 },
                 passport_id: {
                     required: true
@@ -341,7 +345,8 @@ var Login = function() {
                     required: true
                 },
                 tel: {
-                    required: true
+                    required: true,
+                    number: true
                 },
                 password: {
                     required: true
@@ -369,16 +374,51 @@ var Login = function() {
                 },
                 email: {
                     required: "กรุณาระบุ Email",
-                    email: true
+                    email: "กรุณาระบุ Email ให้ถูกต้อง"
+                },
+                dob: {
+                    required: "กรุณาระบุวันเกิด"
                 },
                 nationality: {
                     required: "กรุณาระบุสัญชาติ"
+                },
+                citizen_id: {
+                    required: "กรุณาระบุเลขบัตรประจำตัวประชาชน",
+                    number: "กรุณาระบุเลขบัตรประจำตัวประชาชนให้ถูกต้อง"
+                },
+                address: {
+                    required: "กรุณาระบุที่อยู่"
+                },
+                tel: {
+                    required: "กรุณาระบุหมายเลขโทรศัพท์",
+                    number: "หมายเลขโทรศัพท์ต้องมีเฉพาะตัวเลขเท่านั้น"
                 },
                 type: {
                     required: "กรุณาระบุประเภทสมาชิก"
                 },
                 occupation: {
                     required: "กรุณาระบุประเภทบุคคลากร"
+                },
+                passport_id: {
+                    required: "กรุณาระบุ Passport ID"
+                },
+                password: {
+                    required: "กรุณาระบุรหัสผ่าน"
+                },
+                password_confirmation: {
+                    equalTo: "กรุณายืนยันรหัสผ่านให้ถูกต้อง"
+                },
+                student_id: {
+                    required: "กรุณาระบุรหัสนิสิต"
+                },
+                advisor: {
+                    required: "กรุณาระบุอาจารย์ที่ปรึกษา"
+                },
+                researchtopic: {
+                    required: "กรุณาระบุหัวข้องานวิจัย"
+                },
+                department: {
+                    required: "กรุณาระบุภาควิชา"
                 }
             },
 
@@ -400,6 +440,8 @@ var Login = function() {
                 if($(element).attr("name") == "documents[]"){
                     error.appendTo($(element).parents("div.fileinput"));
 
+                }if($(element).attr("name") == "dob"){
+                     error.appendTo($(element).parents("div.form-group"));                    
                 } else {
                     error.insertAfter(element);
                 }
@@ -448,6 +490,9 @@ var Login = function() {
                     } else {
                         //log error
                         $('div.alert',form).show();
+                        $('div.alert',form).css("background-color","#fbe1e3");
+                        $('div.alert',form).css("border-color","#fbe1e3");
+                        $('div.alert',form).css("color","#e73d4a");
                         $('div.alert',form).append("<div>Unknown error occurs.</div>");
                         console.log(data.responseText);
                         WindowScrollTopAnimation('.register-form div.alert', 500);
@@ -461,9 +506,13 @@ var Login = function() {
                         $('div.alert',form).css("color","#437A31");
                         $('div.alert',form).append("<div>"+data.message+"</div>");
                         WindowScrollTopAnimation('.register-form div.alert', 500);
+                        $('input', form).val('');
+                        $('.btn-success',form).prop("disabled",true);
                         setTimeout(function(){
+                            //remove redirection on register
                             window.location.href = data.redirect;
-                        }, 1000);
+                            //$('#register-back-btn', form).click();
+                        }, 3000);
                 },
                 });
                 }

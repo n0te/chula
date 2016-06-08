@@ -10,7 +10,7 @@
 <!-- BEGIN LOGO -->
         <div class="logo">
             <a href="/index.html">
-                <img src="/assets/layouts/layout/img/logo-big.png" alt="" /> </a>
+                <img src="/assets/global/img/logo-big.png" alt="" /> </a>
         </div>
         <!-- END LOGO -->
         <div class="content">

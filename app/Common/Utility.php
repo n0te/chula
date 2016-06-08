@@ -15,6 +15,20 @@ class Utility{
       $log->save();
    }
 
+   public static function sendRegisterAcknowledgedEmailtoUser($requestor){
+      try{
+        Mail::queue('admin.emails.acknowledge', ['requestor_name' => $requestor->firstname], function($message) use ($requestor)
+        {
+            $message->to($requestor->email, 'RSApp System')->subject('การสมัครใช้งาน Research Application');
+        });
+      }catch (\Throwable $t) {
+        // Executed only in PHP 7, will not match in PHP 5.x
+        self::writeLog('from throwable'.$t->getMessage());
+        }catch(\Exception $e){
+        self::writeLog($e->getMessage());
+       }
+   }
+
    public static function sendEmailToApprover($requestor , $module) {
    		$admin_type_id = 1;//fix in DB
 
@@ -45,7 +59,10 @@ class Utility{
 		{
 		    $message->to($admin_emails, 'RSApp System')->subject('แจ้งเตือนการร้องขอสิทธิ '.$module->name);
 		});
-  }catch(Exception $e){
+  }catch (\Throwable $t) {
+    // Executed only in PHP 7, will not match in PHP 5.x
+    self::writeLog('from throwable'.$t->getMessage());
+    }catch(\Exception $e){
     self::writeLog($e->getMessage());
    }
   }
@@ -59,6 +76,23 @@ class Utility{
                     ->join('role_types as rt','roles.role_type','=','rt.id')
                     ->where('m.id','=',$module)
                     ->where('rt.id','=',$admin_type_id)//admin
+                    ->where('u.id','=',$userid)->get();
+    if(count($rows)==1){
+      return true;
+    }
+    
+    return false;
+  }
+
+  public static function isMemberOfModule($module, $userid){
+    $member_type_id = 2;//fix in DB
+    $rows = DB::table('roles')
+                    ->join('user_roles as ur','roles.id','=','ur.role')
+                    ->join('users as u','ur.user','=','u.id')
+                    ->join('modules as m','roles.module','=','m.id')
+                    ->join('role_types as rt','roles.role_type','=','rt.id')
+                    ->where('m.id','=',$module)
+                    ->where('rt.id','=',$member_type_id)//admin
                     ->where('u.id','=',$userid)->get();
     if(count($rows)==1){
       return true;
@@ -82,26 +116,49 @@ class Utility{
     return false;
   }
 
+  public static function isMemberofAnyModule($userid){
+    $member_type_id = 2;//fix in DB
+    $rows = DB::table('roles')
+                    ->join('user_roles as ur','roles.id','=','ur.role')
+                    ->join('users as u','ur.user','=','u.id')
+                    ->join('modules as m','roles.module','=','m.id')
+                    ->join('role_types as rt','roles.role_type','=','rt.id')
+                    ->where('rt.id','=',$member_type_id)//admin
+                    ->where('u.id','=',$userid)->get();
+    if(count($rows)>0){
+      return true;
+    }
+    return false;
+  }
+
   public static function sendRejectEmailToUser($requestor , $module, $admin, $reason){
+    $approve_url = url('/');
     try{
-      Mail::queue('admin.emails.reject', ['module_name' => $module->name, 'reason' => $reason, 'admin_email' => $admin->email], function($message) use ($requestor, $module)
+      Mail::queue('admin.emails.reject', ['module_name' => $module->name, 'reason' => $reason, 'admin_email' => $admin->email, 'approve_url' => $approve_url], function($message) use ($requestor, $module)
       {
           $message->to($requestor->email, 'RSApp System')->subject('การร้องขอสิทธิ '.$module->name.' ถูกปฏิเสธ' );
       });
       self::writeLog($module->name.' reject email sent to : '.$requestor->email. ' with reason: '.$reason);
-    }catch(Exception $e){
+    }catch (\Throwable $t) {
+    // Executed only in PHP 7, will not match in PHP 5.x
+    self::writeLog('from throwable'.$t->getMessage());
+    }catch(\Exception $e){
       self::writeLog($e->getMessage());
     }
   }
 
   public static function sendApproveEmailToUser($requestor , $module, $admin){
+    $approve_url = url('/');
     try{
-      Mail::queue('admin.emails.approve', ['module_name' => $module->name, 'admin_email' => $admin->email], function($message) use ($requestor, $module)
+      Mail::queue('admin.emails.approve', ['module_name' => $module->name, 'admin_email' => $admin->email, 'approve_url' => $approve_url], function($message) use ($requestor, $module)
       {
           $message->to($requestor->email, 'RSApp System')->subject('การร้องขอสิทธิ '.$module->name.' ได้รับการอนุญาต' );
       });
       self::writeLog($module->name.' approve email sent to : '.$requestor->email);
-    }catch(Exception $e){
+    }catch (\Throwable $t) {
+    // Executed only in PHP 7, will not match in PHP 5.x
+    self::writeLog('from throwable'.$t->getMessage());
+    }catch(\Exception $e){
       self::writeLog($e->getMessage());
     }
   }

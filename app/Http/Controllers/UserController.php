@@ -22,7 +22,7 @@ use App\Title;
 use App\Sex;
 use App\Occupation;
 use App\UserModule;
-use App\Modulestatus;
+use App\ModuleStatus;
 use Datetime;
 use App\Common\Utility;
 
@@ -70,7 +70,7 @@ class UserController extends Controller
     public function requestModule(Request $request, $module_id){
         $userModule = UserModule::where('user','=',Auth::user()->id)->where('module','=',$module_id)->first();
         if($userModule->status == 1 || $userModule->status == 4){
-            $modulestatus = Modulestatus::find(2);//waiting for approval
+            $modulestatus = ModuleStatus::find(2);//waiting for approval
             $userModule->get_status()->associate($modulestatus);
             $userModule->save();
 
