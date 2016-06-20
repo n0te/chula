@@ -50,6 +50,7 @@ Route::group(['middleware' => 'web'], function () {
 
 
     Route::get('/requestform', 'RequestFormController@index');
+    Route::get('/reviewform', 'RequestFormController@reviewform');
     Route::post('/SaveForm', 'RequestFormController@SaveForm');
     Route::get('/allformrequest', 'RequestFormController@allformrequest');
     Route::get('/deleteformrequest/{id}', 'RequestFormController@deleteformrequest');

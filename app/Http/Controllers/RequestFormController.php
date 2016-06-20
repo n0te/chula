@@ -648,6 +648,35 @@ class RequestFormController extends Controller {
         return view('allformrequest', ['user' => Auth::user(), 'Formreqs' => $Formreqs]);
     }
 
+    public function reviewform() {
+
+        if (!Auth::check()) {
+            return redirect('login');
+        }
+
+        $Formreqs = Formreq::whereIn('FormReqStstus', array(2, 3, 4))
+                ->orderBy('FormReqSaveDate', 'desc')
+                ->get();
+        return view('reviewform', ['user' => Auth::user(), 'Formreqs' => $Formreqs]);
+    }
+
+    public function approverequest($id) {
+
+        if (!Auth::check()) {
+            return redirect('login');
+        }
+
+        $formreq = Formreq::find($id);
+        $formreq->FormReqStstus = 3;
+        $formreq->save();
+
+        $Formreqs = Formreq::where('FormReqStstus', '!=', 0)
+                ->where('FormReqUserIDCreate', '=', Auth::user()->id)
+                ->orderBy('FormReqSaveDate', 'desc')
+                ->get();
+        return view('allformrequest', ['user' => Auth::user(), 'Formreqs' => $Formreqs]);
+    }
+
     public function deleteformrequest($id) {
 
         if (!Auth::check()) {

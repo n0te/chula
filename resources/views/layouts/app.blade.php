@@ -118,32 +118,32 @@
                             <!-- END SIDEBAR TOGGLER BUTTON -->
                         </li>
                         <!-- DOC: To remove the search box from the sidebar you just need to completely remove the below "sidebar-search-wrapper" LI element -->
-                      <!--   <li class="sidebar-search-wrapper"> -->
-                            <!-- BEGIN RESPONSIVE QUICK SEARCH FORM -->
-                            <!-- DOC: Apply "sidebar-search-bordered" class the below search form to have bordered search box -->
-                            <!-- DOC: Apply "sidebar-search-bordered sidebar-search-solid" class the below search form to have bordered & solid search box -->
-                           <!--  <form class="sidebar-search  " action="page_general_search_3.html" method="POST">
-                                <a href="javascript:;" class="remove">
-                                    <i class="icon-close"></i>
-                                </a>
-                                <div class="input-group">
-                                    <input type="text" class="form-control" placeholder="Search...">
-                                    <span class="input-group-btn">
-                                        <a href="javascript:;" class="btn submit">
-                                            <i class="icon-magnifier"></i>
-                                        </a>
-                                    </span>
-                                </div>
-                            </form> -->
-                            <!-- END RESPONSIVE QUICK SEARCH FORM -->
-                       <!--  </li> -->
+                        <!--   <li class="sidebar-search-wrapper"> -->
+                        <!-- BEGIN RESPONSIVE QUICK SEARCH FORM -->
+                        <!-- DOC: Apply "sidebar-search-bordered" class the below search form to have bordered search box -->
+                        <!-- DOC: Apply "sidebar-search-bordered sidebar-search-solid" class the below search form to have bordered & solid search box -->
+                        <!--  <form class="sidebar-search  " action="page_general_search_3.html" method="POST">
+                             <a href="javascript:;" class="remove">
+                                 <i class="icon-close"></i>
+                             </a>
+                             <div class="input-group">
+                                 <input type="text" class="form-control" placeholder="Search...">
+                                 <span class="input-group-btn">
+                                     <a href="javascript:;" class="btn submit">
+                                         <i class="icon-magnifier"></i>
+                                     </a>
+                                 </span>
+                             </div>
+                         </form> -->
+                        <!-- END RESPONSIVE QUICK SEARCH FORM -->
+                        <!--  </li> -->
                         <li class="nav-item start ">
                             <a href="/" class="nav-link nav-toggle">
                                 <i class="icon-home"></i>
                                 <span class="title">Home</span>
                             </a>
                         </li>
-                       
+
                         <li class="heading">
                             <h3 class="uppercase">SERVICES</h3>
                         </li>
@@ -159,24 +159,24 @@
                                         <span class="title">แบบฟอร์มขอจัดทำประกาศแหล่งทุน</span>
                                     </a>
                                 </li>
-                                 <li class="nav-item  ">
+                                <li class="nav-item  ">
                                     <a href="/requestform" class="nav-link ">
                                         <span class="title">สร้างแบบฟอร์มใหม่</span>
                                     </a>
                                 </li>
-                                 <li class="nav-item  ">
+                                <li class="nav-item  ">
                                     <a href="#" class="nav-link ">
                                         <span class="title">ตัวอย่างการกรอกแบบฟอร์ม</span>
                                     </a>
                                 </li>
-                                  <li class="nav-item  ">
+                                <li class="nav-item  ">
                                     <a href="/contactus" class="nav-link ">
                                         <span class="title">ติดต่อ Admin Clinical Research Funds</span>
                                     </a>
                                 </li>
 
                             </ul>
-                           
+
                         </li>
                         <li class="nav-item">
                             <a href="http://rs.md.chula.ac.th" target="_blank" class="nav-link nav-toggle">
@@ -184,48 +184,48 @@
                                 <span class="title">กลับสู่หน้า ฝ่ายวิจัย</span>
                             </a>
                         </li>
-                     <!--    <li class="nav-item  ">
-                            <a href="javascript:;" class="nav-link nav-toggle">
-                                <i class="icon-bulb"></i>
-                                <span class="title">MRC</span>
-                                <span class="arrow"></span>
-                            </a>
-                            <ul class="sub-menu">
-                                <li class="nav-item  ">
-                                    <a href="javascript:;" class="nav-link ">
-                                        <span class="title">Sub-Item</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="nav-item  ">
-                            <a href="javascript:;" class="nav-link nav-toggle">
-                                <i class="icon-briefcase"></i>
-                                <span class="title">Biostatistics</span>
-                                <span class="arrow"></span>
-                            </a>
-                            <ul class="sub-menu">
-                                <li class="nav-item  ">
-                                    <a href="javascript:;" class="nav-link nav-toggle">
-                                        <span class="title">Sub-Item</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="nav-item  ">
-                            <a href="?p=" class="nav-link nav-toggle">
-                                <i class="icon-wallet"></i>
-                                <span class="title">Animal Houses</span>
-                                <span class="arrow"></span>
-                            </a>
-                            <ul class="sub-menu">
-                                <li class="nav-item  ">
-                                    <a href="javascript:;" class="nav-link ">
-                                        <span class="title">Sub-Item</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li> -->
+                        <!--    <li class="nav-item  ">
+                               <a href="javascript:;" class="nav-link nav-toggle">
+                                   <i class="icon-bulb"></i>
+                                   <span class="title">MRC</span>
+                                   <span class="arrow"></span>
+                               </a>
+                               <ul class="sub-menu">
+                                   <li class="nav-item  ">
+                                       <a href="javascript:;" class="nav-link ">
+                                           <span class="title">Sub-Item</span>
+                                       </a>
+                                   </li>
+                               </ul>
+                           </li>
+                           <li class="nav-item  ">
+                               <a href="javascript:;" class="nav-link nav-toggle">
+                                   <i class="icon-briefcase"></i>
+                                   <span class="title">Biostatistics</span>
+                                   <span class="arrow"></span>
+                               </a>
+                               <ul class="sub-menu">
+                                   <li class="nav-item  ">
+                                       <a href="javascript:;" class="nav-link nav-toggle">
+                                           <span class="title">Sub-Item</span>
+                                       </a>
+                                   </li>
+                               </ul>
+                           </li>
+                           <li class="nav-item  ">
+                               <a href="?p=" class="nav-link nav-toggle">
+                                   <i class="icon-wallet"></i>
+                                   <span class="title">Animal Houses</span>
+                                   <span class="arrow"></span>
+                               </a>
+                               <ul class="sub-menu">
+                                   <li class="nav-item  ">
+                                       <a href="javascript:;" class="nav-link ">
+                                           <span class="title">Sub-Item</span>
+                                       </a>
+                                   </li>
+                               </ul>
+                           </li> -->
                         @if(Utility::isAdminOfAnyModule(Auth::user()->id))
                         <li class="nav-item  ">
                             <a href="javascript:;" class="nav-link nav-toggle">
@@ -237,6 +237,11 @@
                                 <li class="nav-item  ">
                                     <a href="/reviewmembers" class="nav-link ">
                                         <span class="title">จัดการผู้ใช้</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item  ">
+                                    <a href="/reviewform" class="nav-link ">
+                                        <span class="title">จัดการแบบฟอร์ม</span>
                                     </a>
                                 </li>
                             </ul>
