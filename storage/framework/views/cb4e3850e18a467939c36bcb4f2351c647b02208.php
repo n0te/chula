@@ -109,7 +109,7 @@
                                     <span class="caption-subject font-dark bold uppercase">แบบฟอร์มขอจัดทำประกาศ</span>
                                 </div>
                             </div>
-                            <table class="table table-bordered table-hover">
+                            <table id='tblReviewform' class="table table-bordered table-hover">
                                 <thead>
                                     <tr>
                                         <td>
@@ -178,19 +178,21 @@
                                             <?php if($Formreq->FormReqStstus === 2): ?>
                                             <a traget="_blank" href="/createdocx/<?php echo e($Formreq->FormReqID); ?>" class="btn btn-outline btn-circle blue btn-sm blue">
                                                 <i class="fa fa-file-word-o"></i> ดาวโหลดไฟล์ Word </a>
-                                            <a href="/deleteformrequest/<?php echo e($Formreq->FormReqID); ?>" data-toggle="confirmation" data-original-title="คุณแน่ใจว่าจะอนุมัติรายการนี้" data-popout="true" title=""  class="btn btn-outline btn-circle green btn-sm green">
+                                            <a href="/approveformbyadmin/<?php echo e($Formreq->FormReqID); ?>" data-toggle="confirmation" data-original-title="คุณแน่ใจว่าจะอนุมัติรายการนี้" data-popout="true" title=""  class="btn btn-outline btn-circle green btn-sm green">
                                                 <i class="fa fa-trash-o"></i> อนุมัติ </a>
-                                            <a href="/deleteformrequest/<?php echo e($Formreq->FormReqID); ?>" data-toggle="confirmation" data-original-title="คุณแน่ใจว่าจะลบรายการนี้" data-popout="true" title=""  class="btn btn-outline btn-circle red btn-sm red">
+                                            <a href="#mdlReject" data-toggle="modal" onclick="OpenRejectForm('<?php echo e($Formreq->FormReqID); ?>'); return false;" class="btn btn-outline btn-circle yellow btn-sm yellow">
+                                                <i class="fa fa-trash-o"></i> ปฏิเสธ </a>
+                                            <a href="/deleteformrequestadmin/<?php echo e($Formreq->FormReqID); ?>"  data-toggle="confirmation" data-original-title="คุณแน่ใจว่าจะลบรายการนี้" data-popout="true" title=""  class="btn btn-outline btn-circle red btn-sm red">
                                                 <i class="fa fa-trash-o"></i> ลบ </a>
                                             <?php elseif($Formreq->FormReqStstus === 3): ?>
-                                            <a href="/requestform/<?php echo e($Formreq->FormReqID); ?>" class="btn btn-outline btn-circle blue btn-sm blue">
-                                                <i class="fa fa-edit"></i> กรอกบรรทึกข้อความ </a>
-                                            <a href="/deleteformrequest/<?php echo e($Formreq->FormReqID); ?>" data-toggle="confirmation" data-original-title="คุณแน่ใจว่าจะลบรายการนี้" data-popout="true" title=""  class="btn btn-outline btn-circle red btn-sm red">
+                                            <a href="#basic" data-toggle="modal" class="btn btn-outline btn-circle blue btn-sm blue">
+                                                <i class="fa fa-edit"></i> สร้างบรรทึกข้อความ </a>
+                                            <a href="/deleteformrequestadmin/<?php echo e($Formreq->FormReqID); ?>" data-toggle="confirmation" data-original-title="คุณแน่ใจว่าจะลบรายการนี้" data-popout="true" title=""  class="btn btn-outline btn-circle red btn-sm red">
                                                 <i class="fa fa-trash-o"></i> ลบ </a>
                                             <?php elseif($Formreq->FormReqStstus === 4): ?>
                                             <a href="/requestform/<?php echo e($Formreq->FormReqID); ?>" class="btn btn-outline btn-circle blue btn-sm blue">
                                                 <i class="fa fa-edit"></i> กรอกรหัสประกาศ </a>
-                                            <a href="/deleteformrequest/<?php echo e($Formreq->FormReqID); ?>" data-toggle="confirmation" data-original-title="คุณแน่ใจว่าจะลบรายการนี้" data-popout="true" title=""  class="btn btn-outline btn-circle red btn-sm red">
+                                            <a href="/deleteformrequestadmin/<?php echo e($Formreq->FormReqID); ?>" data-toggle="confirmation" data-original-title="คุณแน่ใจว่าจะลบรายการนี้" data-popout="true" title=""  class="btn btn-outline btn-circle red btn-sm red">
                                                 <i class="fa fa-trash-o"></i> ลบ </a>
                                             <?php endif; ?>
                                         </td>
@@ -214,6 +216,46 @@
         </div>
     </div>
 </div>
+<div class="modal fade" id="mdlReject" tabindex="-1" role="basic" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">ปฏิเสธ</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>เหตุผลในการปฏิเสธ</label>
+                    <textarea class="form-control" name="txtRejectReason" id="txtRejectReason" rows="3"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn dark btn-outline" data-dismiss="modal">ยกเลิก</button>
+                <button type="button" onclick="SaveReject(); return false;" class="btn yellow">บันทึก</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<div class="modal fade" id="mdlMemo" tabindex="-1" role="basic" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">สร้างบรรทึกข้อความ</h4>
+            </div>
+            <div class="modal-body"> Modal body goes here </div>
+            <div class="modal-footer">
+                <button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
+                <button type="button" class="btn green">Save changes</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<input type="hidden" name="hidfid" id="hidfid" value="">
 <?php $__env->stopSection(); ?>
 
 <?php $__env->startSection('footer'); ?>
@@ -225,7 +267,7 @@
 <!-- BEGIN PAGE LEVEL SCRIPTS -->
 <script src="/assets/pages/scripts/components-date-time-pickers.min.js" type="text/javascript"></script>
 <script src="/assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js" type="text/javascript"></script>
-<!-- <script src="/assets/pages/scripts/formreq.js" type="text/javascript"></script> -->
+<script src="/assets/pages/scripts/reviewform.js" type="text/javascript"></script>
 <!-- END PAGE LEVEL SCRIPTS -->
 
 <?php $__env->stopSection(); ?>

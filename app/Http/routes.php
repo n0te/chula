@@ -51,9 +51,12 @@ Route::group(['middleware' => 'web'], function () {
 
     Route::get('/requestform', 'RequestFormController@index');
     Route::get('/reviewform', 'RequestFormController@reviewform');
+    Route::get('/approveformbyadmin/{id}', 'RequestFormController@approveformbyadmin');
     Route::post('/SaveForm', 'RequestFormController@SaveForm');
+    Route::post('/SaveReject', 'RequestFormController@SaveReject');
     Route::get('/allformrequest', 'RequestFormController@allformrequest');
     Route::get('/deleteformrequest/{id}', 'RequestFormController@deleteformrequest');
+    Route::get('/deleteformrequestadmin/{id}', 'RequestFormController@deleteformrequestadmin');
     Route::get('/requestform/{id}', 'RequestFormController@editrequestform');
     Route::get('/getFormDataByID/{id}', 'RequestFormController@getFormDataByID');
     Route::get('/approveformreq/{id}', 'RequestFormController@approveformreq');

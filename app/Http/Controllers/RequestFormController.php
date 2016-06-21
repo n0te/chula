@@ -655,12 +655,12 @@ class RequestFormController extends Controller {
         }
 
         $Formreqs = Formreq::whereIn('FormReqStstus', array(2, 3, 4))
-                ->orderBy('FormReqSaveDate', 'desc')
+                ->orderBy('FormReqSendDate', 'desc')
                 ->get();
         return view('reviewform', ['user' => Auth::user(), 'Formreqs' => $Formreqs]);
     }
 
-    public function approverequest($id) {
+    public function approveformbyadmin($id) {
 
         if (!Auth::check()) {
             return redirect('login');
@@ -668,13 +668,10 @@ class RequestFormController extends Controller {
 
         $formreq = Formreq::find($id);
         $formreq->FormReqStstus = 3;
+        $formreq->FormReqApprovePerson = Auth::user()->id;
+        $formreq->FormReqApproveDate = Date("Y/m/d");
         $formreq->save();
-
-        $Formreqs = Formreq::where('FormReqStstus', '!=', 0)
-                ->where('FormReqUserIDCreate', '=', Auth::user()->id)
-                ->orderBy('FormReqSaveDate', 'desc')
-                ->get();
-        return view('allformrequest', ['user' => Auth::user(), 'Formreqs' => $Formreqs]);
+        return redirect('reviewform');
     }
 
     public function deleteformrequest($id) {
@@ -694,7 +691,39 @@ class RequestFormController extends Controller {
                 ->where('FormReqUserIDCreate', '=', Auth::user()->id)
                 ->orderBy('FormReqSaveDate', 'desc')
                 ->get();
-        return view('allformrequest', ['user' => Auth::user(), 'Formreqs' => $Formreqs]);
+        return redirect('allformrequest');
+    }
+
+    public function deleteformrequestadmin($id) {
+
+        if (!Auth::check()) {
+            return redirect('login');
+        }
+        $Formreqs = Formreq::where('FormReqID', '=', $id)
+                ->where('FormReqUserIDCreate', '=', Auth::user()->id)
+                ->get();
+        if (count($Formreqs) > 0) {
+            $formreq = Formreq::find($id);
+            $formreq->FormReqStstus = 0;
+            $formreq->save();
+        }
+
+        return redirect('reviewform');
+    }
+
+    public function SaveReject(Request $request) {
+
+        if (!Auth::check()) {
+            return redirect('login');
+        }
+
+        $formreq = Formreq::find($request->fid);
+        $formreq->FormReqRejectPerson = Auth::user()->id;
+        $formreq->FormReqRejectReason = $request->reasontorej;
+        $formreq->FormReqRejectDate = Date("Y/m/d");
+        $formreq->FormReqStstus = 1;
+        $formreq->save();
+        return Response::json([ "message" => "saved"], 200);
     }
 
     public function approveForm(Request $request) {
@@ -740,6 +769,7 @@ class RequestFormController extends Controller {
             $formreq->FormReqSaveDate = Date("Y/m/d");
         } elseif ($request->hidSaveOrSend == 'Send') {
             $formreq->FormReqSendDate = Date("Y/m/d");
+            $formreq->FormReqSaveDate = Date("Y/m/d");
             $formreq->FormReqStstus = 2;
         }
         $user = Auth::user()->id;
