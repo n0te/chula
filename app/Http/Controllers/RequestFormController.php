@@ -56,11 +56,21 @@ class RequestFormController extends Controller {
 
     public function CreateDocx($id) {
         if (Auth::check()) {
-            $fid = $id;
+            $aryid = explode("_", $id);
+            $fid = $aryid[0];
             $freq = Formreq::where('FormReqID', '=', $fid)->get();
             $user = User::where('id', '=', $freq[0]->FormReqUserIDCreate)->get();
-            //$PHPWord = new \PhpOffice\PhpWord\PhpWord();
-            $templateProcessor = new \PhpOffice\PhpWord\TemplateProcessor('assets/global/template/templatecu.docx');
+            //$PHPWord = new \PhpOffice\PhpWord\PhpWord();templatecuwithmemo
+            $tmpname = 'templatecu';
+            $ismemo = false;
+            if (isset($aryid[1])) {
+                if (strtolower($aryid[1]) === 'memo') {
+                    $tmpname = 'templatecuwithmemo';
+                    $ismemo = true;
+                }
+            }
+
+            $templateProcessor = new \PhpOffice\PhpWord\TemplateProcessor('assets/global/template/' . $tmpname . '.docx');
 
             $fdepartment = '';
             if ($freq[0]->FormReqDepartment == '22') {
@@ -85,6 +95,12 @@ class RequestFormController extends Controller {
             $templateProcessor->setValue('FormReqBudgetScholarshipText', $this->ThaiBahtConversion($freq[0]->FormReqBudgetScholarship));
             $templateProcessor->setValue('FormReqStartDateScholarship', date("j", strtotime($freq[0]->FormReqStartDateScholarship)) . ' ' . $thaimonth[date("n", strtotime($freq[0]->FormReqStartDateScholarship))] . ' ' . (date("Y", strtotime($freq[0]->FormReqStartDateScholarship)) + 543));
             $templateProcessor->setValue('FormReqEndDateScholarship', date("j", strtotime($freq[0]->FormReqEndDateScholarship)) . ' ' . $thaimonth[date("n", strtotime($freq[0]->FormReqEndDateScholarship))] . ' ' . (date("Y", strtotime($freq[0]->FormReqEndDateScholarship)) + 543));
+
+
+            $memodate = date("j", strtotime($freq[0]->FormReqMemoDate)) . ' ' . $thaimonth[date("n", strtotime($freq[0]->FormReqMemoDate))] . ' ' . (date("Y", strtotime($freq[0]->FormReqMemoDate)) + 543);
+            $memotime = $freq[0]->FormReqMemoRound;
+            $templateProcessor->setValue('FormReqMemoDate', $memodate);
+            $templateProcessor->setValue('FormReqMemoRound', $memotime);
 
             $date1 = new DateTime($freq[0]->FormReqEndDateScholarship);
             $date2 = new DateTime($freq[0]->FormReqStartDateScholarship);
@@ -314,6 +330,9 @@ class RequestFormController extends Controller {
                     $excepttext = '';
                     if ($Formreq_Budget36[$i]->Formreq_Budget_Except == 1) {
                         $excepttext = ' ขอยกเว้นเนื่องจากผู้ให้ทุนไม่ได้อนุมัติในหมวดนี้ (ได้รับการยกเว้น โดยมติที่ประชุมจากกรรมการบริหารคณะแพทยศาสตร์ ครั้งที่......เมื่อวันที่....................)';
+                        if ($ismemo) {
+                            $excepttext = ' ขอยกเว้นเนื่องจากผู้ให้ทุนไม่ได้อนุมัติในหมวดนี้ (ได้รับการยกเว้น โดยมติที่ประชุมจากกรรมการบริหารคณะแพทยศาสตร์ ครั้งที่ ' . $memotime . ' เมื่อวันที่ ' . $memodate . ')';
+                        }
                     } else {
                         $excepttext = '';
                     }
@@ -348,6 +367,9 @@ class RequestFormController extends Controller {
                     $excepttext = '';
                     if ($Formreq_Budget37[$i]->Formreq_Budget_Except == 1) {
                         $excepttext = ' ขอยกเว้นเนื่องจากผู้ให้ทุนไม่ได้อนุมัติในหมวดนี้ (ได้รับการยกเว้น โดยมติที่ประชุมจากกรรมการบริหารคณะแพทยศาสตร์ ครั้งที่......เมื่อวันที่....................)';
+                        if ($ismemo) {
+                            $excepttext = ' ขอยกเว้นเนื่องจากผู้ให้ทุนไม่ได้อนุมัติในหมวดนี้ (ได้รับการยกเว้น โดยมติที่ประชุมจากกรรมการบริหารคณะแพทยศาสตร์ ครั้งที่ ' . $memotime . ' เมื่อวันที่ ' . $memodate . ')';
+                        }
                     } else {
                         $excepttext = '';
                     }
@@ -654,7 +676,7 @@ class RequestFormController extends Controller {
             return redirect('login');
         }
 
-        $Formreqs = Formreq::whereIn('FormReqStstus', array(2, 3, 4))
+        $Formreqs = Formreq::whereIn('FormReqStstus', array(2, 3, 4, 5))
                 ->orderBy('FormReqSendDate', 'desc')
                 ->get();
         return view('reviewform', ['user' => Auth::user(), 'Formreqs' => $Formreqs]);
@@ -722,7 +744,49 @@ class RequestFormController extends Controller {
         $formreq->FormReqRejectReason = $request->reasontorej;
         $formreq->FormReqRejectDate = Date("Y/m/d");
         $formreq->FormReqStstus = 1;
+        $formreq->FormReqStepOnPage = 0;
         $formreq->save();
+        return Response::json([ "message" => "saved"], 200);
+    }
+
+    public function SaveMemo(Request $request) {
+
+        if (!Auth::check()) {
+            return redirect('login');
+        }
+
+        $formreq = Formreq::find($request->fid);
+        $formreq->FormReqMemoRound = $request->MemoRound;
+        $formreq->FormReqMemoDate = date("Y-m-d", strtotime($request->MemoDate));
+//        $formreq->FormReqRejectDate = Date("Y/m/d");
+        $formreq->FormReqStstus = 4;
+//        $formreq->FormReqStepOnPage = 0;
+        $formreq->save();
+        // $this->CreateDocx($request->fid . '_memo');
+        return Response::json([ "message" => "saved"], 200);
+    }
+
+    public function SaveAnnouncementNumber(Request $request) {
+
+        if (!Auth::check()) {
+            return redirect('login');
+        }
+        $freq = Formreq::where('FormReqID', '=', $request->fid)->get();
+        $filename = $freq[0]->FormReqCRCNumber;
+        $formreq = Formreq::find($request->fid);
+        $formreq->FormReqStstus = 5;
+        $formreq->FormReqAnnouncementNumber = $request->AnnouncementNumber;
+        $formreq->save();
+        $pdffilename = $filename . ".pdf";
+        if ($_FILES["file"]["error"] > 0) {
+            echo "Return Code: " . $_FILES["file"]["error"] . "<br />";
+        } else {
+            if (file_exists($_FILES["file"]["name"])) {
+                unlink($_FILES["file"]["name"]);
+            }
+
+            move_uploaded_file($_FILES["file"]["tmp_name"], 'uploads/pdf/' . $pdffilename);
+        }
         return Response::json([ "message" => "saved"], 200);
     }
 

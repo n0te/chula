@@ -3,11 +3,12 @@
 @section('head')
 <!-- BEGIN PAGE LEVEL PLUGINS -->
 <link href="/assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css" rel="stylesheet" type="text/css" />
-<link href="/assets/global/plugins/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css" rel="stylesheet" type="text/css">
+<link href="/assets/global/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.css" rel="stylesheet" type="text/css"/>
 <!-- END PAGE LEVEL PLUGINS -->
 <!-- BEGIN PAGE LEVEL STYLES -->
 <link href="/assets/global/plugins/bootstrap-switch/css/bootstrap-switch.min.css" rel="stylesheet" type="text/css">
 <link href="/assets/global/plugins/sudobar/dist/style/jquery.sudo-notify.css" rel="stylesheet" type="text/css"/>
+<link href="/assets/global/plugins/datatables/DataTables-1.10.12/media/css/jquery.dataTables.css" rel="stylesheet" type="text/css"/>
 <style>
     .file-panel{
         position:relative;
@@ -108,7 +109,7 @@
                             <div class="portlet-title">
                                 <div class="caption">
                                     <i class="fa fa-file"></i>
-                                    <span class="caption-subject font-dark bold uppercase">แบบฟอร์มขอจัดทำประกาศ</span>
+                                    <span class="caption-subject font-dark bold uppercase">จัดการแบบฟอร์ม</span>
                                 </div>
                             </div>
                             <table id='tblReviewform' class="table table-bordered table-hover">
@@ -157,19 +158,17 @@
                                             @endif
                                         </td>
                                         <td>
-                                            @if ($Formreq->FormReqStstus === 2)
                                             {{ date("d-m-Y", strtotime($Formreq->FormReqSendDate)) }}
-                                            @else
-                                            -
-                                            @endif
                                         </td>
                                         <td>
                                             @if ($Formreq->FormReqStstus === 2)
-                                            <span class="label label-sm label-success"> รอการอนุมัติ </span>
+                                            <span class="label label-sm label-info"> รอการอนุมัติ </span>
                                             @elseif ($Formreq->FormReqStstus === 3)
                                             <span class="label label-sm label-warning"> รอเอกสารจากทางคณะ </span>
                                             @elseif ($Formreq->FormReqStstus === 4)
                                             <span class="label label-sm label-warning"> รอเอกสารจากทางมหาวิทยาลัย </span>
+                                            @elseif ($Formreq->FormReqStstus === 5)
+                                            <span class="label label-sm label-success"> ดำเนินการเสร็จสิ้น </span>
                                             @endif
                                         </td>
                                         <td>
@@ -183,12 +182,21 @@
                                             <a href="/deleteformrequestadmin/{{$Formreq->FormReqID}}"  data-toggle="confirmation" data-original-title="คุณแน่ใจว่าจะลบรายการนี้" data-popout="true" title=""  class="btn btn-outline btn-circle red btn-sm red">
                                                 <i class="fa fa-trash-o"></i> ลบ </a>
                                             @elseif ($Formreq->FormReqStstus === 3)
-                                            <a href="#basic" data-toggle="modal" class="btn btn-outline btn-circle blue btn-sm blue">
+                                            <a href="#mdlMemo" data-toggle="modal" onclick="OpenCreateMemo('{{$Formreq->FormReqID}}'); return false;" class="btn btn-outline btn-circle blue btn-sm blue">
                                                 <i class="fa fa-edit"></i> สร้างบรรทึกข้อความ </a>
                                             <a href="/deleteformrequestadmin/{{$Formreq->FormReqID}}" data-toggle="confirmation" data-original-title="คุณแน่ใจว่าจะลบรายการนี้" data-popout="true" title=""  class="btn btn-outline btn-circle red btn-sm red">
                                                 <i class="fa fa-trash-o"></i> ลบ </a>
                                             @elseif ($Formreq->FormReqStstus === 4)
-                                            <a href="/requestform/{{$Formreq->FormReqID}}" class="btn btn-outline btn-circle blue btn-sm blue">
+                                            <a href="#mdlMemo" data-toggle="modal" onclick="OpenCreateMemo('{{$Formreq->FormReqID}}'); return false;" class="btn btn-outline btn-circle blue btn-sm blue">
+                                                <i class="fa fa-edit"></i> สร้างบรรทึกข้อความ </a>
+                                            <a href="#mdlAnnouncementNumber" data-toggle="modal" onclick="OpenAnnouncementNumber('{{$Formreq->FormReqID}}'); return false;" class="btn btn-outline btn-circle blue btn-sm blue">
+                                                <i class="fa fa-edit"></i> กรอกรหัสประกาศ </a>
+                                            <a href="/deleteformrequestadmin/{{$Formreq->FormReqID}}" data-toggle="confirmation" data-original-title="คุณแน่ใจว่าจะลบรายการนี้" data-popout="true" title=""  class="btn btn-outline btn-circle red btn-sm red">
+                                                <i class="fa fa-trash-o"></i> ลบ </a>
+                                            @elseif ($Formreq->FormReqStstus === 5)
+                                            <a href="#mdlMemo" data-toggle="modal" onclick="OpenCreateMemo('{{$Formreq->FormReqID}}'); return false;" class="btn btn-outline btn-circle blue btn-sm blue">
+                                                <i class="fa fa-edit"></i> สร้างบรรทึกข้อความ </a>
+                                            <a href="#mdlAnnouncementNumber" data-toggle="modal" onclick="OpenAnnouncementNumber('{{$Formreq->FormReqID}}'); return false;" class="btn btn-outline btn-circle blue btn-sm blue">
                                                 <i class="fa fa-edit"></i> กรอกรหัสประกาศ </a>
                                             <a href="/deleteformrequestadmin/{{$Formreq->FormReqID}}" data-toggle="confirmation" data-original-title="คุณแน่ใจว่าจะลบรายการนี้" data-popout="true" title=""  class="btn btn-outline btn-circle red btn-sm red">
                                                 <i class="fa fa-trash-o"></i> ลบ </a>
@@ -243,10 +251,45 @@
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
                 <h4 class="modal-title">สร้างบรรทึกข้อความ</h4>
             </div>
-            <div class="modal-body"> Modal body goes here </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>ครั้งที่</label>
+                    <input class="form-control placeholder-no-fix" type="text" placeholder="" name="txtMemoRound" id="txtMemoRound" value="" />
+                </div>
+                <div class="form-group">
+                    <label>วันที่</label>
+                    <input class="form-control placeholder-no-fix" type="text" placeholder="" name="txtMemoDate" id="txtMemoDate" value="" />
+                </div>
+            </div>
             <div class="modal-footer">
-                <button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
-                <button type="button" class="btn green">Save changes</button>
+                <button type="button" class="btn dark btn-outline" data-dismiss="modal">ปิด</button>
+                <button type="button" onclick="SaveMemo(); return false;" class="btn green">ดาวโหลดเอกสารพร้อมบรรทึกข้อความ</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<div class="modal fade" id="mdlAnnouncementNumber" tabindex="-1" role="basic" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">กรอกรหัสประกาศ</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>รหัสประกาศ</label>
+                    <input class="form-control placeholder-no-fix" type="text" placeholder="" name="txtAnnouncementNumber" id="txtAnnouncementNumber" value="" />
+                </div>
+                <div class="form-group">
+                    <label>ไฟล์ PDF</label>
+                    <input id="fupPDF" type="file" name="fupPDF" data-show-upload="false" class="file pull-left" data-allowed-file-extensions='["pdf"]' data-show-preview="false">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn dark btn-outline" data-dismiss="modal">ปิด</button>
+                <button type="button" onclick="SaveAnnouncementNumber(); return false;" class="btn green">บันทึก</button>
             </div>
         </div>
         <!-- /.modal-content -->
@@ -258,14 +301,18 @@
 
 @section('footer')
 <!-- BEGIN PAGE LEVEL PLUGINS -->
-
+<script src="/assets/global/plugins/kartik-v-bootstrap-fileinput/js/fileinput.js" type="text/javascript"></script>
+<script src="/assets/global/plugins/kartik-v-bootstrap-fileinput/js/plugins/canvas-to-blob.js" type="text/javascript"></script>
 <script src="/assets/global/plugins/sudobar/dist/jquery.sudo-notify.js" type="text/javascript"></script>
 <script src="/assets/global/plugins/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js" type="text/javascript"></script>
 <!-- END PAGE LEVEL PLUGINS -->
 <!-- BEGIN PAGE LEVEL SCRIPTS -->
+<script src="/assets/global/plugins/moment.min.js" type="text/javascript"></script>
+<script src="/assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.js" type="text/javascript"></script>
 <script src="/assets/pages/scripts/components-date-time-pickers.min.js" type="text/javascript"></script>
 <script src="/assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js" type="text/javascript"></script>
 <script src="/assets/pages/scripts/reviewform.js" type="text/javascript"></script>
+<script src="/assets/global/plugins/jquerydateFormat.js" type="text/javascript"></script>
 <!-- END PAGE LEVEL SCRIPTS -->
-
+<script src="/assets/global/plugins/datatables/DataTables-1.10.12/media/js/jquery.dataTables.js" type="text/javascript"></script>
 @endsection
