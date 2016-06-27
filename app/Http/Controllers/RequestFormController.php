@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Mail;
 use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
@@ -37,6 +38,7 @@ use App\Formreq_Budget37;
 use App\Formreq_Payroll;
 use App\Formreq_AuthorizedPerson;
 use App\Formreq_PayDate;
+use App\Role;
 use PhpOffice\PhpWord\PhpWord;
 
 class RequestFormController extends Controller {
@@ -51,7 +53,20 @@ class RequestFormController extends Controller {
     }
 
     public function check() {
-        phpinfo();
+        $approve_url = url('/');
+        $admin_type_id = 1; //fix in DB
+        $admin_emails = [];
+        $users = Role::where('role_type', '=', $admin_type_id)->first()->users;
+        foreach ($users as $user) {
+            array_push($admin_emails, $user->email);
+        }
+        $emails = [];
+        array_push($emails, 'perachart@gmail.com');
+
+
+        Mail::send('form.email.approvedtouser', ['admin_email' => $users[0]->email, 'crcnumber' => '4464646', 'approve_url' => $approve_url], function($message) use ($emails) {
+            $message->to($emails)->subject('This is test e-mail');
+        });
     }
 
     public function CreateDocx($id) {
@@ -693,6 +708,10 @@ class RequestFormController extends Controller {
         $formreq->FormReqApprovePerson = Auth::user()->id;
         $formreq->FormReqApproveDate = Date("Y/m/d");
         $formreq->save();
+        $freq = DB::select('SELECT * FROM `formreq` 
+JOIN `users` ON formreq.`FormReqUserIDCreate` = users.`id`
+WHERE formreq.`FormReqID` = ' . $id);
+        $this->sendFormApproveEmailToUser($freq[0]->FormReqCRCNumber, $freq[0]->email);
         return redirect('reviewform');
     }
 
@@ -746,6 +765,10 @@ class RequestFormController extends Controller {
         $formreq->FormReqStstus = 1;
         $formreq->FormReqStepOnPage = 0;
         $formreq->save();
+        $freq = DB::select('SELECT * FROM `formreq` 
+JOIN `users` ON formreq.`FormReqUserIDCreate` = users.`id`
+WHERE formreq.`FormReqID` = ' . $request->fid);
+        $this->sendFormRejectEmailToUser($freq[0]->FormReqCRCNumber, $freq[0]->email, $freq[0]->FormReqRejectReason);
         return Response::json([ "message" => "saved"], 200);
     }
 
@@ -762,6 +785,10 @@ class RequestFormController extends Controller {
         $formreq->FormReqStstus = 4;
 //        $formreq->FormReqStepOnPage = 0;
         $formreq->save();
+        $freq = DB::select('SELECT * FROM `formreq` 
+JOIN `users` ON formreq.`FormReqUserIDCreate` = users.`id`
+WHERE formreq.`FormReqID` = ' . $request->fid);
+        $this->sendConfirmMemoToUser($freq[0]->FormReqCRCNumber, $freq[0]->email);
         // $this->CreateDocx($request->fid . '_memo');
         return Response::json([ "message" => "saved"], 200);
     }
@@ -787,6 +814,11 @@ class RequestFormController extends Controller {
 
             move_uploaded_file($_FILES["file"]["tmp_name"], 'uploads/pdf/' . $pdffilename);
         }
+        $freq = DB::select('SELECT * FROM `formreq` 
+JOIN `users` ON formreq.`FormReqUserIDCreate` = users.`id`
+WHERE formreq.`FormReqID` = ' . $request->fid);
+        $this->sendConfirmAnnouncementNumberToUser($freq[0]->FormReqCRCNumber, $freq[0]->email, $freq[0]->FormReqAnnouncementNumber);
+
         return Response::json([ "message" => "saved"], 200);
     }
 
@@ -846,6 +878,7 @@ class RequestFormController extends Controller {
             $formreq = Formreq::find($request->fid);
             $formreq->FormReqCRCNumber = $crcnum;
             $formreq->save();
+            $this->sendSubmitFormToAdmin($crcnum);
         }
 
 
@@ -1056,6 +1089,79 @@ class RequestFormController extends Controller {
             $formreqPayDate->PayDateRemark = $obj->$PayDateRemark;
             $formreqPayDate->save();
         }
+    }
+
+    public function sendSubmitFormToAdmin($crcnumber) {
+        $admin_type_id = 1; //fix in DB
+        $admin_emails = [];
+        $users = Role::where('role_type', '=', $admin_type_id)->first()->users;
+        foreach ($users as $user) {
+            array_push($admin_emails, $user->email);
+        }
+        $approve_url = url('/');
+        Mail::send('form.email.formneedapprove', [ 'crcnumber' => $crcnumber, 'approve_url' => $approve_url], function($message) use ($admin_emails) {
+            $message->to($admin_emails)->subject('แจ้งเตือนมีฟอร์มใหม่ที่ต้องอนุมัติ');
+        });
+    }
+
+    public function sendFormApproveEmailToUser($crcnumber, $useremail) {
+        $approve_url = url('/');
+        $admin_type_id = 1; //fix in DB
+        $admin_emails = [];
+        $users = Role::where('role_type', '=', $admin_type_id)->first()->users;
+        foreach ($users as $user) {
+            array_push($admin_emails, $user->email);
+        }
+        $emails = [];
+        array_push($emails, $useremail);
+        Mail::send('form.email.approvedtouser', ['admin_email' => $users[0]->email, 'crcnumber' => $crcnumber, 'approve_url' => $approve_url], function($message) use ($emails) {
+            $message->to($emails)->subject('แบบฟอร์มที่ส่งข้อมูลได้รับการอนุมัติแล้ว');
+        });
+    }
+
+    public function sendFormRejectEmailToUser($crcnumber, $useremail, $rejectreason) {
+        $approve_url = url('/');
+        $admin_type_id = 1; //fix in DB
+        $admin_emails = [];
+        $users = Role::where('role_type', '=', $admin_type_id)->first()->users;
+        foreach ($users as $user) {
+            array_push($admin_emails, $user->email);
+        }
+        $emails = [];
+        array_push($emails, $useremail);
+        Mail::send('form.email.rejectform', ['admin_email' => $users[0]->email, 'crcnumber' => $crcnumber, 'rejectreason' => $rejectreason, 'approve_url' => $approve_url], function($message) use ($emails) {
+            $message->to($emails)->subject('แบบฟอร์มที่ส่งข้อมูลได้รับการปฏิเสธ');
+        });
+    }
+
+    public function sendConfirmMemoToUser($crcnumber, $useremail) {
+        $approve_url = url('/');
+        $admin_type_id = 1; //fix in DB
+        $admin_emails = [];
+        $users = Role::where('role_type', '=', $admin_type_id)->first()->users;
+        foreach ($users as $user) {
+            array_push($admin_emails, $user->email);
+        }
+        $emails = [];
+        array_push($emails, $useremail);
+        Mail::send('form.email.confirmmemo', ['admin_email' => $users[0]->email, 'crcnumber' => $crcnumber, 'approve_url' => $approve_url], function($message) use ($emails) {
+            $message->to($emails)->subject('แบบฟอร์มอยู่ในขั้นตอนการพิจารณาจากมหาวิทยาลัย');
+        });
+    }
+
+    public function sendConfirmAnnouncementNumberToUser($crcnumber, $useremail, $announcementnumber) {
+        $approve_url = url('/');
+        $admin_type_id = 1; //fix in DB
+        $admin_emails = [];
+        $users = Role::where('role_type', '=', $admin_type_id)->first()->users;
+        foreach ($users as $user) {
+            array_push($admin_emails, $user->email);
+        }
+        $emails = [];
+        array_push($emails, $useremail);
+        Mail::send('form.email.announcementnumbertouser', ['admin_email' => $users[0]->email, 'crcnumber' => $crcnumber, 'announcementnumber' => $announcementnumber, 'approve_url' => $approve_url], function($message) use ($emails) {
+            $message->to($emails)->subject('แบบฟอร์มของท่านได้รหัสประกาสแล้ว');
+        });
     }
 
 }

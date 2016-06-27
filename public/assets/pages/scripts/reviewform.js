@@ -165,12 +165,12 @@ function SaveAnnouncementNumber() {
         contentType: false,
         type: 'POST',
         success: function (data) {
-//            console.log(data);
-//            //$('#mdlReject').modal('toggle');
-//            sudoNotify.success("บันทึกข้อมูลเรียบร้อย...กำลังกลับไปหน้าจัดการแบบฟอร์ม");
-//            setTimeout(function () {
-//                window.location.href = "/reviewform";
-//            }, 1000);
+            console.log(data);
+            //$('#mdlReject').modal('toggle');
+            sudoNotify.success("บันทึกข้อมูลเรียบร้อย...กำลังกลับไปหน้าจัดการแบบฟอร์ม");
+            setTimeout(function () {
+                window.location.href = "/reviewform";
+            }, 1000);
         },
         error: function () {
             alert("Fail to get data.");
