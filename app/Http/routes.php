@@ -61,10 +61,8 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('/deleteformrequestadmin/{id}', 'RequestFormController@deleteformrequestadmin');
     Route::get('/requestform/{id}', 'RequestFormController@editrequestform');
     Route::get('/getFormDataByID/{id}', 'RequestFormController@getFormDataByID');
-    Route::get('/approveformreq/{id}', 'RequestFormController@approveformreq');
     Route::get('/contactus', 'RequestFormController@contactus');
     Route::get('/createdocx/{id}', 'RequestFormController@CreateDocx');
-    Route::get('/check', 'RequestFormController@check');
-    Route::get('/check2', 'RequestFormController@check2');
+    Route::get('/receivepaper/{id}', 'RequestFormController@receivepaper');
 });
 

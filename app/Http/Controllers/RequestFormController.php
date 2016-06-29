@@ -112,10 +112,11 @@ class RequestFormController extends Controller {
             $templateProcessor->setValue('FormReqEndDateScholarship', date("j", strtotime($freq[0]->FormReqEndDateScholarship)) . ' ' . $thaimonth[date("n", strtotime($freq[0]->FormReqEndDateScholarship))] . ' ' . (date("Y", strtotime($freq[0]->FormReqEndDateScholarship)) + 543));
 
 
-            $memodate = date("j", strtotime($freq[0]->FormReqMemoDate)) . ' ' . $thaimonth[date("n", strtotime($freq[0]->FormReqMemoDate))] . ' ' . (date("Y", strtotime($freq[0]->FormReqMemoDate)) + 543);
+            $memodate = date("j", strtotime($freq[0]->FormReqMemoDate)) . ' เดือน ' . $thaimonth[date("n", strtotime($freq[0]->FormReqMemoDate))] . ' พ.ศ. ' . (date("Y", strtotime($freq[0]->FormReqMemoDate)) + 543);
             $memotime = $freq[0]->FormReqMemoRound;
             $templateProcessor->setValue('FormReqMemoDate', $memodate);
             $templateProcessor->setValue('FormReqMemoRound', $memotime);
+            $templateProcessor->setValue('FormReqCRCNumber', $freq[0]->FormReqCRCNumber);
 
             $date1 = new DateTime($freq[0]->FormReqEndDateScholarship);
             $date2 = new DateTime($freq[0]->FormReqStartDateScholarship);
@@ -628,27 +629,6 @@ class RequestFormController extends Controller {
         return Response::json($data);
     }
 
-    public function approveformreq($id) {
-
-        if (!Auth::check()) {
-            return redirect('login');
-        }
-
-        return view('requestform', ['user' => Auth::user(),
-            'types' => UserType::all(),
-            'departments' => Department::all(),
-            'nationalities' => Nationality::all(),
-            'userDocs' => UserDocument::where('user', '=', Auth::user()->id)->get(),
-            'titles' => Title::all(),
-            'sexes' => Sex::all(),
-            'occupations' => Occupation::all(),
-            'modules' => Module::all(),
-            'fid' => $id,
-            'appr' => 'yes',
-            'userModules' => UserModule::where('user', '=', Auth::user()->id)->get()
-        ]);
-    }
-
     public function editrequestform($id) {
 
         if (!Auth::check()) {
@@ -691,8 +671,8 @@ class RequestFormController extends Controller {
             return redirect('login');
         }
 
-        $Formreqs = Formreq::whereIn('FormReqStstus', array(2, 3, 4, 5))
-                ->orderBy('FormReqSendDate', 'desc')
+        $Formreqs = Formreq::whereIn('FormReqStstus', array(2, 3, 4, 5, 6))
+                ->orderBy('FormReqStstus', 'asc')
                 ->get();
         return view('reviewform', ['user' => Auth::user(), 'Formreqs' => $Formreqs]);
     }
@@ -712,6 +692,22 @@ class RequestFormController extends Controller {
 JOIN `users` ON formreq.`FormReqUserIDCreate` = users.`id`
 WHERE formreq.`FormReqID` = ' . $id);
         $this->sendFormApproveEmailToUser($freq[0]->FormReqCRCNumber, $freq[0]->email);
+        return redirect('reviewform');
+    }
+
+    public function receivepaper($id) {
+
+        if (!Auth::check()) {
+            return redirect('login');
+        }
+        $formreq = Formreq::find($id);
+        $formreq->FormReqStstus = 4;
+        $formreq->FormReqReceivePaperDate = Date("Y/m/d");
+        $formreq->save();
+        $freq = DB::select('SELECT * FROM `formreq` 
+JOIN `users` ON formreq.`FormReqUserIDCreate` = users.`id`
+WHERE formreq.`FormReqID` = ' . $id);
+        $this->sendReceivePaperToUser($freq[0]->FormReqCRCNumber, $freq[0]->email);
         return redirect('reviewform');
     }
 
@@ -780,9 +776,10 @@ WHERE formreq.`FormReqID` = ' . $request->fid);
 
         $formreq = Formreq::find($request->fid);
         $formreq->FormReqMemoRound = $request->MemoRound;
-        $formreq->FormReqMemoDate = date("Y-m-d", strtotime($request->MemoDate));
+        $datest = explode("-", $request->MemoDate);
+        $formreq->FormReqMemoDate = date("Y-m-d", strtotime($datest[2] . '-' . $datest[1] . '-' . $datest[0]));
 //        $formreq->FormReqRejectDate = Date("Y/m/d");
-        $formreq->FormReqStstus = 4;
+        $formreq->FormReqStstus = 5;
 //        $formreq->FormReqStepOnPage = 0;
         $formreq->save();
         $freq = DB::select('SELECT * FROM `formreq` 
@@ -801,7 +798,7 @@ WHERE formreq.`FormReqID` = ' . $request->fid);
         $freq = Formreq::where('FormReqID', '=', $request->fid)->get();
         $filename = $freq[0]->FormReqCRCNumber;
         $formreq = Formreq::find($request->fid);
-        $formreq->FormReqStstus = 5;
+        $formreq->FormReqStstus = 6;
         $formreq->FormReqAnnouncementNumber = $request->AnnouncementNumber;
         $formreq->save();
         $pdffilename = $filename . ".pdf";
@@ -822,16 +819,6 @@ WHERE formreq.`FormReqID` = ' . $request->fid);
         return Response::json([ "message" => "saved"], 200);
     }
 
-    public function approveForm(Request $request) {
-
-        if (Auth::check()) {
-            $formreq = Formreq::find($request->fid);
-            $formreq->FormReqStstus = 0;
-            $formreq->FormReqStstus = 0;
-            $formreq->save();
-        }
-    }
-
     public function SaveForm(Request $request) {
 //        $user = User::find(Auth::user()->id);
 //        $formreq = new Formreq;
@@ -848,8 +835,10 @@ WHERE formreq.`FormReqID` = ' . $request->fid);
         $formreq->FormReqTo = $request->txtTo;
         $formreq->FormReqSponser = $request->txtSponser;
         $formreq->FormReqBudgetScholarship = $request->txtBudgetScholarship;
-        $formreq->FormReqStartDateScholarship = ($request->txtStartDateScholarship != "") ? date("Y-m-d", strtotime($request->txtStartDateScholarship)) : "NULL";
-        $formreq->FormReqEndDateScholarship = ($request->txtEndDateScholarship != "") ? date("Y-m-d", strtotime($request->txtEndDateScholarship)) : "NULL";
+        $datest = explode("-", $request->txtStartDateScholarship);
+        $formreq->FormReqStartDateScholarship = ($request->txtStartDateScholarship != "") ? date("Y-m-d", strtotime($datest[2] . '-' . $datest[1] . '-' . $datest[0])) : "NULL";
+        $dateen = explode("-", $request->txtEndDateScholarship);
+        $formreq->FormReqEndDateScholarship = ($request->txtEndDateScholarship != "") ? date("Y-m-d", strtotime($dateen[2] . '-' . $dateen[1] . '-' . $dateen[0])) : "NULL";
         $formreq->FormReqResponsibleProjectPerson = $request->txtResponsibleProjectPerson;
         $formreq->FormReqHeadProjectPerson = $request->txtHeadOfProject;
         $formreq->FormReqCaseIncome = $request->txtCaseIncome;
@@ -878,7 +867,7 @@ WHERE formreq.`FormReqID` = ' . $request->fid);
             $formreq = Formreq::find($request->fid);
             $formreq->FormReqCRCNumber = $crcnum;
             $formreq->save();
-            $this->sendSubmitFormToAdmin($crcnum);
+            $this->sendSubmitFormToAdmin($crcnum, $request->txtHeadOfProject);
         }
 
 
@@ -1091,7 +1080,7 @@ WHERE formreq.`FormReqID` = ' . $request->fid);
         }
     }
 
-    public function sendSubmitFormToAdmin($crcnumber) {
+    public function sendSubmitFormToAdmin($crcnumber, $FormReqHeadProjectPerson) {
         $admin_type_id = 1; //fix in DB
         $admin_emails = [];
         $users = Role::where('role_type', '=', $admin_type_id)->first()->users;
@@ -1099,8 +1088,23 @@ WHERE formreq.`FormReqID` = ' . $request->fid);
             array_push($admin_emails, $user->email);
         }
         $approve_url = url('/');
-        Mail::send('form.email.formneedapprove', [ 'crcnumber' => $crcnumber, 'approve_url' => $approve_url], function($message) use ($admin_emails) {
-            $message->to($admin_emails)->subject('แจ้งเตือนมีฟอร์มใหม่ที่ต้องอนุมัติ');
+        Mail::send('form.email.formneedapprove', [ 'crcnumber' => $crcnumber, 'approve_url' => $approve_url, 'FormReqHeadProjectPerson' => $FormReqHeadProjectPerson], function($message) use ($admin_emails) {
+            $message->to($admin_emails)->subject('แจ้งเตือนมีการร้องขอจัดทำร่างประกาศแหล่งทุนภายนอกที่ต้องการอนุมัติ');
+        });
+    }
+
+    public function sendReceivePaperToUser($crcnumber, $useremail) {
+        $approve_url = url('/');
+        $admin_type_id = 1; //fix in DB
+        $admin_emails = [];
+        $users = Role::where('role_type', '=', $admin_type_id)->first()->users;
+        foreach ($users as $user) {
+            array_push($admin_emails, $user->email);
+        }
+        $emails = [];
+        array_push($emails, $useremail);
+        Mail::send('form.email.receivepaper', ['admin_email' => $users[0]->email, 'crcnumber' => $crcnumber, 'approve_url' => $approve_url], function($message) use ($emails) {
+            $message->to($emails)->subject('แบบขอจัดทำร่างประกาศแหล่งทุนภายนอก อยู่ระหว่างส่งเรื่องเข้า กรรมการคณะฯ');
         });
     }
 
@@ -1115,7 +1119,7 @@ WHERE formreq.`FormReqID` = ' . $request->fid);
         $emails = [];
         array_push($emails, $useremail);
         Mail::send('form.email.approvedtouser', ['admin_email' => $users[0]->email, 'crcnumber' => $crcnumber, 'approve_url' => $approve_url], function($message) use ($emails) {
-            $message->to($emails)->subject('แบบฟอร์มที่ส่งข้อมูลได้รับการอนุมัติแล้ว');
+            $message->to($emails)->subject('แบบขอจัดทำร่างประกาศแหล่งทุนภายนอก ผ่านการตรจจสอบแล้ว');
         });
     }
 
@@ -1130,7 +1134,7 @@ WHERE formreq.`FormReqID` = ' . $request->fid);
         $emails = [];
         array_push($emails, $useremail);
         Mail::send('form.email.rejectform', ['admin_email' => $users[0]->email, 'crcnumber' => $crcnumber, 'rejectreason' => $rejectreason, 'approve_url' => $approve_url], function($message) use ($emails) {
-            $message->to($emails)->subject('แบบฟอร์มที่ส่งข้อมูลได้รับการปฏิเสธ');
+            $message->to($emails)->subject('แบบขอจัดทำร่างประกาศแหล่งทุนภายนอก มีข้อแก้ไข');
         });
     }
 
@@ -1145,7 +1149,7 @@ WHERE formreq.`FormReqID` = ' . $request->fid);
         $emails = [];
         array_push($emails, $useremail);
         Mail::send('form.email.confirmmemo', ['admin_email' => $users[0]->email, 'crcnumber' => $crcnumber, 'approve_url' => $approve_url], function($message) use ($emails) {
-            $message->to($emails)->subject('แบบฟอร์มอยู่ในขั้นตอนการพิจารณาจากมหาวิทยาลัย');
+            $message->to($emails)->subject('ร่างประกาศแหล่งทุนภายนอก อยู่ระหว่างส่งต่อไปยังมหาวิทยาลัย');
         });
     }
 
@@ -1160,7 +1164,7 @@ WHERE formreq.`FormReqID` = ' . $request->fid);
         $emails = [];
         array_push($emails, $useremail);
         Mail::send('form.email.announcementnumbertouser', ['admin_email' => $users[0]->email, 'crcnumber' => $crcnumber, 'announcementnumber' => $announcementnumber, 'approve_url' => $approve_url], function($message) use ($emails) {
-            $message->to($emails)->subject('แบบฟอร์มของท่านได้รหัสประกาสแล้ว');
+            $message->to($emails)->subject('ประกาศแหล่งทุนภายนอกเสร็จสมบูรณ์');
         });
     }
 

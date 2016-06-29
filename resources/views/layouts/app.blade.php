@@ -156,17 +156,17 @@
                             <ul class="sub-menu"> 
                                 <li class="nav-item  ">
                                     <a href="/allformrequest" class="nav-link ">
-                                        <span class="title">แบบฟอร์มขอจัดทำประกาศแหล่งทุน</span>
+                                        <span class="title">ตารางสรุปการจัดทำประกาศแหล่งทุนภายนอก</span>
                                     </a>
                                 </li>
                                 <li class="nav-item  ">
                                     <a href="/requestform" class="nav-link ">
-                                        <span class="title">สร้างแบบฟอร์มใหม่</span>
+                                        <span class="title">สร้างคำขอจัดทำประกาศแหล่งทุนภายนอก</span>
                                     </a>
                                 </li>
                                 <li class="nav-item  ">
                                     <a href="#" class="nav-link ">
-                                        <span class="title">ตัวอย่างการกรอกแบบฟอร์ม</span>
+                                        <span class="title">ตัวอย่างการกรอกคำขอ</span>
                                     </a>
                                 </li>
                                 <li class="nav-item  ">

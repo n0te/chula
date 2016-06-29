@@ -35,6 +35,7 @@ $(document).ready(function () {
     //     $(this).find('input[type=submit]').hide();
     // });
 
+
     wizard = $("#formwiz").steps({
         headerTag: "h3",
         bodyTag: "fieldset",
@@ -178,10 +179,10 @@ $(document).ready(function () {
     // wizard.steps("setStep", 7);
     $('input.number').number(true, 2);
     $('#txtStartDateScholarship').datepicker({
-        format: 'dd/mm/yyyy'
+        format: 'dd-mm-yyyy'
     });
     $('#txtEndDateScholarship').datepicker({
-        format: 'dd/mm/yyyy'
+        format: 'dd-mm-yyyy'
     });
 
     $('#ddlDepartment').change(function () {
@@ -671,6 +672,14 @@ $(document).ready(function () {
 
 
     $('.actions ul').prepend('<li class="" aria-disabled="false"><a onclick="PreSave(); return false;" href="#" role="menuitem">บันทึก</a></li>');
+    $('#txtAccountNumber').keyup(function () {
+        if ($('#txtAccountNumber').val() === '0454923038') {
+            $('#txtBankName').val('ธนาคารไทยพาณิชย์ จำกัด (มหาชน)');
+            $('#txtBranch').val('สภากาชาดไทย');
+            $('#txtAccountName').val('คณะแพทยศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย (เงินอุดหนุนการวิจัยแหล่งทุนภายนอก)');
+
+        }
+    });
 
 });
 function sumBG1() {

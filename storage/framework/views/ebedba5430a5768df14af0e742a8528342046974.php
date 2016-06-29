@@ -1063,6 +1063,13 @@
                                 <div class="form-body">
                                     <div class="col-md-12 form-group">
                                         <!--ie8, ie9 does not support html5 placeholder, so we just show field title for that-->
+                                        <label class="control-label col-md-2">เลขที่บัญชี(ไม่ต้องมีขีด)<span class="required">*</span></label>
+                                        <div class="col-md-10">
+                                            <input class="form-control placeholder-no-fix" type="text" placeholder="" name="txtAccountNumber" id="txtAccountNumber" value="" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12 form-group">
+                                        <!--ie8, ie9 does not support html5 placeholder, so we just show field title for that-->
                                         <label class="control-label col-md-2">ธนาคาร<span class="required">*</span></label>
                                         <div class="col-md-10">
                                             <input class="form-control placeholder-no-fix" type="text" placeholder="" name="txtBankName" id="txtBankName" value="" />
@@ -1080,13 +1087,6 @@
                                         <label class="control-label col-md-2">ชื่อบัญชี<span class="required">*</span></label>
                                         <div class="col-md-10">
                                             <input class="form-control placeholder-no-fix" type="text" placeholder="" name="txtAccountName" id="txtAccountName" value="" />
-                                        </div>
-                                    </div>
-                                    <div class="col-md-12 form-group">
-                                        <!--ie8, ie9 does not support html5 placeholder, so we just show field title for that-->
-                                        <label class="control-label col-md-2">เลขที่บัญชี(ไม่ต้องมีขีด)<span class="required">*</span></label>
-                                        <div class="col-md-10">
-                                            <input class="form-control placeholder-no-fix" type="text" placeholder="" name="txtAccountNumber" id="txtAccountNumber" value="" />
                                         </div>
                                     </div>
                                 </div>
