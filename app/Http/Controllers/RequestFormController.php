@@ -40,6 +40,9 @@ use App\Formreq_AuthorizedPerson;
 use App\Formreq_PayDate;
 use App\Role;
 use PhpOffice\PhpWord\PhpWord;
+use PHPExcel;
+use PHPExcel_IOFactory;
+use PHPExcel_Reader_Excel2007;
 
 class RequestFormController extends Controller {
 
@@ -49,24 +52,62 @@ class RequestFormController extends Controller {
      * @return void
      */
     public function __construct() {
-        
+        if (Auth::check()) {
+            
+        }
     }
 
-    public function check() {
-        $approve_url = url('/');
-        $admin_type_id = 1; //fix in DB
-        $admin_emails = [];
-        $users = Role::where('role_type', '=', $admin_type_id)->first()->users;
-        foreach ($users as $user) {
-            array_push($admin_emails, $user->email);
+    public function exporttoexcel() {
+        $objPHPExcel = new PHPExcel();
+
+        $objPHPExcel->setActiveSheetIndex(0);
+        $objPHPExcel->getActiveSheet()->SetCellValue('A1', 'ที่');
+        $objPHPExcel->getActiveSheet()->SetCellValue('B1', 'ประเภท');
+        $objPHPExcel->getActiveSheet()->SetCellValue('C1', 'ใหม่/ต่อเนื่อง');
+        $objPHPExcel->getActiveSheet()->SetCellValue('D1', 'รหัสโครงการ');
+        $objPHPExcel->getActiveSheet()->SetCellValue('E1', 'แหล่งทุน');
+        $objPHPExcel->getActiveSheet()->SetCellValue('F1', 'ชื่อโครงการวิจัย');
+        $objPHPExcel->getActiveSheet()->SetCellValue('G1', 'ผู้วิจัยหลัก');
+        $objPHPExcel->getActiveSheet()->SetCellValue('H1', 'ภาควิชา');
+        $objPHPExcel->getActiveSheet()->SetCellValue('I1', 'ผู้วิจัยร่วมทุกคน');
+        $objPHPExcel->getActiveSheet()->SetCellValue('J1', 'ระยะเวลา');
+        $objPHPExcel->getActiveSheet()->SetCellValue('K1', 'หมายเหตุ เป็นปีที่');
+        $objPHPExcel->getActiveSheet()->SetCellValue('L1', 'เริ่ม');
+        $objPHPExcel->getActiveSheet()->SetCellValue('M1', 'สิ้นสุด');
+        $objPHPExcel->getActiveSheet()->SetCellValue('N1', 'จำนวนเงิน');
+        $objPHPExcel->getActiveSheet()->SetCellValue('O1', 'เงินอุดหนุนคณะฯ');
+        $objPHPExcel->getActiveSheet()->SetCellValue('P1', 'ปี58');
+        $freq = DB::select('SELECT * FROM `formreq`
+JOIN `departments` ON `formreq`.`FormReqDepartment` = `departments`.`id`
+WHERE `FormReqStstus` IN(2,3,4,5,6)');
+        for ($i = 0; $i < count($freq); $i++) {
+            $date1 = new DateTime($freq[$i]->FormReqEndDateScholarship);
+            $date2 = new DateTime($freq[$i]->FormReqStartDateScholarship);
+            $diff = $date1->diff($date2);
+            $DateDifYM = (($diff->y != 0) ? $diff->y . " ปี" : "") . " " . (($diff->m != 0) ? $diff->m . " เดือน" : "") . " " . (($diff->d != 0) ? $diff->d . " วัน" : "");
+
+            $objPHPExcel->getActiveSheet()->SetCellValue('A' . ($i + 2), $i + 1);
+            $objPHPExcel->getActiveSheet()->SetCellValue('B' . ($i + 2), '');
+            $objPHPExcel->getActiveSheet()->SetCellValue('C' . ($i + 2), '');
+            $objPHPExcel->getActiveSheet()->SetCellValue('D' . ($i + 2), $freq[$i]->FormReqAnnouncementNumber);
+            $objPHPExcel->getActiveSheet()->SetCellValue('E' . ($i + 2), $freq[$i]->FormReqTopic);
+            $objPHPExcel->getActiveSheet()->SetCellValue('F' . ($i + 2), $freq[$i]->FormReqSponser);
+            $objPHPExcel->getActiveSheet()->SetCellValue('G' . ($i + 2), $freq[$i]->FormReqHeadProjectPerson);
+            $objPHPExcel->getActiveSheet()->SetCellValue('H' . ($i + 2), $freq[$i]->name);
+            $objPHPExcel->getActiveSheet()->SetCellValue('I' . ($i + 2), '');
+            $objPHPExcel->getActiveSheet()->SetCellValue('J' . ($i + 2), $DateDifYM);
+            $objPHPExcel->getActiveSheet()->SetCellValue('K' . ($i + 2), '');
+            $objPHPExcel->getActiveSheet()->SetCellValue('L' . ($i + 2), date("j", strtotime($freq[$i]->FormReqStartDateScholarship)) . '/' . date("n", strtotime($freq[$i]->FormReqStartDateScholarship)) . '/' . (date("Y", strtotime($freq[$i]->FormReqStartDateScholarship)) + 543));
+            $objPHPExcel->getActiveSheet()->SetCellValue('M' . ($i + 2), date("j", strtotime($freq[$i]->FormReqEndDateScholarship)) . '/' . date("n", strtotime($freq[$i]->FormReqEndDateScholarship)) . '/' . (date("Y", strtotime($freq[$i]->FormReqEndDateScholarship)) + 543));
+            $objPHPExcel->getActiveSheet()->SetCellValue('N' . ($i + 2), $freq[$i]->FormReqBudgetScholarship);
+            $objPHPExcel->getActiveSheet()->SetCellValue('O' . ($i + 2), '');
+            $objPHPExcel->getActiveSheet()->SetCellValue('P' . ($i + 2), '');
         }
-        $emails = [];
-        array_push($emails, 'perachart@gmail.com');
-
-
-        Mail::send('form.email.approvedtouser', ['admin_email' => $users[0]->email, 'crcnumber' => '4464646', 'approve_url' => $approve_url], function($message) use ($emails) {
-            $message->to($emails)->subject('This is test e-mail');
-        });
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename="Export.xls"');
+        header('Cache-Control: max-age=0');
+        $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');
+        $objWriter->save('php://output');
     }
 
     public function CreateDocx($id) {

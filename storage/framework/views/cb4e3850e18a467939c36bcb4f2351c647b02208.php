@@ -109,6 +109,10 @@
                                     <i class="fa fa-file"></i>
                                     <span class="caption-subject font-dark bold uppercase">จัดการแบบฟอร์ม</span>
                                 </div>
+                                <div class="actions">
+                                    <a traget="_blank" href="/exporttoexcel/" class="btn btn-outline btn-circle green btn-sm green">
+                                        <i class="fa fa-file-excel-o"></i> Export to excel</a>
+                                </div>
                             </div>
                             <table id='tblReviewform' class="table table-bordered table-hover">
                                 <thead>

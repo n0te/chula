@@ -47,8 +47,7 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('/getdocuments/{userid}', 'AdminController@getDocuments');
     Route::get('/getreviewmodules/{userid}', 'AdminController@getReviewModules');
 
-
-
+    Route::get('/exporttoexcel', 'RequestFormController@exporttoexcel');
     Route::get('/requestform', 'RequestFormController@index');
     Route::get('/reviewform', 'RequestFormController@reviewform');
     Route::get('/approveformbyadmin/{id}', 'RequestFormController@approveformbyadmin');
@@ -64,5 +63,9 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('/contactus', 'RequestFormController@contactus');
     Route::get('/createdocx/{id}', 'RequestFormController@CreateDocx');
     Route::get('/receivepaper/{id}', 'RequestFormController@receivepaper');
+
+    Route::get('/mrc', 'MRCController@index');
+    Route::get('/placemng', 'MRCController@placemng');
+    Route::get('/getplace', 'MRCController@getPlace');
 });
 

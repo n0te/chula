@@ -106,12 +106,12 @@
                             <div class="portlet-title">
                                 <div class="caption">
                                     <i class="fa fa-file"></i>
-                                    <span class="caption-subject font-dark bold uppercase">แบบฟอร์มขอจัดทำประกาศ</span>
+                                    <span class="caption-subject font-dark bold uppercase">ตารางสรุปการจัดทำประกาศแหล่งทุนภายนอก</span>
                                 </div>
                                 <div class="actions">
 
                                     <a href="/requestform" class="btn green-meadow">
-                                        <i class="fa fa-plus"></i> สร้างฟอร์มใหม่</a>
+                                        <i class="fa fa-plus"></i> สร้างคำขอ</a>
 
 
                                 </div>

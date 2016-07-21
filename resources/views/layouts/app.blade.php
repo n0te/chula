@@ -244,6 +244,11 @@
                                         <span class="title">จัดการแบบฟอร์ม</span>
                                     </a>
                                 </li>
+                                <li class="nav-item  ">
+                                    <a href="/reviewform" class="nav-link ">
+                                        <span class="title">จัดการ MRC</span>
+                                    </a>
+                                </li>
                             </ul>
                         </li>
                         @endif
