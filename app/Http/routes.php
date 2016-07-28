@@ -67,5 +67,31 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('/mrc', 'MRCController@index');
     Route::get('/placemng', 'MRCController@placemng');
     Route::get('/getplace', 'MRCController@getPlace');
+    Route::get('/getPlaceByID/{id}', 'MRCController@getPlaceByID');
+    Route::get('/deletePlaceByID/{id}', 'MRCController@deletePlaceByID');
+    Route::post('/SavePlace', 'MRCController@SavePlace');
+    Route::post('/EditPlace', 'MRCController@EditPlace');
+
+
+    Route::get('/groupmng', 'MRCController@groupmng');
+    Route::get('/getgroup', 'MRCController@getGroup');
+    Route::get('/getGroupByID/{id}', 'MRCController@getGroupByID');
+    Route::get('/deleteGroupByID/{id}', 'MRCController@deleteGroupByID');
+    Route::post('/SaveGroup', 'MRCController@SaveGroup');
+    Route::post('/EditGroup', 'MRCController@EditGroup');
+
+    Route::get('/cousemng', 'MRCController@cousemng');
+    Route::get('/getcouse', 'MRCController@getCouse');
+    Route::get('/getCouseByID/{id}', 'MRCController@getCouseByID');
+    Route::get('/deleteCouseByID/{id}', 'MRCController@deleteCouseByID');
+    Route::post('/SaveCouse', 'MRCController@SaveCouse');
+    Route::post('/EditCouse', 'MRCController@EditCouse');
+
+    Route::get('/equipmentmng', 'MRCController@equipmentmng');
+    Route::get('/getcouse', 'MRCController@getCouse');
+    Route::get('/getCouseByID/{id}', 'MRCController@getCouseByID');
+    Route::get('/deleteCouseByID/{id}', 'MRCController@deleteCouseByID');
+    Route::post('/SaveCouse', 'MRCController@SaveCouse');
+    Route::post('/EditCouse', 'MRCController@EditCouse');
 });
 

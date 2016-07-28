@@ -62,9 +62,6 @@ class MRCController extends Controller {
     }
 
     public function index() {
-
-
-
         $Formreqs = Formreq::whereIn('FormReqStstus', array(2, 3, 4, 5, 6))
                 ->orderBy('FormReqStstus', 'asc')
                 ->get();
@@ -75,42 +72,88 @@ class MRCController extends Controller {
         return view('placemng', ['user' => Auth::user()]);
     }
 
+    public function groupmng() {
+        return view('groupmng', ['user' => Auth::user()]);
+    }
+
+    public function cousemng() {
+        return view('cousemng', ['user' => Auth::user()]);
+    }
+
+    public function equipmentmng() {
+        return view('equipmentmng', ['user' => Auth::user(),
+            'places' => MRC_Place::where('placeisdelete', '=', 0)->get(),
+            'couses' => MRC_Couse::where('couseisdelete', '=', 0)->get(),
+            'groups' => MRC_Group::where('groupisdelete', '=', 0)->get()]);
+    }
+
     public function getPlace() {
-        return Datatables::of(MRC_Place::query())->make(true);
+        $places = DB::table('mrc_place')->select(['placeid', 'placename', 'placeabbreviate', 'placecomputername', 'placeadddate', 'placeaddby', 'placeisdelete'])->where('placeisdelete', '=', 0);
+        return Datatables::of($places)->make(true);
     }
 
     public function getGroup() {
-        return Datatables::of(MRC_Group::query())->make(true);
+
+        $groups = DB::table('mrc_group')->select(['groupid', 'groupname', 'groupengname', 'groupabbreviate', 'groupadddte', 'groupaddby', 'groupisdelete'])->where('groupisdelete', '=', 0);
+        return Datatables::of($groups)->make(true);
     }
 
     public function getCouse() {
-        return Datatables::of(MRC_Couse::query())->make(true);
+        $groups = DB::table('mrc_couse')->select(['couseid', 'cousename', 'couseengname', 'couseadddate', 'couseaddby', 'couseisdelete'])->where('couseisdelete', '=', 0);
+        return Datatables::of($groups)->make(true);
+        //cousename``couseengname``couseadddate``couseaddby``couseisdelete``couseid`
+    }
+
+    public function getPlaceByID($id) {
+        $MRCPlace = MRC_Place::where('placeid', '=', $id)->get();
+        $data = array(
+            'MRCPlace' => $MRCPlace
+        );
+        return Response::json($data);
+    }
+
+    public function getGroupByID($id) {
+        $MRCGroup = MRC_Group::where('groupid', '=', $id)->get();
+        $data = array(
+            'MRCGroup' => $MRCGroup
+        );
+        return Response::json($data);
+    }
+
+    public function getCouseByID($id) {
+        $MRCCouse = MRC_Couse::where('couseid', '=', $id)->get();
+        $data = array(
+            'MRCCouse' => $MRCCouse
+        );
+        return Response::json($data);
     }
 
     public function SavePlace(Request $request) {
         $place = new MRC_Place;
         $place->placename = $request->placename;
         $place->placeabbreviate = $request->placeabbreviate;
+        $place->placecomputername = $request->placecomputername;
         $place->placeadddate = Date("Y/m/d");
         $place->placeaddby = Auth::user()->id;
         $place->placeisdelete = 0;
         $place->save();
-        return Response::json([ "message" => "saved"], 200);
+        return Response::json(["message" => "saved"], 200);
     }
 
     public function EditPlace(Request $request) {
-        $place = MRC_Place::find($request->placeid);
+        $place = MRC_Place::find($request->hidplaceid);
         $place->placename = $request->placename;
         $place->placeabbreviate = $request->placeabbreviate;
+        $place->placecomputername = $request->placecomputername;
         $place->save();
-        return Response::json([ "message" => "saved"], 200);
+        return Response::json(["message" => "saved"], 200);
     }
 
-    public function DeletePlace(Request $request) {
-        $place = MRC_Place::find($request->placeid);
+    public function deletePlaceByID($id) {
+        $place = MRC_Place::find($id);
         $place->placeisdelete = 1;
         $place->save();
-        return Response::json([ "message" => "saved"], 200);
+        return Response::json(["message" => "saved"], 200);
     }
 
     public function SaveCouse(Request $request) {
@@ -121,22 +164,22 @@ class MRCController extends Controller {
         $couse->couseaddby = Auth::user()->id;
         $couse->couseisdelete = 0;
         $couse->save();
-        return Response::json([ "message" => "saved"], 200);
+        return Response::json(["message" => "saved"], 200);
     }
 
     public function EditCouse(Request $request) {
-        $couse = MRC_Couse::find($request->couseid);
+        $couse = MRC_Couse::find($request->hidcouseid);
         $couse->cousename = $request->cousename;
         $couse->couseengname = $request->couseengname;
         $couse->save();
-        return Response::json([ "message" => "saved"], 200);
+        return Response::json(["message" => "saved"], 200);
     }
 
-    public function DeleteCouse(Request $request) {
-        $couse = MRC_Couse::find($request->couseid);
+    public function deleteCouseByID($id) {
+        $couse = MRC_Couse::find($id);
         $couse->couseisdelete = 1;
         $couse->save();
-        return Response::json([ "message" => "saved"], 200);
+        return Response::json(["message" => "saved"], 200);
     }
 
     public function SaveGroup(Request $request) {
@@ -148,7 +191,7 @@ class MRCController extends Controller {
         $group->groupaddby = Auth::user()->id;
         $group->groupisdelete = 0;
         $group->save();
-        return Response::json([ "message" => "saved"], 200);
+        return Response::json(["message" => "saved"], 200);
     }
 
     public function EditGroup(Request $request) {
@@ -157,14 +200,14 @@ class MRCController extends Controller {
         $group->groupengname = $request->groupengname;
         $group->groupabbreviate = $request->groupabbreviate;
         $group->save();
-        return Response::json([ "message" => "saved"], 200);
+        return Response::json(["message" => "saved"], 200);
     }
 
-    public function DeleteGroup(Request $request) {
-        $group = MRC_Group::find($request->groupid);
+    public function deleteGroupByID($id) {
+        $group = MRC_Group::find($id);
         $group->groupisdelete = 1;
         $group->save();
-        return Response::json([ "message" => "saved"], 200);
+        return Response::json(["message" => "saved"], 200);
     }
 
 }

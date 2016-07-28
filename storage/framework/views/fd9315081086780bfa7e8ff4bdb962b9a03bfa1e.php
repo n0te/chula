@@ -129,6 +129,9 @@
                                 ชื่อย่อ
                             </td>
                             <td>
+                                ชื่อเครื่องคอมพิวเตอร์
+                            </td>
+                            <td>
                                 คำสั่ง
                             </td>
                         </tr>
@@ -167,13 +170,41 @@
                                     <input  class="form-control placeholder-no-fix" type="text" placeholder="" name="placeabbreviate" id="placeabbreviate" value=""/>
                                 </div>
                             </div>
+                            <div class="form-group">
+                                <label class="col-md-3 control-label">ชื่อเครื่องคอมพิวเตอร์</label>
+                                <div class="col-md-9">
+                                    <input  class="form-control placeholder-no-fix" type="text" placeholder="" name="placecomputername" id="placecomputername" value=""/>
+                                </div>
+                            </div>
                         </div>
                     </form>
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn dark btn-outline" data-dismiss="modal">ยกเลิก</button>
-                <button type="button" class="btn blue">บันทึก</button>
+                <a class='btn dark btn-outline btn-sm' data-dismiss="modal" href='#'><span class='glyphicon glyphicon-remove'></span> ยกเลิก</a>
+                <a class='btn btn-primary btn-sm' href='#' onclick='SavePlace(); return false;'><span class='glyphicon glyphicon-ok'></span> บันทึก</a>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<div class="modal fade" id="mdlPlaceCfmDel" tabindex="-1" role="basic" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content warning">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">ยืนยันการลบ</h4>
+            </div>
+            <div class="modal-body">
+                <div class="portlet-body form">
+                    คุณแน่ใจว่าจะลบรายการนี้
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a class='btn dark btn-outline btn-sm' data-dismiss="modal" href='#'><span class='glyphicon glyphicon-remove'></span> ยกเลิก</a>
+                <a class='btn btn-danger btn-sm' href='#' onclick='DeleteByID(); return false;'><span class='glyphicon glyphicon-trash'></span> ลบ</a>
+
             </div>
         </div>
         <!-- /.modal-content -->
@@ -181,8 +212,8 @@
     <!-- /.modal-dialog -->
 </div>
 
-
-<input type="hidden" name="hidfid" id="hidfid" value="">
+<input type="hidden" name="hidsaveoredit" id="hidsaveoredit" value="">
+<input type="hidden" name="hidfid" id="hidplaceid" value="">
 <?php $__env->stopSection(); ?>
 
 <?php $__env->startSection('footer'); ?>
@@ -203,37 +234,145 @@
 <script src="/assets/global/plugins/datatables/DataTables-1.10.12/media/js/jquery.dataTables.js" type="text/javascript"></script>
 <script src="/assets/global/plugins/fullcalendar/lib/moment.min.js" type="text/javascript"></script>
 <script src="/assets/global/plugins/fullcalendar/fullcalendar.js" type="text/javascript"></script>
+<script src="/assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js" type="text/javascript"></script>
 <script>
+                    var sudoNotify = $('.notification-container').sudoNotify({
+                        log: true,
+                        position: "top",
+                        animation: {
+                            type: "slide-fade", //fade, scroll-left, scroll-left-fade, scroll-right, scroll-right-fade, slide, slide-fade or none
+                            showSpeed: 400,
+                            hideSpeed: 250
+                        },
+                    });
+                    $(document).ready(function () {
+                        $('#tblReviewform').DataTable({
+                            processing: true,
+                            serverSide: true,
+                            ajax: '/getplace',
+                            "lengthChange": false,
+                            "info": false,
+                            "pagingType": "full_numbers",
+                            columns: [
+                                {data: 'placeid', name: 'placeid'},
+                                {data: 'placename', name: 'placename'},
+                                {data: 'placeabbreviate', name: 'placeabbreviate'},
+                                {data: 'placecomputername', name: 'placecomputername'},
+                                {"bVisible": true, "bSearchable": false, "bSortable": false,
+                                    "fnCreatedCell": function (nTd, sData, oData, iRow, iCol)
+                                    {
+                                        $(nTd).css('text-align', 'center');
+                                    },
+                                    "mData": null,
+                                    "mRender": function (data, type, full) {
+                                        return " <a class='btn btn-primary btn-sm' href='#' onclick='return OpenEditPlace(\"" + full.placeid + "\")'><span class='glyphicon glyphicon-file'></span> แก้ไข</a>"
+                                                + "&nbsp; <a class='btn btn-danger btn-sm' href='#' onclick='return OpenDelete(\"" + full.placeid + "\")'><span class='glyphicon glyphicon-trash'></span> ลบ</a>";
+                                    }
+                                }
+                            ]
+                        });
 
-                            $(document).ready(function () {
-                                $('#tblReviewform').DataTable({
-                                    processing: true,
-                                    serverSide: true,
-                                    ajax: '/getplace',
-                                    "lengthChange": false,
-                                    "info": false,
-                                    "pagingType": "full_numbers",
-                                    columns: [
-                                        {data: 'placeid', name: 'placeid'},
-                                        {data: 'placename', name: 'placename'},
-                                        {data: 'placeabbreviate', name: 'placeabbreviate'},
-                                        {"bVisible": true, "bSearchable": false, "bSortable": false,
-                                            "fnCreatedCell": function (nTd, sData, oData, iRow, iCol)
-                                            {
-                                                $(nTd).css('text-align', 'center');
-                                            },
-                                            "mData": null,
-                                            "mRender": function (data, type, full) {
-                                                return " <a class='btn btn-primary btn-sm' href='#' onclick='return OpenEditUser(\"" + full.placeid + "\")'><span class='glyphicon glyphicon-file'></span> Edit</a>"
-                                                        + "&nbsp; <a data-target='#confirm-delete' class='btn btn-danger btn-sm' data-toggle='modal' href='#' onclick='return OpenConfirmDeleteUser(\"" + full.UserID + "\")'><span class='glyphicon glyphicon-remove'></span> Delete</a>";
-                                            }
-                                        }
-                                    ]
-                                });
-                            });
-                            function OpenAddPlace() {
+                    });
+                    function resetfield() {
+                        $("#placename").val('');
+                        $("#placeabbreviate").val('');
+                        $("#placecomputername").val('');
+                    }
+                    function OpenAddPlace() {
+                        resetfield();
+                        $('#mdlPlace').modal('toggle');
+                        $("#hidsaveoredit").val('SavePlace');
+                    }
+                    function OpenEditPlace(placeid) {
+                        resetfield();
+                        $("#hidsaveoredit").val('EditPlace');
+                        $.ajax({
+                            url: '/getPlaceByID/' + placeid,
+                            method: 'get',
+                            dataType: 'json',
+                            contentType: false,
+                            processData: false,
+                            error: function (data) {
+                                console.log(data.responseText);
+                            },
+                            success: function (data) {
+                                $("#hidplaceid").val(data['MRCPlace'][0].placeid);
+                                $("#placename").val(data['MRCPlace'][0].placename);
+                                $("#placeabbreviate").val(data['MRCPlace'][0].placeabbreviate);
+                                $("#placecomputername").val(data['MRCPlace'][0].placecomputername);
                                 $('#mdlPlace').modal('toggle');
                             }
+                        });
+                    }
+                    function OpenDelete(placeid) {
+                        $('#mdlPlaceCfmDel').modal('toggle');
+                        $("#hidplaceid").val(placeid);
+                    }
+                    function DeleteByID() {
+                        $.ajax({
+                            url: '/deletePlaceByID/' + $("#hidplaceid").val(),
+                            method: 'get',
+                            dataType: 'json',
+                            contentType: false,
+                            processData: false,
+                            error: function (data) {
+                                console.log(data.responseText);
+                            },
+                            success: function (data) {
+                                if (data.message === 'saved') {
+                                    $('#tblReviewform').DataTable().ajax.reload();
+                                    $('#mdlPlaceCfmDel').modal('toggle');
+                                    sudoNotify.success("ลบสถานที่เรียบร้อย");
+                                }
+                            }
+                        });
+                    }
+                    function SavePlace() {
+                        if ($.trim($("#placename").val()).length === 0) {
+                            sudoNotify.error("กรุณากรอกชื่อสถานที่");
+                            return false;
+                        }
+                        if ($.trim($("#placeabbreviate").val()).length === 0) {
+                            sudoNotify.error("กรุณาชื่อย่อสถานที่");
+                            return false;
+                        }
+                        if ($.trim($("#placecomputername").val()).length === 0) {
+                            sudoNotify.error("กรุณากรอกชื่อเครื่องคอมพิวเตอร์ที่สถานที่นั้น");
+                            return false;
+                        }
+                     
+                        var formData = new FormData();
+                        $('input[type="text"], input[type="checkbox"], textarea, input[type="password"], input[type="hidden"], select').each(function (i) {
+                            formData.append($(this).attr('id'), $(this).val());
+                        });
+
+                        $.ajax({
+                            url: '/' + $("#hidsaveoredit").val(),
+                            method: 'post',
+                            dataType: 'json',
+                            contentType: false,
+                            processData: false,
+                            data: formData,
+                            error: function (data) {
+                                console.log(data.responseText);
+                                alert(data.responseText);
+                                //WindowScrollTopAnimation('#profile div.alert', 500);
+                            },
+                            success: function (data) {
+                                if (data.message === 'saved') {
+                                    $('#tblReviewform').DataTable().ajax.reload();
+                                    $('#mdlPlace').modal('toggle');
+                                    if ($("#hidsaveoredit").val() === 'EditPlace') {
+                                        sudoNotify.success("แก้ไขสถานที่เรียบร้อย");
+                                    } else {
+                                        sudoNotify.success("เพิ่มสถานที่เรียบร้อย");
+                                    }
+
+                                }
+                            }
+
+                        });
+                    }
 </script>
 <?php $__env->stopSection(); ?>
 <?php echo $__env->make('layouts.app', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
