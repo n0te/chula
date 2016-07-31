@@ -47,6 +47,7 @@ use Yajra\Datatables\Datatables;
 use App\MRC_Couse;
 use App\MRC_Group;
 use App\MRC_Place;
+use App\MRC_Equipment;
 
 class MRCController extends Controller {
 
@@ -59,6 +60,7 @@ class MRCController extends Controller {
         if (Auth::check() == false) {
             return redirect('login');
         }
+        //echo '555';
     }
 
     public function index() {
@@ -85,6 +87,11 @@ class MRCController extends Controller {
             'places' => MRC_Place::where('placeisdelete', '=', 0)->get(),
             'couses' => MRC_Couse::where('couseisdelete', '=', 0)->get(),
             'groups' => MRC_Group::where('groupisdelete', '=', 0)->get()]);
+    }
+
+    public function getEquipment() {
+        $equipment = DB::table('equipmentview')->select(['equipmentid', 'equipmentname', 'groupname', 'placename', 'equipmentstatus', 'equipmentpicturename', 'equipmentstatus'])->where('equipmentisdelete', '=', 0);
+        return Datatables::of($equipment)->make(true);
     }
 
     public function getPlace() {
@@ -126,6 +133,99 @@ class MRCController extends Controller {
             'MRCCouse' => $MRCCouse
         );
         return Response::json($data);
+    }
+
+    public function getEquipmentByID($id) {
+        $MRCEquipment = MRC_Equipment::where('equipmentid', '=', $id)->get();
+        $data = array(
+            'MRCEquipment' => $MRCEquipment
+        );
+        return Response::json($data);
+    }
+
+    public function deleteEquipmentByID($id) {
+        $equipment = MRC_Equipment::find($id);
+        $equipment->equipmentisdelete = 1;
+        $equipment->save();
+        return Response::json(["message" => "saved"], 200);
+    }
+
+    public function SaveEquipment(Request $request) {
+        $equipment = new MRC_Equipment;
+        $equipment->equipmentname = $request->equipmentname;
+        $equipment->equipmentenname = $request->equipmentenname;
+        $equipment->equipmentdetail = $request->equipmentdetail;
+        $equipment->equipmentendetail = $request->equipmentendetail;
+        $equipment->equipmenthourallow = $request->equipmenthourallow;
+        $equipment->equipmentpricefordoctordepartment = $request->equipmentpricefordoctordepartment;
+        $equipment->equipmentpriceforuniversity = $request->equipmentpriceforuniversity;
+        $equipment->equipmentforoutsideuniversitygov = $request->equipmentforoutsideuniversitygov;
+        $equipment->equipmentforoutsideuniversityprivate = $request->equipmentforoutsideuniversityprivate;
+        // $equipment->equipmentpicturename = $request->equipmentpicturename;
+        $equipment->equipmentstatus = $request->equipmentstatus;
+        $equipment->equipmentcouse = $request->equipmentcouse;
+        $equipment->equipmentgroup = $request->equipmentgroup;
+        $equipment->equipmentplace = $request->equipmentplace;
+        $equipment->equipmentaddate = Date("Y/m/d");
+        $equipment->equipmentaddby = Auth::user()->id;
+        $equipment->equipmentisdelete = 0;
+        $equipment->save();
+        $insertedId = $equipment->equipmentid;
+
+        $picname = '';
+        if ($_FILES["file"]["error"] > 0) {
+            echo "Return Code: " . $_FILES["file"]["error"] . "<br />";
+        } else {
+            if (file_exists($_FILES["file"]["name"])) {
+                unlink($_FILES["file"]["name"]);
+            }
+            $exten = explode(".", $_FILES["file"]["name"]);
+            $picname = $insertedId . "." . $exten[1];
+            move_uploaded_file($_FILES["file"]["tmp_name"], 'uploads/equipmentimg/' . $picname);
+        }
+
+        $equipmentup = MRC_Equipment::find($insertedId);
+        $equipmentup->equipmentpicturename = $picname;
+        $equipmentup->save();
+
+        return Response::json(["message" => "saved"], 200);
+    }
+
+    public function EditEquipment(Request $request) {
+        $equipment = MRC_Equipment::find($request->hidequipmentid);
+        $equipment->equipmentname = $request->equipmentname;
+        $equipment->equipmentenname = $request->equipmentenname;
+        $equipment->equipmentdetail = $request->equipmentdetail;
+        $equipment->equipmentendetail = $request->equipmentendetail;
+        $equipment->equipmenthourallow = $request->equipmenthourallow;
+        $equipment->equipmentpricefordoctordepartment = $request->equipmentpricefordoctordepartment;
+        $equipment->equipmentpriceforuniversity = $request->equipmentpriceforuniversity;
+        $equipment->equipmentforoutsideuniversitygov = $request->equipmentforoutsideuniversitygov;
+        $equipment->equipmentforoutsideuniversityprivate = $request->equipmentforoutsideuniversityprivate;
+        // $equipment->equipmentpicturename = $request->equipmentpicturename;
+        $equipment->equipmentstatus = $request->equipmentstatus;
+        $equipment->equipmentcouse = $request->equipmentcouse;
+        $equipment->equipmentgroup = $request->equipmentgroup;
+        $equipment->equipmentplace = $request->equipmentplace;
+        $equipment->save();
+        $picname = '';
+        if (!empty($_FILES)) {
+            if ($_FILES["file"]["error"] > 0) {
+                echo "Return Code: " . $_FILES["file"]["error"] . "<br />";
+            } else {
+                if (file_exists($_FILES["file"]["name"])) {
+                    unlink($_FILES["file"]["name"]);
+                }
+
+                $exten = explode(".", $_FILES["file"]["name"]);
+                $picname = $insertedId . "." . $exten[1];
+//                if (file_exists('uploads/equipmentimg/' . $picname)) {
+//                    unlink('uploads/equipmentimg/' . $picname);
+//                }
+                move_uploaded_file($_FILES["file"]["tmp_name"], 'uploads/equipmentimg/' . $picname);
+            }
+        }
+        return Response::json(["message" => "saved"], 200);
     }
 
     public function SavePlace(Request $request) {
@@ -195,7 +295,7 @@ class MRCController extends Controller {
     }
 
     public function EditGroup(Request $request) {
-        $group = MRC_Group::find($request->groupid);
+        $group = MRC_Group::find($request->hidgroupid);
         $group->groupname = $request->groupname;
         $group->groupengname = $request->groupengname;
         $group->groupabbreviate = $request->groupabbreviate;

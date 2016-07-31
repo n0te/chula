@@ -242,7 +242,7 @@
                         $('#tblReviewform').DataTable({
                             processing: true,
                             serverSide: true,
-                            ajax: '/getcourse',
+                            ajax: '/getcouse',
                             "lengthChange": false,
                             "info": false,
                             "pagingType": "full_numbers",

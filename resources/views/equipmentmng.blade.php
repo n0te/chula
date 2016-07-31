@@ -112,7 +112,7 @@
                     </div>
                     <div class="actions">
 
-                        <a href="#" onclick="OpenAddGroup(); return false;" class="btn green-meadow">
+                        <a href="#" onclick="OpenAddEquipment(); return false;" class="btn green-meadow">
                             <i class="fa fa-plus"></i> เพิ่มอุปกรณ์</a>
 
 
@@ -155,7 +155,7 @@
 
     </div>
 </div>
-<div class="modal fade" id="mdlGroup" tabindex="-1" role="basic" aria-hidden="true">
+<div class="modal fade" id="mdlEquipment" tabindex="-1" role="basic" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -169,55 +169,67 @@
                             <div class="form-group">
                                 <label class="col-md-3 control-label">ชื่ออุปกรณ์</label>
                                 <div class="col-md-9">
-                                    <input  class="form-control placeholder-no-fix" type="text" placeholder="" name="groupname" id="groupname" value=""/>
+                                    <input  class="form-control placeholder-no-fix" type="text" placeholder="" name="equipmentname" id="equipmentname" value=""/>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label class="col-md-3 control-label">ชื่ออุปกรณ์ภาษาอังกฤษ</label>
                                 <div class="col-md-9">
-                                    <input  class="form-control placeholder-no-fix" type="text" placeholder="" name="groupname" id="groupname" value=""/>
+                                    <input  class="form-control placeholder-no-fix" type="text" placeholder="" name="equipmentenname" id="equipmentenname" value=""/>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label class="col-md-3 control-label">รายละเอียด</label>
                                 <div class="col-md-9">
-                                    <input  class="form-control placeholder-no-fix" type="text" placeholder="" name="groupname" id="groupname" value=""/>
+                                    <textarea class="form-control" name="equipmentdetail" id="equipmentdetail"  rows="3"></textarea>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label class="col-md-3 control-label">รายละเอียดภาษาอังกฤษ</label>
                                 <div class="col-md-9">
-                                    <input  class="form-control placeholder-no-fix" type="text" placeholder="" name="groupengname" id="groupengname" value=""/>
+                                    <textarea class="form-control" name="equipmentendetail" id="equipmentendetail"  rows="3"></textarea>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label class="col-md-3 control-label">จำนวนชั่วโมงที่กำหนดให้จอง</label>
                                 <div class="col-md-9">
-                                    <input  class="form-control placeholder-no-fix" type="text" placeholder="" name="groupabbreviate" id="groupabbreviate" value=""/>
+                                    <input  class="form-control placeholder-no-fix" type="text" placeholder="" name="equipmenthourallow" id="equipmenthourallow" value=""/>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label class="col-md-3 control-label">ราคาสำหรับบุคคลในคณะแพทย์</label>
                                 <div class="col-md-9">
-                                    <input  class="form-control placeholder-no-fix" type="text" placeholder="" name="groupabbreviate" id="groupabbreviate" value=""/>
+                                    <div class="input-group">
+                                        <input class="form-control placeholder-no-fix number" type="text" placeholder="" name="equipmentpricefordoctordepartment" id="equipmentpricefordoctordepartment" value="" />
+                                        <div class="input-group-addon">บาท</div>
+                                    </div>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label class="col-md-3 control-label">ราคาสำหรับบุคคลในมหาวิทยาลัย</label>
                                 <div class="col-md-9">
-                                    <input  class="form-control placeholder-no-fix" type="text" placeholder="" name="groupabbreviate" id="groupabbreviate" value=""/>
+                                    <div class="input-group">
+                                        <input class="form-control placeholder-no-fix number" type="text" placeholder="" name="equipmentpriceforuniversity" id="equipmentpriceforuniversity" value="" />
+                                        <div class="input-group-addon">บาท</div>
+                                    </div>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label class="col-md-3 control-label">ราคาสำหรับบุคคลภายนอกภาครัฐ</label>
                                 <div class="col-md-9">
-                                    <input  class="form-control placeholder-no-fix" type="text" placeholder="" name="groupabbreviate" id="groupabbreviate" value=""/>
+                                    <div class="input-group">
+                                        <input class="form-control placeholder-no-fix number" type="text" placeholder="" name="equipmentforoutsideuniversitygov" id="equipmentforoutsideuniversitygov" value="" />
+                                        <div class="input-group-addon">บาท</div>
+                                    </div>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label class="col-md-3 control-label">ราคาสำหรับบุคคลภายนอกภาคเอกชน</label>
                                 <div class="col-md-9">
-                                    <input  class="form-control placeholder-no-fix" type="text" placeholder="" name="groupabbreviate" id="groupabbreviate" value=""/>
+                                    <div class="input-group">
+                                        <input class="form-control placeholder-no-fix number" type="text" placeholder="" name="equipmentforoutsideuniversityprivate" id="equipmentforoutsideuniversityprivate" value="" />
+                                        <div class="input-group-addon">บาท</div>
+                                    </div>
                                 </div>
                             </div>
                             <div class="form-group">
@@ -234,7 +246,7 @@
                             <div class="form-group">
                                 <label class="col-md-3 control-label">หลักสูตรการอบรม</label>
                                 <div class="col-md-9">
-                                    <select name="equipmentgroup"  id="equipmentgroup" class="form-control">
+                                    <select name="equipmentcouse"  id="equipmentcouse" class="form-control">
                                         @foreach($couses as $couse)
                                         <option value='{{$couse -> couseid}}'> {{$couse -> cousename}}
                                         </option>
@@ -245,7 +257,7 @@
                             <div class="form-group">
                                 <label class="col-md-3 control-label">กลุ่มเครื่องมือ</label>
                                 <div class="col-md-9">
-                                    <select name="equipmentcouse"  id="equipmentcouse" class="form-control">
+                                    <select name="equipmentgroup"  id="equipmentgroup" class="form-control">
                                         @foreach($groups as $group)
                                         <option value='{{$group -> groupid}}'> {{$group -> groupname}}
                                         </option>
@@ -253,20 +265,41 @@
                                     </select>
                                 </div>
                             </div>
+                            <div class="form-group">
+                                <label class="col-md-3 control-label">สถานะ</label>
+                                <div class="col-md-9">
+                                    <select name="equipmentstatus"  id="equipmentstatus" class="form-control">
+                                        <option value='1'>เปิด</option>
+                                        <option value='0'>ปิด</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-3 control-label">รูปภาพอุปกรณ์</label>
+                                <div class="col-md-9">
+                                    <input id="equipmentpicturename" type="file" name="equipmentpicturename" data-show-upload="false" class="file pull-left" data-allowed-file-extensions='["jpeg","jpg","png"]' data-show-preview="false">
+                                </div>
+                            </div>
+                            <div id="divimgequipment" class="form-group">
+                                <div class="col-md-12">
+                                    <img width='200px' id="imgequipment" src="" class="img-thumbnail">
+                                </div>
+                            </div>
                         </div>
+                        <input type="hidden" name="_token" value="{{ csrf_token() }}">
                     </form>
                 </div>
             </div>
             <div class="modal-footer">
                 <a class='btn dark btn-outline btn-sm' data-dismiss="modal" href='#'><span class='glyphicon glyphicon-remove'></span> ยกเลิก</a>
-                <a class='btn btn-primary btn-sm' href='#' onclick='SaveGroup(); return false;'><span class='glyphicon glyphicon-ok'></span> บันทึก</a>
+                <a class='btn btn-primary btn-sm' href='#' onclick='SaveEquipment(); return false;'><span class='glyphicon glyphicon-ok'></span> บันทึก</a>
             </div>
         </div>
         <!-- /.modal-content -->
     </div>
     <!-- /.modal-dialog -->
 </div>
-<div class="modal fade" id="mdlGroupCfmDel" tabindex="-1" role="basic" aria-hidden="true">
+<div class="modal fade" id="mdlEquipmentCfmDel" tabindex="-1" role="basic" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content warning">
             <div class="modal-header">
@@ -290,7 +323,7 @@
 </div>
 
 <input type="hidden" name="hidsaveoredit" id="hidsaveoredit" value="">
-<input type="hidden" name="hidfid" id="hidgroupid" value="">
+<input type="hidden" name="hidfid" id="hidequipmentid" value="">
 @endsection
 
 @section('footer')
@@ -312,6 +345,7 @@
 <script src="/assets/global/plugins/fullcalendar/lib/moment.min.js" type="text/javascript"></script>
 <script src="/assets/global/plugins/fullcalendar/fullcalendar.js" type="text/javascript"></script>
 <script src="/assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js" type="text/javascript"></script>
+<script src="/assets/global/plugins/jquery-number-master/jquery.number.js" type="text/javascript"></script>
 <script>
                     var sudoNotify = $('.notification-container').sudoNotify({
                         log: true,
@@ -323,18 +357,25 @@
                         },
                     });
                     $(document).ready(function () {
+                        // $('input.number').number(true, 2);
                         $('#tblReviewform').DataTable({
                             processing: true,
                             serverSide: true,
-                            ajax: '/getgroup',
+                            ajax: '/getequipment',
                             "lengthChange": false,
                             "info": false,
                             "pagingType": "full_numbers",
                             columns: [
-                                {data: 'groupid', name: 'groupid'},
+                                {data: 'equipmentid', name: 'equipmentid'},
+                                {"bVisible": true, "bSearchable": false, "bSortable": false,
+                                    "mData": null,
+                                    "mRender": function (data, type, full) {
+                                        return "<img width='200px' src='uploads/equipmentimg/" + full.equipmentpicturename + "' class='img-thumbnail' />";
+                                    }
+                                },
+                                {data: 'equipmentname', name: 'equipmentname'},
                                 {data: 'groupname', name: 'groupname'},
-                                {data: 'groupengname', name: 'groupengname'},
-                                {data: 'groupabbreviate', name: 'groupabbreviate'},
+                                {data: 'placename', name: 'placename'},
                                 {"bVisible": true, "bSearchable": false, "bSortable": false,
                                     "fnCreatedCell": function (nTd, sData, oData, iRow, iCol)
                                     {
@@ -342,29 +383,55 @@
                                     },
                                     "mData": null,
                                     "mRender": function (data, type, full) {
-                                        return " <a class='btn btn-primary btn-sm' href='#' onclick='return OpenEditGroup(\"" + full.groupid + "\")'><span class='glyphicon glyphicon-file'></span> แก้ไข</a>"
-                                                + "&nbsp; <a class='btn btn-danger btn-sm' href='#' onclick='return OpenDelete(\"" + full.groupid + "\")'><span class='glyphicon glyphicon-trash'></span> ลบ</a>";
+                                        if (full.equipmentstatus === 1) {
+                                            return '<span class="label label-sm label-success"> เปิดใช้งาน </span>';
+                                        } else {
+                                            return '<span class="label label-sm label-warning"> ปิดใช้งาน </span>';
+                                        }
+
+                                    }
+                                },
+                                {"bVisible": true, "bSearchable": false, "bSortable": false,
+                                    "fnCreatedCell": function (nTd, sData, oData, iRow, iCol)
+                                    {
+                                        $(nTd).css('text-align', 'center');
+                                    },
+                                    "mData": null,
+                                    "mRender": function (data, type, full) {
+                                        return " <a class='btn btn-primary btn-sm' href='#' onclick='return OpenEditEquipment(\"" + full.equipmentid + "\")'><span class='glyphicon glyphicon-file'></span> แก้ไข</a>"
+                                                + "&nbsp; <a class='btn btn-danger btn-sm' href='#' onclick='return OpenDelete(\"" + full.equipmentid + "\")'><span class='glyphicon glyphicon-trash'></span> ลบ</a>";
                                     }
                                 }
                             ]
                         });
-
+                        $('input.number').number(true, 2);
                     });
                     function resetfield() {
-                        $("#groupname").val('');
-                        $("#groupengname").val('');
-                        $("#groupabbreviate").val('');
+                        $("#equipmentname").val('');
+                        $("#equipmentenname").val('');
+                        $("#equipmentdetail").val('');
+                        $("#equipmentendetail").val('');
+                        $("#equipmenthourallow").val('');
+                        $("#equipmentpricefordoctordepartment").val('');
+                        $("#equipmentpriceforuniversity").val('');
+                        $("#equipmentforoutsideuniversitygov").val('');
+                        $("#equipmentforoutsideuniversityprivate").val('');
+                        $('#equipmentplace option:first-child').attr("selected", "selected");
+                        $('#equipmentgroup option:first-child').attr("selected", "selected");
+                        $('#equipmentcouse option:first-child').attr("selected", "selected");
+                        $('#fupPDF').fileinput('clear');
                     }
-                    function OpenAddGroup() {
+                    function OpenAddEquipment() {
                         resetfield();
-                        $('#mdlGroup').modal('toggle');
-                        $("#hidsaveoredit").val('SaveGroup');
+                        $('#divimgequipment').hide();
+                        $('#mdlEquipment').modal('toggle');
+                        $("#hidsaveoredit").val('SaveEquipment');
                     }
-                    function OpenEditGroup(groupid) {
-                        resetfield();
-                        $("#hidsaveoredit").val('EditGroup');
+                    function OpenEditEquipment(equipmentid) {
+                        //hidequipmentid();
+                        $("#hidsaveoredit").val('EditEquipment');
                         $.ajax({
-                            url: '/getGroupByID/' + groupid,
+                            url: '/getEquipmentByID/' + equipmentid,
                             method: 'get',
                             dataType: 'json',
                             contentType: false,
@@ -373,21 +440,34 @@
                                 console.log(data.responseText);
                             },
                             success: function (data) {
-                                $("#hidgroupid").val(data['MRCGroup'][0].groupid);
-                                $("#groupname").val(data['MRCGroup'][0].groupname);
-                                $("#groupengname").val(data['MRCGroup'][0].groupengname);
-                                $("#groupabbreviate").val(data['MRCGroup'][0].groupabbreviate);
-                                $('#mdlGroup').modal('toggle');
+                                $("#hidequipmentid").val(data['MRCEquipment'][0].equipmentid);
+                                $("#equipmentname").val(data['MRCEquipment'][0].equipmentname);
+                                $("#equipmentenname").val(data['MRCEquipment'][0].equipmentenname);
+                                $("#equipmentdetail").val(data['MRCEquipment'][0].equipmentdetail);
+                                $("#equipmentendetail").val(data['MRCEquipment'][0].equipmentendetail);
+                                $("#equipmenthourallow").val(data['MRCEquipment'][0].equipmenthourallow);
+                                $("#equipmentpricefordoctordepartment").val(data['MRCEquipment'][0].equipmentpricefordoctordepartment);
+                                $("#equipmentpriceforuniversity").val(data['MRCEquipment'][0].equipmentpriceforuniversity);
+                                $("#equipmentforoutsideuniversitygov").val(data['MRCEquipment'][0].equipmentforoutsideuniversitygov);
+                                $("#equipmentforoutsideuniversityprivate").val(data['MRCEquipment'][0].equipmentforoutsideuniversityprivate);
+                                $('#equipmentplace').val(data['MRCEquipment'][0].equipmentplace);
+                                $('#equipmentgroup').val(data['MRCEquipment'][0].equipmentgroup);
+                                $('#equipmentcouse').val(data['MRCEquipment'][0].equipmentcouse);
+                                $('#equipmentstatus').val(data['MRCEquipment'][0].equipmentstatus);
+                                $('#fupPDF').fileinput('clear');
+                                $('#divimgequipment').show();
+                                $('#imgequipment').attr('src', 'uploads/equipmentimg/' + data['MRCEquipment'][0].equipmentpicturename);
+                                $('#mdlEquipment').modal('toggle');
                             }
                         });
                     }
-                    function OpenDelete(groupid) {
-                        $('#mdlGroupCfmDel').modal('toggle');
-                        $("#hidgroupid").val(groupid);
+                    function OpenDelete(equipmentid) {
+                        $('#mdlEquipmentCfmDel').modal('toggle');
+                        $("#hidequipmentid").val(equipmentid);
                     }
                     function DeleteByID() {
                         $.ajax({
-                            url: '/deleteGroupByID/' + $("#hidgroupid").val(),
+                            url: '/deleteEquipmentByID/' + $("#hidequipmentid").val(),
                             method: 'get',
                             dataType: 'json',
                             contentType: false,
@@ -398,30 +478,61 @@
                             success: function (data) {
                                 if (data.message === 'saved') {
                                     $('#tblReviewform').DataTable().ajax.reload();
-                                    $('#mdlGroupCfmDel').modal('toggle');
+                                    $('#mdlEquipmentCfmDel').modal('toggle');
                                     sudoNotify.success("ลบกลุ่มเครื่องมือเรียบร้อย");
                                 }
                             }
                         });
                     }
-                    function SaveGroup() {
-                        if ($.trim($("#groupname").val()).length === 0) {
-                            sudoNotify.error("กรุณากรอกชื่อกลุ่มเครื่องมือ");
+                    function SaveEquipment() {
+                        if ($.trim($("#equipmentname").val()).length === 0) {
+                            sudoNotify.error("กรุณากรอกชื่ออุปกรณ์");
                             return false;
                         }
-                        if ($.trim($("#groupengname").val()).length === 0) {
-                            sudoNotify.error("กรุณาชื่อกลุ่มเครื่องมือภาษาอังกฤษ");
+                        if ($.trim($("#equipmentenname").val()).length === 0) {
+                            sudoNotify.error("กรุณากรอกชื่ออุปกรณ์ภาษาอังกฤษ");
                             return false;
                         }
-                        if ($.trim($("#groupabbreviate").val()).length === 0) {
-                            sudoNotify.error("กรุณากรอกชื่อย่อกลุ่มเครื่องมือ");
+                        if ($.trim($("#equipmentdetail").val()).length === 0) {
+                            sudoNotify.error("กรุณากรอกรายละเอียด");
                             return false;
                         }
+                        if ($.trim($("#equipmentendetail").val()).length === 0) {
+                            sudoNotify.error("กรุณากรอกรายละเอียดภาษาอังกฤษ");
+                            return false;
+                        }
+                        if ($.trim($("#equipmenthourallow").val()).length === 0) {
+                            sudoNotify.error("กรุณากรอกจำนวนชั่วโมงที่กำหนดให้จอง");
+                            return false;
+                        }
+                        if ($.trim($("#equipmentpricefordoctordepartment").val()).length === 0) {
+                            sudoNotify.error("กรุณากรอกราคาสำหรับบุคคลในคณะแพทย์");
+                            return false;
+                        }
+                        if ($.trim($("#equipmentpriceforuniversity").val()).length === 0) {
+                            sudoNotify.error("กรุณากรอกราคาสำหรับบุคคลในมหาวิทยาลัย");
+                            return false;
+                        }
+                        if ($.trim($("#equipmentforoutsideuniversitygov").val()).length === 0) {
+                            sudoNotify.error("กรุณากรอกราคาสำหรับบุคคลภายนอกภาครัฐ");
+                            return false;
+                        }
+                        if ($.trim($("#equipmentforoutsideuniversityprivate").val()).length === 0) {
+                            sudoNotify.error("กรุณากรอกราคาสำหรับบุคคลภายนอกภาคเอกชน");
+                            return false;
+                        }
+                        if ($("#hidsaveoredit").val() === 'SaveEquipment') {
+                            if ($('#equipmentpicturename').val() === "") {
+                                sudoNotify.error("กรุณาเลือกไฟล์รูปภาพอุปกรณ์");
+                                return false;
+                            }
+                        }
+
                         var formData = new FormData();
                         $('input[type="text"], input[type="checkbox"], textarea, input[type="password"], input[type="hidden"], select').each(function (i) {
                             formData.append($(this).attr('id'), $(this).val());
                         });
-
+                        formData.append('file', $('#equipmentpicturename').prop('files')[0]);
                         $.ajax({
                             url: '/' + $("#hidsaveoredit").val(),
                             method: 'post',
@@ -437,8 +548,8 @@
                             success: function (data) {
                                 if (data.message === 'saved') {
                                     $('#tblReviewform').DataTable().ajax.reload();
-                                    $('#mdlGroup').modal('toggle');
-                                    if ($("#hidsaveoredit").val() === 'EditGroup') {
+                                    $('#mdlEquipment').modal('toggle');
+                                    if ($("#hidsaveoredit").val() === 'EditEquipment') {
                                         sudoNotify.success("แก้ไขกลุ่มเครื่องมือเรียบร้อย");
                                     } else {
                                         sudoNotify.success("เพิ่มกลุ่มเครื่องมือเรียบร้อย");

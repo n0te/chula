@@ -147,7 +147,7 @@
                         <li class="heading">
                             <h3 class="uppercase">SERVICES</h3>
                         </li>
-                        <li class="nav-item active open">
+                        <li class="nav-item">
                             <a href="javascript:;" class="nav-link nav-toggle">
                                 <i class="icon-diamond"></i>
                                 <span class="title">Clinical Research Funds</span>
@@ -227,26 +227,46 @@
                                </ul>
                            </li> -->
                         <?php if(Utility::isAdminOfAnyModule(Auth::user()->id)): ?>
-                        <li class="nav-item  ">
+                        <li class="nav-item">
                             <a href="javascript:;" class="nav-link nav-toggle">
                                 <i class="icon-settings"></i>
                                 <span class="title">ผู้ดูแลระบบ</span>
                                 <span class="arrow"></span>
                             </a>
                             <ul class="sub-menu">
-                                <li class="nav-item  ">
+                                <li class="nav-item">
                                     <a href="/reviewmembers" class="nav-link ">
                                         <span class="title">จัดการผู้ใช้</span>
                                     </a>
                                 </li>
-                                <li class="nav-item  ">
+                                <li class="nav-item">
                                     <a href="/reviewform" class="nav-link ">
                                         <span class="title">จัดการแบบฟอร์ม</span>
                                     </a>
                                 </li>
-                                <li class="nav-item  ">
+                                <li class="nav-item">
                                     <a href="/reviewform" class="nav-link ">
                                         <span class="title">จัดการ MRC</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/equipmentmng" class="nav-link ">
+                                        <span class="title">จัดการอุปกรณ์</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/placemng" class="nav-link ">
+                                        <span class="title">จัดการสถานที่</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/groupmng" class="nav-link ">
+                                        <span class="title">จัดการกลุ่มเครื่องมือ</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/cousemng" class="nav-link ">
+                                        <span class="title">จัดการหลักสูตรการอบรม</span>
                                     </a>
                                 </li>
                             </ul>

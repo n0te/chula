@@ -88,10 +88,10 @@ Route::group(['middleware' => 'web'], function () {
     Route::post('/EditCouse', 'MRCController@EditCouse');
 
     Route::get('/equipmentmng', 'MRCController@equipmentmng');
-    Route::get('/getcouse', 'MRCController@getCouse');
-    Route::get('/getCouseByID/{id}', 'MRCController@getCouseByID');
-    Route::get('/deleteCouseByID/{id}', 'MRCController@deleteCouseByID');
-    Route::post('/SaveCouse', 'MRCController@SaveCouse');
-    Route::post('/EditCouse', 'MRCController@EditCouse');
+    Route::get('/getequipment', 'MRCController@getEquipment');
+    Route::get('/getEquipmentByID/{id}', 'MRCController@getEquipmentByID');
+    Route::get('/deleteEquipmentByID/{id}', 'MRCController@deleteEquipmentByID');
+    Route::post('/SaveEquipment', 'MRCController@SaveEquipment');
+    Route::post('/EditEquipment', 'MRCController@EditEquipment');
 });
 
