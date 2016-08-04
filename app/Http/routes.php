@@ -64,6 +64,8 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('/createdocx/{id}', 'RequestFormController@CreateDocx');
     Route::get('/receivepaper/{id}', 'RequestFormController@receivepaper');
 
+    Route::get('/test', 'RequestFormController@test');
+
     Route::get('/mrc', 'MRCController@index');
     Route::get('/placemng', 'MRCController@placemng');
     Route::get('/getplace', 'MRCController@getPlace');
@@ -88,7 +90,15 @@ Route::group(['middleware' => 'web'], function () {
     Route::post('/EditCouse', 'MRCController@EditCouse');
 
     Route::get('/equipmentmng', 'MRCController@equipmentmng');
-    Route::get('/getequipment', 'MRCController@getEquipment');
+    Route::get('/getequipmentfortbl', 'MRCController@getEquipment');
+    Route::get('/getEquipmentByID/{id}', 'MRCController@getEquipmentByID');
+    Route::get('/deleteEquipmentByID/{id}', 'MRCController@deleteEquipmentByID');
+    Route::post('/SaveEquipment', 'MRCController@SaveEquipment');
+    Route::post('/EditEquipment', 'MRCController@EditEquipment');
+
+
+    Route::get('/mrcbookingmng', 'MRCController@mrcbookingmng');
+    Route::get('/getEquipmentforbooking', 'MRCController@getEquipmentforbooking');
     Route::get('/getEquipmentByID/{id}', 'MRCController@getEquipmentByID');
     Route::get('/deleteEquipmentByID/{id}', 'MRCController@deleteEquipmentByID');
     Route::post('/SaveEquipment', 'MRCController@SaveEquipment');

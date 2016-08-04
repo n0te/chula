@@ -8,6 +8,7 @@
     <head>
         <meta charset="utf-8" />
         <title>Research Affairs Faculty of Medicine, Chulalongkorn University</title>
+        <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta content="width=device-width, initial-scale=1" name="viewport" />
         <meta content="" name="description" />
@@ -150,7 +151,7 @@
                         <li class="nav-item">
                             <a href="javascript:;" class="nav-link nav-toggle">
                                 <i class="icon-diamond"></i>
-                                <span class="title">Clinical Research Funds</span>
+                                <span class="title">Research Funds</span>
                                 <span class="arrow"></span>
                             </a>
                             <ul class="sub-menu"> 
@@ -175,6 +176,21 @@
                                     </a>
                                 </li>
 
+                            </ul>
+
+                        </li>
+                        <li class="nav-item">
+                            <a href="javascript:;" class="nav-link nav-toggle">
+                                <i class="icon-diamond"></i>
+                                <span class="title">MRC</span>
+                                <span class="arrow"></span>
+                            </a>
+                            <ul class="sub-menu"> 
+                                <li class="nav-item  ">
+                                    <a href="/mrcbookingmng" class="nav-link ">
+                                        <span class="title">จองอุปกรณ์</span>
+                                    </a>
+                                </li>
                             </ul>
 
                         </li>
@@ -315,6 +331,7 @@
         <!-- END THEME GLOBAL SCRIPTS -->
         <!-- BEGIN THEME LAYOUT SCRIPTS -->
         <script src="/assets/layouts/layout/scripts/layout.min.js" type="text/javascript"></script>
+
         <!-- END THEME LAYOUT SCRIPTS -->
         <?php echo $__env->yieldContent('footer'); ?>
         <!-- BEGIN GLOBAL MESSAGES SCRIPTS -->

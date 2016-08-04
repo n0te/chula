@@ -343,8 +343,6 @@
 <script src="/assets/global/plugins/jquerydateFormat.js" type="text/javascript"></script>
 <!-- END PAGE LEVEL SCRIPTS -->
 <script src="/assets/global/plugins/datatables/DataTables-1.10.12/media/js/jquery.dataTables.js" type="text/javascript"></script>
-<script src="/assets/global/plugins/fullcalendar/lib/moment.min.js" type="text/javascript"></script>
-<script src="/assets/global/plugins/fullcalendar/fullcalendar.js" type="text/javascript"></script>
 <script src="/assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js" type="text/javascript"></script>
 <script src="/assets/global/plugins/jquery-number-master/jquery.number.js" type="text/javascript"></script>
 <script>
@@ -355,14 +353,14 @@
                             type: "slide-fade", //fade, scroll-left, scroll-left-fade, scroll-right, scroll-right-fade, slide, slide-fade or none
                             showSpeed: 400,
                             hideSpeed: 250
-                        },
+                        }
                     });
                     $(document).ready(function () {
                         // $('input.number').number(true, 2);
                         $('#tblReviewform').DataTable({
                             processing: true,
                             serverSide: true,
-                            ajax: '/getequipment',
+                            ajax: '/getequipmentfortbl',
                             "lengthChange": false,
                             "info": false,
                             "pagingType": "full_numbers",
@@ -371,7 +369,7 @@
                                 {"bVisible": true, "bSearchable": false, "bSortable": false,
                                     "mData": null,
                                     "mRender": function (data, type, full) {
-                                        return "<img width='200px' src='uploads/equipmentimg/" + full.equipmentpicturename + "' class='img-thumbnail' />";
+                                        return "<img width='200px' alt='' src='uploads/equipmentimg/" + full.equipmentpicturename + "' class='img-thumbnail' />";
                                     }
                                 },
                                 {data: 'equipmentname', name: 'equipmentname'},
@@ -405,7 +403,7 @@
                                 }
                             ]
                         });
-                        $('input.number').number(true, 2);
+                      //  $('input.number').number(true, 2);
                     });
                     function resetfield() {
                         $("#equipmentname").val('');
@@ -420,7 +418,7 @@
                         $('#equipmentplace option:first-child').attr("selected", "selected");
                         $('#equipmentgroup option:first-child').attr("selected", "selected");
                         $('#equipmentcouse option:first-child').attr("selected", "selected");
-                        $('#fupPDF').fileinput('clear');
+                        $('#equipmentpicturename').fileinput('clear');
                     }
                     function OpenAddEquipment() {
                         resetfield();
@@ -555,10 +553,8 @@
                                     } else {
                                         sudoNotify.success("เพิ่มกลุ่มเครื่องมือเรียบร้อย");
                                     }
-
                                 }
                             }
-
                         });
                     }
 </script>

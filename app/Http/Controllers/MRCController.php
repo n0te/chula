@@ -56,18 +56,22 @@ class MRCController extends Controller {
      *
      * @return void
      */
-    public function __construct() {
-        if (Auth::check() == false) {
-            return redirect('login');
-        }
-        //echo '555';
-    }
+//    public function __construct() {
+//        if (Auth::check() == false) {
+//            return redirect('login');
+//        }
+//        //echo '555';
+//    }
 
     public function index() {
         $Formreqs = Formreq::whereIn('FormReqStstus', array(2, 3, 4, 5, 6))
                 ->orderBy('FormReqStstus', 'asc')
                 ->get();
         return view('placemng', ['user' => Auth::user(), 'Formreqs' => $Formreqs]);
+    }
+
+    public function mrcbookingmng() {
+        return view('mrcbooking', ['user' => Auth::user()]);
     }
 
     public function placemng() {
@@ -89,8 +93,21 @@ class MRCController extends Controller {
             'groups' => MRC_Group::where('groupisdelete', '=', 0)->get()]);
     }
 
+    public function getEquipmentforbooking() {
+        $equipment = DB::TABLE('equipmentview')
+                ->SELECT('equipmentid', 'equipmentname', 'groupname', 'placename', 'cousename', 'equipmentpicturename')
+                ->WHERE('equipmentisdelete', '=', 0)
+                ->WHERE('equipmentstatus', '=', 1);
+        return Datatables::of($equipment)->make(true);
+    }
+
     public function getEquipment() {
-        $equipment = DB::table('equipmentview')->select(['equipmentid', 'equipmentname', 'groupname', 'placename', 'equipmentstatus', 'equipmentpicturename', 'equipmentstatus'])->where('equipmentisdelete', '=', 0);
+        $equipment = DB::TABLE('mrc_equipment')
+                ->JOIN('mrc_group', 'mrc_equipment.equipmentgroup', '=', 'mrc_group.groupid')
+                ->JOIN('mrc_place', 'mrc_equipment.equipmentplace', '=', 'mrc_place.placeid')
+                ->JOIN('mrc_couse', 'mrc_equipment.equipmentcouse', '=', 'mrc_couse.couseid')
+                ->SELECT('equipmentid', 'equipmentname', 'groupname', 'placename', 'equipmentstatus', 'equipmentpicturename', 'equipmentstatus')
+                ->WHERE('equipmentisdelete', '=', 0);
         return Datatables::of($equipment)->make(true);
     }
 
@@ -180,7 +197,7 @@ class MRCController extends Controller {
                 unlink($_FILES["file"]["name"]);
             }
             $exten = explode(".", $_FILES["file"]["name"]);
-            $picname = $insertedId . "." . $exten[1];
+            $picname = $insertedId . Date("His") . "." . $exten[1];
             move_uploaded_file($_FILES["file"]["tmp_name"], 'uploads/equipmentimg/' . $picname);
         }
 
@@ -218,11 +235,15 @@ class MRCController extends Controller {
                 }
 
                 $exten = explode(".", $_FILES["file"]["name"]);
-                $picname = $insertedId . "." . $exten[1];
-//                if (file_exists('uploads/equipmentimg/' . $picname)) {
-//                    unlink('uploads/equipmentimg/' . $picname);
-//                }
+                $picname = $request->hidequipmentid . Date("His") . "." . $exten[1];
+                $MRCEquipment = MRC_Equipment::where('equipmentid', '=', $request->hidequipmentid)->get();
+                if (file_exists('uploads/equipmentimg/' . $MRCEquipment[0]->equipmentpicturename)) {
+                    unlink('uploads/equipmentimg/' . $MRCEquipment[0]->equipmentpicturename);
+                }
                 move_uploaded_file($_FILES["file"]["tmp_name"], 'uploads/equipmentimg/' . $picname);
+                $equipmentup = MRC_Equipment::find($request->hidequipmentid);
+                $equipmentup->equipmentpicturename = $picname;
+                $equipmentup->save();
             }
         }
         return Response::json(["message" => "saved"], 200);
