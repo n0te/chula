@@ -48,6 +48,7 @@ use App\MRC_Couse;
 use App\MRC_Group;
 use App\MRC_Place;
 use App\MRC_Equipment;
+use App\MRC_Booking;
 
 class MRCController extends Controller {
 
@@ -329,6 +330,34 @@ class MRCController extends Controller {
         $group->groupisdelete = 1;
         $group->save();
         return Response::json(["message" => "saved"], 200);
+    }
+
+    public function BookEquipment(Request $request) {
+        $book = new MRC_Booking;
+        $book->bookingdate = $request->bookingdate;
+        $book->bookingequipmentid = $request->bookingequipmentid;
+        $book->bookingstarttime = $request->bookingstarttime;
+        $book->bookingendtime = $request->bookingendtime;
+        $book->bookingaddby = Auth::user()->id;
+        $book->bookingisdelete = 0;
+        $book->save();
+        return Response::json(["message" => "saved"], 200);
+    }
+
+    public function getBookingbyEquipmentid($id) {
+        $freq = DB::select('SELECT * FROM `mrc_booking` WHERE `bookingequipmentid` = ' . $id . ' AND `bookingisdelete` = 0');
+        $json_data = [];
+        for ($i = 0; $i < count($freq); $i++) {
+            $json_data[] = array(
+                "id" => $freq[$i]->bookingid,
+                "title" => $freq[$i]->bookingstarttime . ' - ' . $freq[$i]->bookingendtime,
+                "start" => $freq[$i]->bookingdate . 'T' . $freq[$i]->bookingstarttime,
+                "end" => $freq[$i]->bookingdate . 'T' . $freq[$i]->bookingendtime,
+                "url" => '',
+                "allDay" => false
+            );
+        }
+        return Response::json($json_data);
     }
 
 }

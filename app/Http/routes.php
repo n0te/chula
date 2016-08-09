@@ -99,7 +99,11 @@ Route::group(['middleware' => 'web'], function () {
 
     Route::get('/mrcbookingmng', 'MRCController@mrcbookingmng');
     Route::get('/getEquipmentforbooking', 'MRCController@getEquipmentforbooking');
-    Route::get('/getEquipmentByID/{id}', 'MRCController@getEquipmentByID');
+    Route::post('/BookEquipment', 'MRCController@BookEquipment');
+    Route::get('/getBookingbyEquipmentid/{id}', 'MRCController@getBookingbyEquipmentid');
+
+
+
     Route::get('/deleteEquipmentByID/{id}', 'MRCController@deleteEquipmentByID');
     Route::post('/SaveEquipment', 'MRCController@SaveEquipment');
     Route::post('/EditEquipment', 'MRCController@EditEquipment');

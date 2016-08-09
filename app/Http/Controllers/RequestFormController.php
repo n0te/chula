@@ -43,6 +43,7 @@ use PhpOffice\PhpWord\PhpWord;
 use PHPExcel;
 use PHPExcel_IOFactory;
 use PHPExcel_Reader_Excel2007;
+use PHPExcel_Writer_Excel2007;
 
 class RequestFormController extends Controller {
 
@@ -58,15 +59,17 @@ class RequestFormController extends Controller {
     }
 
     public function test() {
-        $objPHPExcel = new PHPExcel();
-
-        $objPHPExcel->setActiveSheetIndex(0);
-        $objPHPExcel->getActiveSheet()->SetCellValue('A1', 'ที่');
-        header('Content-Type: application/vnd.ms-excel');
-        header('Content-Disposition: attachment;filename="Export.xls"');
-        header('Cache-Control: max-age=0');
-        $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');
-        $objWriter->save('php://output');
+        // echo 'test';
+        phpinfo();
+//        $objPHPExcel = new PHPExcel();
+//
+//        $objPHPExcel->setActiveSheetIndex(0);
+//        $objPHPExcel->getActiveSheet()->SetCellValue('A1', 'ที่');
+//        header('Content-Type: application/vnd.ms-excel');
+//        header('Content-Disposition: attachment;filename="Export.xls"');
+//        header('Cache-Control: max-age=0');
+//        $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');
+//        $objWriter->save('php://output');
     }
 
     public function exporttoexcel() {
@@ -115,10 +118,15 @@ WHERE `FormReqStstus` IN(2,3,4,5,6)');
             $objPHPExcel->getActiveSheet()->SetCellValue('O' . ($i + 2), '');
             $objPHPExcel->getActiveSheet()->SetCellValue('P' . ($i + 2), '');
         }
-        header('Content-Type: application/vnd.ms-excel');
-        header('Content-Disposition: attachment;filename="Export.xls"');
+//        header('Content-Type: application/vnd.ms-excel');
+//        header('Content-Disposition: attachment;filename="Export.xls"');
+//        header('Cache-Control: max-age=0');
+//        $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');
+//        $objWriter->save('php://output');
+        $objWriter = new PHPExcel_Writer_Excel2007($objPHPExcel);
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header("Content-Disposition: attachment;filename=Export.xls");
         header('Cache-Control: max-age=0');
-        $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');
         $objWriter->save('php://output');
     }
 

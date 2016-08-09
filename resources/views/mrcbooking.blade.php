@@ -201,9 +201,9 @@
     </div>
     <!-- /.modal-dialog -->
 </div>
-
+<input type="hidden" name="_token" value="{{ csrf_token() }}">
 <input type="hidden" name="hidsaveoredit" id="hidsaveoredit" value="">
-<input type="hidden" name="hidfid" id="hidequipmentid" value="">
+<input type="hidden" name="hidequipmentid" id="hidequipmentid" value="">
 <input type="hidden" name="hiddateselect" id="hiddateselect" value="">
 @endsection
 
@@ -288,6 +288,11 @@
                     }
 
                     function OpenBookingEquipment(equipmentid) {
+                        $('#calendar').fullCalendar('destroy');
+                        $("#bookingdate").val('');
+                        $("#bookingstarttime").val('');
+                        $("#bookingendtime").val('');
+                        $("#hidequipmentid").val(equipmentid);
                         $('#calendar').fullCalendar({
                             header: {
                                 left: 'prev,next today',
@@ -297,9 +302,17 @@
                             defaultDate: '{{ Date("Y-m-d")}}',
                             selectable: true,
                             selectHelper: true,
+                            timeFormat: 'H(:mm)',
+                            displayEventTime: false,
                             select: function (start, end) {
                                 $('#bookingdate').val(moment(start).format('DD/MM/YYYY'));
                                 $('#hiddateselect').val(moment(start).format('YYYY/MM/DD'));
+                            },
+                            events: {
+                                url: '/getBookingbyEquipmentid/' + equipmentid,
+                                error: function () {
+
+                                }
                             }
                         });
                         $('#mdlBookEquipment').modal('toggle');
@@ -337,6 +350,40 @@
                             return false;
                         }
 
+                        var formData = new FormData();
+//                        $('input[type="text"], input[type="checkbox"], textarea, input[type="password"], input[type="hidden"], select').each(function (i) {
+//                            formData.append($(this).attr('id'), $(this).val());
+//                        });
+                        formData.append('bookingdate', $("#hiddateselect").val());
+                        formData.append('bookingequipmentid', $("#hidequipmentid").val());
+                        formData.append('bookingstarttime', start_time + ":00");
+                        formData.append('bookingendtime', end_time + ":00");
+                        $.ajax({
+                            url: '/BookEquipment',
+                            method: 'post',
+                            dataType: 'json',
+                            contentType: false,
+                            processData: false,
+                            data: formData,
+                            error: function (data) {
+                                console.log(data.responseText);
+                                alert(data.responseText);
+                                //WindowScrollTopAnimation('#profile div.alert', 500);
+                            },
+                            success: function (data) {
+                                if (data.message === 'saved') {
+//                                    $('#tblReviewform').DataTable().ajax.reload();
+//                                    $('#mdlGroup').modal('toggle');
+//                                    if ($("#hidsaveoredit").val() === 'EditGroup') {
+//                                        sudoNotify.success("แก้ไขกลุ่มเครื่องมือเรียบร้อย");
+//                                    } else {
+//                                        sudoNotify.success("เพิ่มกลุ่มเครื่องมือเรียบร้อย");
+//                                    }
+
+                                }
+                            }
+
+                        });
                     }
 </script>
 @endsection
