@@ -2,11 +2,11 @@
 
 @section('header')
 <!-- BEGIN PAGE LEVEL PLUGINS -->
-        <link href="/assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css" rel="stylesheet" type="text/css">
-        <link href="/assets/global/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css" rel="stylesheet" type="text/css">
+        <link href="public/assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css" rel="stylesheet" type="text/css">
+        <link href="public/assets/global/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css" rel="stylesheet" type="text/css">
 <!-- END PAGE LEVEL PLUGINS -->
 <!-- BEGIN PAGE LEVEL STYLES -->
-        <link href="/assets/pages/css/login.min.css" rel="stylesheet" type="text/css" />
+        <link href="public/assets/pages/css/login.min.css" rel="stylesheet" type="text/css" />
         <style>
         .file-panel{
             position:relative;
@@ -35,7 +35,7 @@
         <!-- BEGIN LOGO -->
         <div class="logo">
 <!--            <a href="/index.html">-->
-                <img src="/assets/global/img/logo-big.png" alt="" /> 
+                <img src="public/assets/global/img/logo-big.png" alt="" /> 
 <!--        </a>-->
         </div>
         <!-- END LOGO -->
@@ -282,15 +282,15 @@
 
 @section('footer')
     <!-- BEGIN PAGE LEVEL PLUGINS -->
-        <script src="/assets/global/plugins/jquery-validation/js/jquery.validate.min.js" type="text/javascript"></script>
-        <script src="/assets/global/plugins/jquery-validation/js/additional-methods.min.js" type="text/javascript"></script>
-        <script src="/assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js" type="text/javascript"></script>
-        <script src="/assets/global/plugins/moment.min.js" type="text/javascript"></script>
-        <script src="/assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js" type="text/javascript"></script>
-        <script src="/assets/global/plugins/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js" type="text/javascript"></script>
+        <script src="public/assets/global/plugins/jquery-validation/js/jquery.validate.min.js" type="text/javascript"></script>
+        <script src="public/assets/global/plugins/jquery-validation/js/additional-methods.min.js" type="text/javascript"></script>
+        <script src="public/assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js" type="text/javascript"></script>
+        <script src="public/assets/global/plugins/moment.min.js" type="text/javascript"></script>
+        <script src="public/assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js" type="text/javascript"></script>
+        <script src="public/assets/global/plugins/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js" type="text/javascript"></script>
         <!-- END PAGE LEVEL PLUGINS -->
         <!-- BEGIN PAGE LEVEL SCRIPTS -->
-        <script src="/assets/pages/scripts/login.js" type="text/javascript"></script>
-        <script src="/assets/pages/scripts/components-date-time-pickers.min.js" type="text/javascript"></script>
+        <script src="public/assets/pages/scripts/login.js" type="text/javascript"></script>
+        <script src="public/assets/pages/scripts/components-date-time-pickers.min.js" type="text/javascript"></script>
         <!-- END PAGE LEVEL SCRIPTS -->
 @endsection

@@ -1,14 +1,14 @@
 <?php $__env->startSection('head'); ?>
 <!-- BEGIN PAGE LEVEL PLUGINS -->
-<link href="/assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css" rel="stylesheet" type="text/css" />
-<link href="/assets/global/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.css" rel="stylesheet" type="text/css"/>
+<link href="public/assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css" rel="stylesheet" type="text/css" />
+<link href="public/assets/global/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.css" rel="stylesheet" type="text/css"/>
 <!-- END PAGE LEVEL PLUGINS -->
 <!-- BEGIN PAGE LEVEL STYLES -->
-<link href="/assets/global/plugins/bootstrap-switch/css/bootstrap-switch.min.css" rel="stylesheet" type="text/css">
-<link href="/assets/global/plugins/sudobar/dist/style/jquery.sudo-notify.css" rel="stylesheet" type="text/css"/>
-<link href="/assets/global/plugins/datatables/DataTables-1.10.12/media/css/jquery.dataTables.css" rel="stylesheet" type="text/css"/>
-<link href="/assets/global/plugins/fullcalendar/fullcalendar.css" rel="stylesheet" type="text/css"/>
-<link href="/assets/global/plugins/timepicker/css/timepicki.css" rel="stylesheet" type="text/css"/>
+<link href="public/assets/global/plugins/bootstrap-switch/css/bootstrap-switch.min.css" rel="stylesheet" type="text/css">
+<link href="public/assets/global/plugins/sudobar/dist/style/jquery.sudo-notify.css" rel="stylesheet" type="text/css"/>
+<link href="public/assets/global/plugins/datatables/DataTables-1.10.12/media/css/jquery.dataTables.css" rel="stylesheet" type="text/css"/>
+<link href="public/assets/global/plugins/fullcalendar/fullcalendar.css" rel="stylesheet" type="text/css"/>
+<link href="public/assets/global/plugins/timepicker/css/timepicki.css" rel="stylesheet" type="text/css"/>
 <style>
     .file-panel{
         position:relative;
@@ -201,31 +201,31 @@
 </div>
 <input type="hidden" name="_token" value="<?php echo e(csrf_token()); ?>">
 <input type="hidden" name="hidsaveoredit" id="hidsaveoredit" value="">
-<input type="hidden" name="hidfid" id="hidequipmentid" value="">
+<input type="hidden" name="hidequipmentid" id="hidequipmentid" value="">
 <input type="hidden" name="hiddateselect" id="hiddateselect" value="">
 <?php $__env->stopSection(); ?>
 
 <?php $__env->startSection('footer'); ?>
 <!-- BEGIN PAGE LEVEL PLUGINS -->
-<script src="/assets/global/plugins/kartik-v-bootstrap-fileinput/js/fileinput.js" type="text/javascript"></script>
-<script src="/assets/global/plugins/kartik-v-bootstrap-fileinput/js/plugins/canvas-to-blob.js" type="text/javascript"></script>
-<script src="/assets/global/plugins/sudobar/dist/jquery.sudo-notify.js" type="text/javascript"></script>
-<script src="/assets/global/plugins/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js" type="text/javascript"></script>
+<script src="public/assets/global/plugins/kartik-v-bootstrap-fileinput/js/fileinput.js" type="text/javascript"></script>
+<script src="public/assets/global/plugins/kartik-v-bootstrap-fileinput/js/plugins/canvas-to-blob.js" type="text/javascript"></script>
+<script src="public/assets/global/plugins/sudobar/dist/jquery.sudo-notify.js" type="text/javascript"></script>
+<script src="public/assets/global/plugins/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js" type="text/javascript"></script>
 <!-- END PAGE LEVEL PLUGINS -->
 <!-- BEGIN PAGE LEVEL SCRIPTS -->
-<script src="/assets/global/plugins/moment.min.js" type="text/javascript"></script>
-<script src="/assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.js" type="text/javascript"></script>
-<script src="/assets/pages/scripts/components-date-time-pickers.min.js" type="text/javascript"></script>
-<script src="/assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js" type="text/javascript"></script>
+<script src="public/assets/global/plugins/moment.min.js" type="text/javascript"></script>
+<script src="public/assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.js" type="text/javascript"></script>
+<script src="public/assets/pages/scripts/components-date-time-pickers.min.js" type="text/javascript"></script>
+<script src="public/assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js" type="text/javascript"></script>
 
-<script src="/assets/global/plugins/jquerydateFormat.js" type="text/javascript"></script>
+<script src="public/assets/global/plugins/jquerydateFormat.js" type="text/javascript"></script>
 <!-- END PAGE LEVEL SCRIPTS -->
-<script src="/assets/global/plugins/datatables/DataTables-1.10.12/media/js/jquery.dataTables.js" type="text/javascript"></script>
-<script src="/assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js" type="text/javascript"></script>
-<script src="/assets/global/plugins/jquery-number-master/jquery.number.js" type="text/javascript"></script>
-<script src="/assets/global/plugins/fullcalendar/lib/moment.min.js" type="text/javascript"></script>
-<script src="/assets/global/plugins/fullcalendar/fullcalendar.js" type="text/javascript"></script>
-<script src="/assets/global/plugins/timepicker/js/timepicki.js" type="text/javascript"></script>
+<script src="public/assets/global/plugins/datatables/DataTables-1.10.12/media/js/jquery.dataTables.js" type="text/javascript"></script>
+<script src="public/assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js" type="text/javascript"></script>
+<script src="public/assets/global/plugins/jquery-number-master/jquery.number.js" type="text/javascript"></script>
+<script src="public/assets/global/plugins/fullcalendar/lib/moment.min.js" type="text/javascript"></script>
+<script src="public/assets/global/plugins/fullcalendar/fullcalendar.js" type="text/javascript"></script>
+<script src="public/assets/global/plugins/timepicker/js/timepicki.js" type="text/javascript"></script>
 <script>
                     var sudoNotify = $('.notification-container').sudoNotify({
                         log: true,
@@ -250,7 +250,7 @@
                                 {"bVisible": true, "bSearchable": false, "bSortable": false,
                                     "mData": null,
                                     "mRender": function (data, type, full) {
-                                        return "<img width='200px' alt='' src='uploads/equipmentimg/" + full.equipmentpicturename + "' class='img-thumbnail' />";
+                                        return "<img width='200px' alt='' src='public/uploads/equipmentimg/" + full.equipmentpicturename + "' class='img-thumbnail' />";
                                     }
                                 },
                                 {data: 'equipmentname', name: 'equipmentname'},
@@ -353,6 +353,7 @@
 //                            formData.append($(this).attr('id'), $(this).val());
 //                        });
                         formData.append('bookingdate', $("#hiddateselect").val());
+                        formData.append('bookingequipmentid', $("#hidequipmentid").val());
                         formData.append('bookingstarttime', start_time + ":00");
                         formData.append('bookingendtime', end_time + ":00");
                         $.ajax({
@@ -376,7 +377,10 @@
 //                                    } else {
 //                                        sudoNotify.success("เพิ่มกลุ่มเครื่องมือเรียบร้อย");
 //                                    }
-
+                                    sudoNotify.success("จองอุปกรณ์เรียบร้อย กำลังกลับไปหน้า การจองอุปกรณ์ทั้งหมด");
+                                    setTimeout(function () {
+                                        window.location.href = "/mymrcbooking";
+                                    }, 3000);
                                 }
                             }
 

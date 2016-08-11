@@ -146,7 +146,7 @@ WHERE `FormReqStstus` IN(2,3,4,5,6)');
                 }
             }
 
-            $templateProcessor = new \PhpOffice\PhpWord\TemplateProcessor('assets/global/template/' . $tmpname . '.docx');
+            $templateProcessor = new \PhpOffice\PhpWord\TemplateProcessor('public/assets/global/template/' . $tmpname . '.docx');
 
             $fdepartment = '';
             if ($freq[0]->FormReqDepartment == '22') {
@@ -245,12 +245,12 @@ WHERE `FormReqStstus` IN(2,3,4,5,6)');
 
 
             //3
-            $tbhead = file_get_contents('assets/global/template/tbbudgethead.html');
-            $tbheadtopic = file_get_contents('assets/global/template/tbbudgetheadtopic.html');
-            $tbbody = file_get_contents('assets/global/template/tbbudgetbody.html');
-            $tbfoot = file_get_contents('assets/global/template/tbbudgetfooter.html');
-            $tbthaitext = file_get_contents('assets/global/template/tbbudgetthaitext.html');
-            $tbnothing = file_get_contents('assets/global/template/tbbudgetnothing.html');
+            $tbhead = file_get_contents('public/assets/global/template/tbbudgethead.html');
+            $tbheadtopic = file_get_contents('public/assets/global/template/tbbudgetheadtopic.html');
+            $tbbody = file_get_contents('public/assets/global/template/tbbudgetbody.html');
+            $tbfoot = file_get_contents('public/assets/global/template/tbbudgetfooter.html');
+            $tbthaitext = file_get_contents('public/assets/global/template/tbbudgetthaitext.html');
+            $tbnothing = file_get_contents('public/assets/global/template/tbbudgetnothing.html');
 
             $formreqbudget31 = '';
             $sum31 = 0;
@@ -482,7 +482,7 @@ WHERE `FormReqStstus` IN(2,3,4,5,6)');
 
 
 //4
-            $tbbodypayroll = file_get_contents('assets/global/template/tbpayrollbody.html');
+            $tbbodypayroll = file_get_contents('public/assets/global/template/tbpayrollbody.html');
             $formreqpayroll = '';
             if (count($Formreq_Budget32) > 0) {
                 for ($i = 0; $i < count($Formreq_Budget32); $i++) {

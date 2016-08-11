@@ -101,11 +101,11 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('/getEquipmentforbooking', 'MRCController@getEquipmentforbooking');
     Route::post('/BookEquipment', 'MRCController@BookEquipment');
     Route::get('/getBookingbyEquipmentid/{id}', 'MRCController@getBookingbyEquipmentid');
+    Route::get('/mymrcbooking', 'MRCController@mymrcbooking'); //getBookingByUserId
+    Route::get('/getBookingByUserId', 'MRCController@getBookingByUserId');
 
 
-
-    Route::get('/deleteEquipmentByID/{id}', 'MRCController@deleteEquipmentByID');
-    Route::post('/SaveEquipment', 'MRCController@SaveEquipment');
-    Route::post('/EditEquipment', 'MRCController@EditEquipment');
+    Route::get('/mrcbookingmngadmin', 'MRCController@mrcbookingmngadmin');
+    Route::get('/deleteBookingByID/{id}', 'MRCController@deleteBookingByID');
 });
 

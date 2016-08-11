@@ -75,6 +75,14 @@ class MRCController extends Controller {
         return view('mrcbooking', ['user' => Auth::user()]);
     }
 
+    public function mymrcbooking() {
+        return view('mymrcbooking', ['user' => Auth::user()]);
+    }
+
+    public function mrcbookingmngadmin() {
+        return view('mrcbookingmngadmin', ['user' => Auth::user()]);
+    }
+
     public function placemng() {
         return view('placemng', ['user' => Auth::user()]);
     }
@@ -127,6 +135,13 @@ class MRCController extends Controller {
         $groups = DB::table('mrc_couse')->select(['couseid', 'cousename', 'couseengname', 'couseadddate', 'couseaddby', 'couseisdelete'])->where('couseisdelete', '=', 0);
         return Datatables::of($groups)->make(true);
         //cousename``couseengname``couseadddate``couseaddby``couseisdelete``couseid`
+    }
+
+    public function getBookingByUserId() {
+        $groups = DB::table('bookingview')->select(['bookingid', 'bookingdate', 'bookingstarttime', 'bookingendtime', 'bookingstatus', 'equipmentname', 'equipmentpicturename', 'firstname', 'lastname'])
+                        ->where('bookingisdelete', '=', 0)->where('bookingaddby', '=', Auth::user()->id);
+        return Datatables::of($groups)->make(true);
+        //`bookingid``bookingdate``bookingstarttime``bookingendtime``equipmentname``equipmentpicturename`
     }
 
     public function getPlaceByID($id) {
@@ -199,7 +214,7 @@ class MRCController extends Controller {
             }
             $exten = explode(".", $_FILES["file"]["name"]);
             $picname = $insertedId . Date("His") . "." . $exten[1];
-            move_uploaded_file($_FILES["file"]["tmp_name"], 'uploads/equipmentimg/' . $picname);
+            move_uploaded_file($_FILES["file"]["tmp_name"], 'public/uploads/equipmentimg/' . $picname);
         }
 
         $equipmentup = MRC_Equipment::find($insertedId);
@@ -238,10 +253,10 @@ class MRCController extends Controller {
                 $exten = explode(".", $_FILES["file"]["name"]);
                 $picname = $request->hidequipmentid . Date("His") . "." . $exten[1];
                 $MRCEquipment = MRC_Equipment::where('equipmentid', '=', $request->hidequipmentid)->get();
-                if (file_exists('uploads/equipmentimg/' . $MRCEquipment[0]->equipmentpicturename)) {
-                    unlink('uploads/equipmentimg/' . $MRCEquipment[0]->equipmentpicturename);
+                if (file_exists('public/uploads/equipmentimg/' . $MRCEquipment[0]->equipmentpicturename)) {
+                    unlink('public/uploads/equipmentimg/' . $MRCEquipment[0]->equipmentpicturename);
                 }
-                move_uploaded_file($_FILES["file"]["tmp_name"], 'uploads/equipmentimg/' . $picname);
+                move_uploaded_file($_FILES["file"]["tmp_name"], 'public/uploads/equipmentimg/' . $picname);
                 $equipmentup = MRC_Equipment::find($request->hidequipmentid);
                 $equipmentup->equipmentpicturename = $picname;
                 $equipmentup->save();
@@ -332,12 +347,20 @@ class MRCController extends Controller {
         return Response::json(["message" => "saved"], 200);
     }
 
+    public function deleteBookingByID($id) {
+        $book = MRC_Booking::find($id);
+        $book->bookingisdelete = 1;
+        $book->save();
+        return Response::json(["message" => "saved"], 200);
+    }
+
     public function BookEquipment(Request $request) {
         $book = new MRC_Booking;
         $book->bookingdate = $request->bookingdate;
         $book->bookingequipmentid = $request->bookingequipmentid;
         $book->bookingstarttime = $request->bookingstarttime;
         $book->bookingendtime = $request->bookingendtime;
+        $book->bookingstatus = 0;
         $book->bookingaddby = Auth::user()->id;
         $book->bookingisdelete = 0;
         $book->save();

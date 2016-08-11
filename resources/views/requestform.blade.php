@@ -4,10 +4,10 @@
 <!-- BEGIN PAGE LEVEL PLUGINS -->
 <!-- END PAGE LEVEL PLUGINS -->
 <!-- BEGIN PAGE LEVEL STYLES -->
-<link href="/assets/global/plugins/bootstrap-switch/css/bootstrap-switch.min.css" rel="stylesheet" type="text/css">
-<link href="/assets/global/plugins/sudobar/dist/style/jquery.sudo-notify.css" rel="stylesheet" type="text/css"/>
-<link href="/assets/global/plugins/jquery-steps/jquery.step.css" rel="stylesheet" type="text/css"/>
-<link href="/assets/global/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.css" rel="stylesheet" type="text/css"/>
+<link href="public/assets/global/plugins/bootstrap-switch/css/bootstrap-switch.min.css" rel="stylesheet" type="text/css">
+<link href="public/assets/global/plugins/sudobar/dist/style/jquery.sudo-notify.css" rel="stylesheet" type="text/css"/>
+<link href="public/assets/global/plugins/jquery-steps/jquery.step.css" rel="stylesheet" type="text/css"/>
+<link href="public/assets/global/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.css" rel="stylesheet" type="text/css"/>
 
 <style>
     .file-panel{
@@ -1262,20 +1262,20 @@
 
 @section('footer')
 <!-- BEGIN PAGE LEVEL PLUGINS -->
-<script src="/assets/global/plugins/sheepit/jquery.sheepItPlugin.js" type="text/javascript"></script>
-<script src="/assets/global/plugins/sudobar/dist/jquery.sudo-notify.js" type="text/javascript"></script>
+<script src="public/assets/global/plugins/sheepit/jquery.sheepItPlugin.js" type="text/javascript"></script>
+<script src="public/assets/global/plugins/sudobar/dist/jquery.sudo-notify.js" type="text/javascript"></script>
 <!-- END PAGE LEVEL PLUGINS -->
 <!-- BEGIN PAGE LEVEL SCRIPTS -->
-<script src="/assets/global/plugins/moment.min.js" type="text/javascript"></script>
-<script src="/assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.js" type="text/javascript"></script>
-<script src="/assets/global/plugins/jquery-steps/jquery.steps.js" type="text/javascript"></script>
-<script src="/assets/global/plugins/jquery-number-master/jquery.number.js" type="text/javascript"></script>
-<script src="/assets/global/plugins/jquerydateFormat.js" type="text/javascript"></script>
+<script src="public/assets/global/plugins/moment.min.js" type="text/javascript"></script>
+<script src="public/assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.js" type="text/javascript"></script>
+<script src="public/assets/global/plugins/jquery-steps/jquery.steps.js" type="text/javascript"></script>
+<script src="public/assets/global/plugins/jquery-number-master/jquery.number.js" type="text/javascript"></script>
+<script src="public/assets/global/plugins/jquerydateFormat.js" type="text/javascript"></script>
 <!-- END PAGE LEVEL SCRIPTS -->
 
 <script>
                                 var fid = '{{$fid}}';
                                 var appr = '{{$appr}}';
                                 var activestep = {{$activestep}};</script>
-<script src="/assets/pages/scripts/formreq.js" type="text/javascript"></script>
+<script src="public/assets/pages/scripts/formreq.js" type="text/javascript"></script>
 @endsection

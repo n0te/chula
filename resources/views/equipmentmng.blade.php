@@ -2,14 +2,14 @@
 
 @section('head')
 <!-- BEGIN PAGE LEVEL PLUGINS -->
-<link href="/assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css" rel="stylesheet" type="text/css" />
-<link href="/assets/global/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.css" rel="stylesheet" type="text/css"/>
+<link href="public/assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css" rel="stylesheet" type="text/css" />
+<link href="public/assets/global/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.css" rel="stylesheet" type="text/css"/>
 <!-- END PAGE LEVEL PLUGINS -->
 <!-- BEGIN PAGE LEVEL STYLES -->
-<link href="/assets/global/plugins/bootstrap-switch/css/bootstrap-switch.min.css" rel="stylesheet" type="text/css">
-<link href="/assets/global/plugins/sudobar/dist/style/jquery.sudo-notify.css" rel="stylesheet" type="text/css"/>
-<link href="/assets/global/plugins/datatables/DataTables-1.10.12/media/css/jquery.dataTables.css" rel="stylesheet" type="text/css"/>
-<link href="/assets/global/plugins/fullcalendar/fullcalendar.css" rel="stylesheet" type="text/css"/>
+<link href="public/assets/global/plugins/bootstrap-switch/css/bootstrap-switch.min.css" rel="stylesheet" type="text/css">
+<link href="public/assets/global/plugins/sudobar/dist/style/jquery.sudo-notify.css" rel="stylesheet" type="text/css"/>
+<link href="public/assets/global/plugins/datatables/DataTables-1.10.12/media/css/jquery.dataTables.css" rel="stylesheet" type="text/css"/>
+<link href="public/assets/global/plugins/fullcalendar/fullcalendar.css" rel="stylesheet" type="text/css"/>
 <style>
     .file-panel{
         position:relative;
@@ -328,22 +328,22 @@
 
 @section('footer')
 <!-- BEGIN PAGE LEVEL PLUGINS -->
-<script src="/assets/global/plugins/kartik-v-bootstrap-fileinput/js/fileinput.js" type="text/javascript"></script>
-<script src="/assets/global/plugins/kartik-v-bootstrap-fileinput/js/plugins/canvas-to-blob.js" type="text/javascript"></script>
-<script src="/assets/global/plugins/sudobar/dist/jquery.sudo-notify.js" type="text/javascript"></script>
-<script src="/assets/global/plugins/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js" type="text/javascript"></script>
+<script src="public/assets/global/plugins/kartik-v-bootstrap-fileinput/js/fileinput.js" type="text/javascript"></script>
+<script src="public/assets/global/plugins/kartik-v-bootstrap-fileinput/js/plugins/canvas-to-blob.js" type="text/javascript"></script>
+<script src="public/assets/global/plugins/sudobar/dist/jquery.sudo-notify.js" type="text/javascript"></script>
+<script src="public/assets/global/plugins/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js" type="text/javascript"></script>
 <!-- END PAGE LEVEL PLUGINS -->
 <!-- BEGIN PAGE LEVEL SCRIPTS -->
-<script src="/assets/global/plugins/moment.min.js" type="text/javascript"></script>
-<script src="/assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.js" type="text/javascript"></script>
-<script src="/assets/pages/scripts/components-date-time-pickers.min.js" type="text/javascript"></script>
-<script src="/assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js" type="text/javascript"></script>
+<script src="public/assets/global/plugins/moment.min.js" type="text/javascript"></script>
+<script src="public/assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.js" type="text/javascript"></script>
+<script src="public/assets/pages/scripts/components-date-time-pickers.min.js" type="text/javascript"></script>
+<script src="public/assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js" type="text/javascript"></script>
 
-<script src="/assets/global/plugins/jquerydateFormat.js" type="text/javascript"></script>
+<script src="public/assets/global/plugins/jquerydateFormat.js" type="text/javascript"></script>
 <!-- END PAGE LEVEL SCRIPTS -->
-<script src="/assets/global/plugins/datatables/DataTables-1.10.12/media/js/jquery.dataTables.js" type="text/javascript"></script>
-<script src="/assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js" type="text/javascript"></script>
-<script src="/assets/global/plugins/jquery-number-master/jquery.number.js" type="text/javascript"></script>
+<script src="public/assets/global/plugins/datatables/DataTables-1.10.12/media/js/jquery.dataTables.js" type="text/javascript"></script>
+<script src="public/assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js" type="text/javascript"></script>
+<script src="public/assets/global/plugins/jquery-number-master/jquery.number.js" type="text/javascript"></script>
 <script>
                     var sudoNotify = $('.notification-container').sudoNotify({
                         log: true,
@@ -368,7 +368,7 @@
                                 {"bVisible": true, "bSearchable": false, "bSortable": false,
                                     "mData": null,
                                     "mRender": function (data, type, full) {
-                                        return "<img width='200px' alt='' src='uploads/equipmentimg/" + full.equipmentpicturename + "' class='img-thumbnail' />";
+                                        return "<img width='200px' alt='' src='public/uploads/equipmentimg/" + full.equipmentpicturename + "' class='img-thumbnail' />";
                                     }
                                 },
                                 {data: 'equipmentname', name: 'equipmentname'},
@@ -454,7 +454,7 @@
                                 $('#equipmentstatus').val(data['MRCEquipment'][0].equipmentstatus);
                                 $('#fupPDF').fileinput('clear');
                                 $('#divimgequipment').show();
-                                $('#imgequipment').attr('src', 'uploads/equipmentimg/' + data['MRCEquipment'][0].equipmentpicturename);
+                                $('#imgequipment').attr('src', 'public/uploads/equipmentimg/' + data['MRCEquipment'][0].equipmentpicturename);
                                 $('#mdlEquipment').modal('toggle');
                             }
                         });
