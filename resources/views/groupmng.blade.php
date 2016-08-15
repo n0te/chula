@@ -215,7 +215,7 @@
 </div>
 
 <input type="hidden" name="hidsaveoredit" id="hidsaveoredit" value="">
-<input type="hidden" name="hidfid" id="hidgroupid" value="">
+<input type="hidden" name="hidgroupid" id="hidgroupid" value="">
 @endsection
 
 @section('footer')
