@@ -322,7 +322,27 @@
     </div>
     <!-- /.modal-dialog -->
 </div>
-
+<div class="modal fade" id="mdlBookEquipment" tabindex="-1" role="basic" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">จองเข้าใช้งานเครื่องมือ</h4>
+            </div>
+            <div class="modal-body">
+                <div class="portlet-body form">
+                    <div id='calendar'></div>
+                    <div class=" clearfix"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a class='btn dark btn-outline btn-sm' data-dismiss="modal" href='#'><span class='glyphicon glyphicon-remove'></span> ยกเลิก</a>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
 <input type="hidden" name="hidsaveoredit" id="hidsaveoredit" value="">
 <input type="hidden" name="hidfid" id="hidequipmentid" value="">
 <?php $__env->stopSection(); ?>
@@ -345,6 +365,9 @@
 <script src="public/assets/global/plugins/datatables/DataTables-1.10.12/media/js/jquery.dataTables.js" type="text/javascript"></script>
 <script src="public/assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js" type="text/javascript"></script>
 <script src="public/assets/global/plugins/jquery-number-master/jquery.number.js" type="text/javascript"></script>
+<script src="public/assets/global/plugins/fullcalendar/lib/moment.min.js" type="text/javascript"></script>
+<script src="public/assets/global/plugins/fullcalendar/fullcalendar.js" type="text/javascript"></script>
+<script src="public/assets/global/plugins/timepicker/js/timepicki.js" type="text/javascript"></script>
 <script>
                     var sudoNotify = $('.notification-container').sudoNotify({
                         log: true,
@@ -382,7 +405,7 @@
                                     },
                                     "mData": null,
                                     "mRender": function (data, type, full) {
-                                        if (full.equipmentstatus === 1) {
+                                        if (full.equipmentstatus === '1') {
                                             return '<span class="label label-sm label-success"> เปิดใช้งาน </span>';
                                         } else {
                                             return '<span class="label label-sm label-warning"> ปิดใช้งาน </span>';
@@ -397,13 +420,15 @@
                                     },
                                     "mData": null,
                                     "mRender": function (data, type, full) {
-                                        return " <a class='btn btn-primary btn-sm' href='#' onclick='return OpenEditEquipment(\"" + full.equipmentid + "\")'><span class='glyphicon glyphicon-file'></span> แก้ไข</a>"
+                                        return " <a class='btn btn-success btn-sm' href='#' onclick='return OpenBookingEquipment(\"" + full.equipmentid + "\")'><span class='glyphicon glyphicon-calendar'></span> การจองทั้งหมด</a>"
+                                                + "&nbsp; <a class='btn btn-primary btn-sm' href='#' onclick='return setAccess(\"" + full.equipmentid + "\",\"" + full.equipmentname + "\")'><span class='glyphicon glyphicon-home'></span> ตั้งเครื่องนี้สำหรับเข้าใช้งาน</a>"
+                                                + "&nbsp; <a class='btn btn-primary btn-sm' href='#' onclick='return OpenEditEquipment(\"" + full.equipmentid + "\")'><span class='glyphicon glyphicon-file'></span> แก้ไข</a>"
                                                 + "&nbsp; <a class='btn btn-danger btn-sm' href='#' onclick='return OpenDelete(\"" + full.equipmentid + "\")'><span class='glyphicon glyphicon-trash'></span> ลบ</a>";
                                     }
                                 }
                             ]
                         });
-                      //  $('input.number').number(true, 2);
+                        //  $('input.number').number(true, 2);
                     });
                     function resetfield() {
                         $("#equipmentname").val('');
@@ -483,6 +508,28 @@
                             }
                         });
                     }
+                    function setAccess(eqipid, eqipname) {
+                        var formData = new FormData();
+                        formData.append('eqipid', eqipid);
+                        $.ajax({
+                            url: '/setAccess',
+                            method: 'post',
+                            dataType: 'json',
+                            contentType: false,
+                            processData: false,
+                            data: formData,
+                            error: function (data) {
+                                console.log(data.responseText);
+                                alert(data.responseText);
+                                //WindowScrollTopAnimation('#profile div.alert', 500);
+                            },
+                            success: function (data) {
+                                if (data.message === 'cookieset') {
+                                    sudoNotify.success("บันทึกคอมพิวเตอร์เครื่องสำหรับเข้าใช้อุปกรณ์ " + eqipname);
+                                }
+                            }
+                        });
+                    }
                     function SaveEquipment() {
                         if ($.trim($("#equipmentname").val()).length === 0) {
                             sudoNotify.error("กรุณากรอกชื่ออุปกรณ์");
@@ -556,6 +603,37 @@
                                 }
                             }
                         });
+                    }
+
+                    $('#mdlBookEquipment').on('shown.bs.modal', function () {
+                        $("#calendar").fullCalendar('render');
+                    });
+
+                    function OpenBookingEquipment(equipmentid) {
+                        $('#calendar').fullCalendar('destroy');
+                        $("#hidequipmentid").val(equipmentid);
+                        $('#calendar').fullCalendar({
+                            header: {
+                                left: 'prev,next today',
+                                center: 'title',
+                                right: 'month,basicWeek,basicDay'
+                            },
+                            defaultDate: '<?php echo e(Date("Y-m-d")); ?>',
+                            selectable: false,
+                            selectHelper: true,
+                            timeFormat: 'H(:mm)',
+                            displayEventTime: false,
+                            events: {
+                                url: '/getBookingbyEquipmentidWithUsername/' + equipmentid,
+                                error: function () {
+
+                                }
+                            },
+                            eventRender: function (event, element) {
+                                $(element).tooltip({title: event.title});
+                            }
+                        });
+                        $('#mdlBookEquipment').modal('toggle');
                     }
 </script>
 <?php $__env->stopSection(); ?>

@@ -2,14 +2,14 @@
 
 @section('head')
 		<!-- BEGIN PAGE LEVEL PLUGINS -->
-        <link href="public/assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css" rel="stylesheet" type="text/css" />
-        <link href="public/assets/global/plugins/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css" rel="stylesheet" type="text/css">
+        <link href="/public/assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css" rel="stylesheet" type="text/css" />
+        <link href="/public/assets/global/plugins/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css" rel="stylesheet" type="text/css">
         
-        <link href="public/assets/global/plugins/jquery-ui/jquery-ui.min.css" rel="stylesheet" type="text/css">
+        <link href="/public/assets/global/plugins/jquery-ui/jquery-ui.min.css" rel="stylesheet" type="text/css">
         <!-- END PAGE LEVEL PLUGINS -->
 		<!-- BEGIN PAGE LEVEL STYLES -->
-        <link href="public/assets/pages/css/profile.min.css" rel="stylesheet" type="text/css" />
-        <link href="public/assets/global/plugins/bootstrap-switch/css/bootstrap-switch.min.css" rel="stylesheet" type="text/css">
+        <link href="/public/assets/pages/css/profile.min.css" rel="stylesheet" type="text/css" />
+        <link href="/public/assets/global/plugins/bootstrap-switch/css/bootstrap-switch.min.css" rel="stylesheet" type="text/css">
         <style>
         .file-panel{
             position:relative;
@@ -303,10 +303,10 @@
 
 @section('footer')
 	<!-- BEGIN PAGE LEVEL PLUGINS -->
-        <script src="public/assets/global/plugins/jquery-validation/js/jquery.validate.min.js" type="text/javascript"></script>
-        <script src="public/assets/global/plugins/jquery-ui/jquery-ui.min.js" type="text/javascript"></script>
+        <script src="/public/assets/global/plugins/jquery-validation/js/jquery.validate.min.js" type="text/javascript"></script>
+        <script src="/public/assets/global/plugins/jquery-ui/jquery-ui.min.js" type="text/javascript"></script>
         <!-- END PAGE LEVEL PLUGINS -->
         <!-- BEGIN PAGE LEVEL SCRIPTS -->
-        <script src="public/assets/pages/scripts/reviewprofile.js" type="text/javascript"></script>
+        <script src="/public/assets/pages/scripts/reviewprofile.js" type="text/javascript"></script>
         <!-- END PAGE LEVEL SCRIPTS -->
 @endsection

@@ -175,9 +175,53 @@
     </div>
     <!-- /.modal-dialog -->
 </div>
+<div class="modal fade" id="mdlBookingCfmDel" tabindex="-1" role="basic" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content warning">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">ยืนยันการลบ</h4>
+            </div>
+            <div class="modal-body">
+                <div class="portlet-body form">
+                    คุณแน่ใจว่าจะลบรายการนี้
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a class='btn dark btn-outline btn-sm' data-dismiss="modal" href='#'><span class='glyphicon glyphicon-remove'></span> ยกเลิก</a>
+                <a class='btn btn-danger btn-sm' href='#' onclick='DeleteByID(); return false;'><span class='glyphicon glyphicon-trash'></span> ลบ</a>
 
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<div class="modal fade" id="mdlBookingCfmUse" tabindex="-1" role="basic" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content warning">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">ยืนยันการเข้าใช้งาน</h4>
+            </div>
+            <div class="modal-body">
+                <div class="portlet-body form">
+                    ยืนยันการเข้าใช้งานอุปกรณ์
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a class='btn dark btn-outline btn-sm' data-dismiss="modal" href='#'><span class='glyphicon glyphicon-remove'></span> ยกเลิก</a>
+                <a class='btn btn-success btn-sm' href='#' onclick='cfmByID(); return false;'><span class='glyphicon glyphicon-check'></span> ยืนยัน</a>
+
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
 <input type="hidden" name="hidsaveoredit" id="hidsaveoredit" value="">
-<input type="hidden" name="hidfid" id="hidgroupid" value="">
+<input type="hidden" name="hidfid" id="hidbookingid" value="">
+<input type="hidden" name="hidcname" id="hidcname" value="{{ (isset($_COOKIE['setaccess']) ? $_COOKIE['setaccess'] : '') }}">
 @endsection
 
 @section('footer')
@@ -226,22 +270,28 @@
                                         return "<img width='200px' alt='' src='public/uploads/equipmentimg/" + full.equipmentpicturename + "' class='img-thumbnail' />";
                                     }
                                 },
-                                {data: 'bookingdate', name: 'bookingdate'},
                                 {"bVisible": true, "bSearchable": false, "bSortable": false,
                                     "mData": null,
                                     "mRender": function (data, type, full) {
-                                        return  full.bookingstarttime + " - " + full.bookingendtime;
+                                        return  moment(full.bookingdate).format("DD/MM/YYYY");
+                                        ;
                                     }
                                 },
                                 {"bVisible": true, "bSearchable": false, "bSortable": false,
                                     "mData": null,
                                     "mRender": function (data, type, full) {
-                                        if (full.bookingstatus === 0) {
-                                            return '<span class="label label-sm label-success">ยังไม่ได้ใช้งาน</span>';
-                                        } else if (full.bookingstatus === 1) {
+                                        return  moment(full.bookingdate + 'T' + full.bookingstarttime).format("HH:mm") + " - " + moment(full.bookingdate + 'T' + full.bookingendtime).format("HH:mm");
+                                    }
+                                },
+                                {"bVisible": true, "bSearchable": false, "bSortable": false,
+                                    "mData": null,
+                                    "mRender": function (data, type, full) {
+                                        if (String(full.bookingstatus) === '0') {
+                                            return '<span class="label label-sm label-info">ยังไม่ได้ใช้งาน</span>';
+                                        } else if (String(full.bookingstatus) === '1') {
                                             return '<span class="label label-sm label-success">ใช้งานแล้ว</span>';
-                                        } else if (full.bookingstatus === 2) {
-                                            return '<span class="label label-sm label-success">เลยกำหนดการใช้งาน</span>';
+                                        } else if (String(full.bookingstatus) === '-1') {
+                                            return '<span class="label label-sm label-danger">เลยกำหนดการใช้งาน</span>';
                                         }
                                     }
                                 },
@@ -252,52 +302,50 @@
                                     },
                                     "mData": null,
                                     "mRender": function (data, type, full) {
-                                        return " <a class='btn btn-primary btn-sm' href='#' onclick='return OpenEditGroup(\"" + full.bookingid + "\")'><span class='glyphicon glyphicon-file'></span> เข้าใช้งาน</a>";
-                                        //+ "&nbsp; <a class='btn btn-danger btn-sm' href='#' onclick='return OpenDelete(\"" + full.groupid + "\")'><span class='glyphicon glyphicon-trash'></span> ลบ</a>";
+                                        var cname = $("#hidcname").val();
+                                        var res = cname.split(".");
+
+                                        if (jQuery.inArray(String(full.equipmentid), res) !== -1) {
+                                            if (String(full.bookingstatus) === '0') {
+                                                var start = new Date(full.bookingdate),
+                                                        end = moment(),
+                                                        diff = new Date(start - end),
+                                                        days = diff / 1000 / 60 / 60 / 24;
+                                                var displaybuttontime = moment(full.bookingdate + 'T' + full.bookingstarttime);
+                                                var tdif = Math.abs((end - displaybuttontime) / 60000);
+                                                if (days < 2) {
+                                                    if (tdif < 15) {
+                                                        return "<a class='btn btn-primary btn-sm' href='#' onclick='return Opencfmuse(\"" + full.bookingid + "\")'><span class='glyphicon glyphicon-check'></span> เข้าใช้งาน</a>";
+                                                    } else {
+                                                        return '';
+                                                    }
+                                                } else {
+                                                    return  "<a class='btn btn-danger btn-sm' href='#' placename onclick='return OpenDelete(\"" + full.bookingid + "\")'><span class='glyphicon glyphicon-trash'></span> ลบ</a>";
+                                                }
+
+                                            } else {
+                                                return '';
+                                            }
+                                        } else {
+                                            return "<span class='label label-sm label-success'>กรุณาล๊อคอินที่ " + full.placename + "</span>";
+                                        }
+                                        //+ "&nbsp; <a class='btn btn-danger btn-sm' href='#' placename onclick='return OpenDelete(\"" + full.groupid + "\")'><span class='glyphicon glyphicon-trash'></span> ลบ</a>";
                                     }
                                 }
                             ]
                         });
-
                     });
-                    function resetfield() {
-                        $("#groupname").val('');
-                        $("#groupengname").val('');
-                        $("#groupabbreviate").val('');
+                    function OpenDelete(bookingid) {
+                        $('#mdlBookingCfmDel').modal('toggle');
+                        $("#hidbookingid").val(bookingid);
                     }
-                    function OpenAddGroup() {
-                        resetfield();
-                        $('#mdlGroup').modal('toggle');
-                        $("#hidsaveoredit").val('SaveGroup');
-                    }
-                    function OpenEditGroup(groupid) {
-                        resetfield();
-                        $("#hidsaveoredit").val('EditGroup');
-                        $.ajax({
-                            url: '/getGroupByID/' + groupid,
-                            method: 'get',
-                            dataType: 'json',
-                            contentType: false,
-                            processData: false,
-                            error: function (data) {
-                                console.log(data.responseText);
-                            },
-                            success: function (data) {
-                                $("#hidgroupid").val(data['MRCGroup'][0].groupid);
-                                $("#groupname").val(data['MRCGroup'][0].groupname);
-                                $("#groupengname").val(data['MRCGroup'][0].groupengname);
-                                $("#groupabbreviate").val(data['MRCGroup'][0].groupabbreviate);
-                                $('#mdlGroup').modal('toggle');
-                            }
-                        });
-                    }
-                    function OpenDelete(groupid) {
-                        $('#mdlGroupCfmDel').modal('toggle');
-                        $("#hidgroupid").val(groupid);
+                    function Opencfmuse(bookingid) {
+                        $('#mdlBookingCfmUse').modal('toggle');
+                        $("#hidbookingid").val(bookingid);
                     }
                     function DeleteByID() {
                         $.ajax({
-                            url: '/deleteGroupByID/' + $("#hidgroupid").val(),
+                            url: '/deleteBookingByIDByUser/' + $("#hidbookingid").val(),
                             method: 'get',
                             dataType: 'json',
                             contentType: false,
@@ -308,56 +356,34 @@
                             success: function (data) {
                                 if (data.message === 'saved') {
                                     $('#tblReviewform').DataTable().ajax.reload();
-                                    $('#mdlGroupCfmDel').modal('toggle');
-                                    sudoNotify.success("ลบกลุ่มเครื่องมือเรียบร้อย");
+                                    $('#mdlBookingCfmDel').modal('toggle');
+                                    sudoNotify.success("ลบการจองอุปกรณ์เรียบร้อย");
+                                } else if (data.message === 'cantdel') {
+                                    sudoNotify.error("ไม่สามารถลบได้ภายใน 2 วัน");
+                                    return false;
                                 }
                             }
                         });
                     }
-                    function SaveGroup() {
-                        if ($.trim($("#groupname").val()).length === 0) {
-                            sudoNotify.error("กรุณากรอกชื่อกลุ่มเครื่องมือ");
-                            return false;
-                        }
-                        if ($.trim($("#groupengname").val()).length === 0) {
-                            sudoNotify.error("กรุณาชื่อกลุ่มเครื่องมือภาษาอังกฤษ");
-                            return false;
-                        }
-                        if ($.trim($("#groupabbreviate").val()).length === 0) {
-                            sudoNotify.error("กรุณากรอกชื่อย่อกลุ่มเครื่องมือ");
-                            return false;
-                        }
-                        var formData = new FormData();
-                        $('input[type="text"], input[type="checkbox"], textarea, input[type="password"], input[type="hidden"], select').each(function (i) {
-                            formData.append($(this).attr('id'), $(this).val());
-                        });
-
+                    function cfmByID() {
                         $.ajax({
-                            url: '/' + $("#hidsaveoredit").val(),
-                            method: 'post',
+                            url: '/cfmBookingByID/' + $("#hidbookingid").val(),
+                            method: 'get',
                             dataType: 'json',
                             contentType: false,
                             processData: false,
-                            data: formData,
                             error: function (data) {
                                 console.log(data.responseText);
-                                alert(data.responseText);
-                                //WindowScrollTopAnimation('#profile div.alert', 500);
                             },
                             success: function (data) {
                                 if (data.message === 'saved') {
                                     $('#tblReviewform').DataTable().ajax.reload();
-                                    $('#mdlGroup').modal('toggle');
-                                    if ($("#hidsaveoredit").val() === 'EditGroup') {
-                                        sudoNotify.success("แก้ไขกลุ่มเครื่องมือเรียบร้อย");
-                                    } else {
-                                        sudoNotify.success("เพิ่มกลุ่มเครื่องมือเรียบร้อย");
-                                    }
-
+                                    $('#mdlBookingCfmUse').modal('toggle');
+                                    sudoNotify.success("เข้าใช้งานอุปกรณ์เรียบร้อย");
                                 }
                             }
-
                         });
                     }
+
 </script>
 @endsection

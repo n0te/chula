@@ -49,6 +49,7 @@ use App\MRC_Group;
 use App\MRC_Place;
 use App\MRC_Equipment;
 use App\MRC_Booking;
+use App\MRC_Ban;
 
 class MRCController extends Controller {
 
@@ -71,12 +72,95 @@ class MRCController extends Controller {
         return view('placemng', ['user' => Auth::user(), 'Formreqs' => $Formreqs]);
     }
 
+    public function setAccess(Request $request) {
+        $ckval = '';
+        if (isset($_COOKIE['setaccess'])) {
+            $ckinexarray = explode('.', $_COOKIE['setaccess']);
+            if (!in_array($request->eqipid, $ckinexarray)) {
+                $ckval = $_COOKIE['setaccess'] . "." . $request->eqipid;
+            } else {
+                $ckval = $_COOKIE['setaccess'];
+            }
+        } else {
+            $ckval = $request->eqipid;
+        }
+        setcookie('setaccess', $ckval, time() + 31556926, '/');
+        return Response::json(["message" => "cookieset"], 200);
+    }
+
     public function mrcbookingmng() {
-        return view('mrcbooking', ['user' => Auth::user()]);
+
+        $chkban = $this->checkgotban();
+        if ($chkban == '0') {
+            $this->checkbanning();
+            $chkban = $this->checkgotban();
+            if ($chkban == '0') {
+                return view('mrcbooking', ['user' => Auth::user()]);
+            } else {
+                return view('banning', ['user' => Auth::user(), 'dateendbanning' => date('d/m/Y', strtotime($chkban . ' +1 day'))]);
+            }
+        } else {
+            return view('banning', ['user' => Auth::user(), 'dateendbanning' => date('d/m/Y', strtotime($chkban . ' +1 day'))]);
+        }
+    }
+
+    public function checkgotban() {
+        $banlist = DB::select("SELECT * FROM `mrc_ban` WHERE `banuserid` = " . Auth::user()->id . " AND `banenddate` >= NOW() AND banactive = 1  ORDER BY `banid` DESC LIMIT 1");
+        if (count($banlist) > 0) {
+            return $banlist[0]->banenddate;
+        } else {
+            return '0';
+        }
+    }
+
+    public function checkbanning() {
+        $freq = DB::select('SELECT * FROM `mrc_booking` WHERE (`bookingstarttime`+ INTERVAL 15 MINUTE) < NOW() AND `bookingdate` <= NOW() AND bookingstatus = 0 AND bookingisdelete != 1 AND `bookingaddby` = ' . Auth::user()->id);
+        if (count($freq) > 0) {
+            for ($i = 0; $i < count($freq); $i++) {
+                $mybook = MRC_Booking::find($freq[$i]->bookingid);
+                $mybook->bookingstatus = -1;
+                $mybook->save();
+
+                $banlist = DB::select('SELECT * FROM `mrc_ban` WHERE `banuserid` = ' . Auth::user()->id . ' ORDER BY `banid` DESC LIMIT 1');
+                $bantime = 1;
+                $banday = 0;
+                if (count($banlist) > 0) {
+                    $bantime = $bantime + $banlist[0]->bantime;
+                }
+                if ($bantime == 1) {
+                    $banday = 14;
+                } else if ($bantime == 2) {
+                    $banday = 30;
+                } else if ($bantime >= 3) {
+                    $banday = 60;
+                }
+
+                $banning = new MRC_Ban;
+                $banning->banuserid = Auth::user()->id;
+                $banning->banfrombookingid = $freq[$i]->bookingid;
+                $banning->bantime = $bantime;
+                $banning->banstartdate = Date("Y/m/d");
+                $banning->banenddate = Date('Y/m/d', strtotime("+" . $banday . " days"));
+                $banning->banactive = 1;
+                $banning->save();
+            }
+        }
     }
 
     public function mymrcbooking() {
-        return view('mymrcbooking', ['user' => Auth::user()]);
+
+        $chkban = $this->checkgotban();
+        if ($chkban == '0') {
+            $this->checkbanning();
+            $chkban = $this->checkgotban();
+            if ($chkban == '0') {
+                return view('mymrcbooking', ['user' => Auth::user()]);
+            } else {
+                return view('banning', ['user' => Auth::user(), 'dateendbanning' => date('d/m/Y', strtotime($chkban . ' +1 day'))]);
+            }
+        } else {
+            return view('banning', ['user' => Auth::user(), 'dateendbanning' => date('d/m/Y', strtotime($chkban . ' +1 day'))]);
+        }
     }
 
     public function mrcbookingmngadmin() {
@@ -85,6 +169,15 @@ class MRCController extends Controller {
 
     public function placemng() {
         return view('placemng', ['user' => Auth::user()]);
+    }
+
+    public function banningadmin() {
+        return view('banningadmin', ['user' => Auth::user()]);
+    }
+
+    public function mrcbookingstat() {
+        $eqc = DB::select('SELECT *,(SELECT COUNT(*) AS ce  FROM `mrc_booking` WHERE `bookingequipmentid` = mrc_equipment.`equipmentid`) AS ce FROM `mrc_equipment` WHERE `equipmentisdelete` = 0');
+        return view('mrcbookingstat', ['user' => Auth::user(), 'eqcs' => $eqc]);
     }
 
     public function groupmng() {
@@ -131,6 +224,19 @@ class MRCController extends Controller {
         return Datatables::of($groups)->make(true);
     }
 
+    public function getBanning() {
+
+        $ban = DB::table('banningview')->select(['banid', 'bantime', 'banstartdate', 'banenddate', 'banactive', 'firstname', 'lastname', 'equipmentname'])->where('banenddate', '>', date('Y-m-d'));
+        return Datatables::of($ban)->make(true);
+    }
+
+    public function activeBanning(Request $request) {
+        $ban = MRC_Ban::find($request->bid);
+        $ban->banactive = $request->bactive;
+        $ban->save();
+        return Response::json(["message" => "saved"], 200);
+    }
+
     public function getCouse() {
         $groups = DB::table('mrc_couse')->select(['couseid', 'cousename', 'couseengname', 'couseadddate', 'couseaddby', 'couseisdelete'])->where('couseisdelete', '=', 0);
         return Datatables::of($groups)->make(true);
@@ -138,8 +244,9 @@ class MRCController extends Controller {
     }
 
     public function getBookingByUserId() {
-        $groups = DB::table('bookingview')->select(['bookingid', 'bookingdate', 'bookingstarttime', 'bookingendtime', 'bookingstatus', 'equipmentname', 'equipmentpicturename', 'firstname', 'lastname'])
-                        ->where('bookingisdelete', '=', 0)->where('bookingaddby', '=', Auth::user()->id);
+        $groups = DB::table('bookingview')->select(['bookingid', 'bookingdate', 'bookingstarttime', 'bookingendtime', 'bookingstatus', 'equipmentid', 'equipmentname', 'equipmentpicturename', 'firstname', 'lastname', 'placecomputername', 'placename'])
+                ->where('bookingisdelete', '=', 0)
+                ->where('bookingaddby', '=', Auth::user()->id);
         return Datatables::of($groups)->make(true);
         //`bookingid``bookingdate``bookingstarttime``bookingendtime``equipmentname``equipmentpicturename`
     }
@@ -174,6 +281,20 @@ class MRCController extends Controller {
             'MRCEquipment' => $MRCEquipment
         );
         return Response::json($data);
+    }
+
+    public function checkTimeAvailable(Request $request) {
+        $qry = DB::select('SELECT * 
+FROM `mrc_booking`
+WHERE ((`bookingstarttime` BETWEEN \'' . $request->bookingstarttime . '\' AND \'' . $request->bookingendtime . '\') 
+  OR (`bookingendtime` BETWEEN \'' . $request->bookingstarttime . '\' AND \'' . $request->bookingendtime . '\')) 
+  AND `bookingisdelete` = 0 AND `bookingdate` = \'' . $request->bookingdate . '\'  AND `bookingequipmentid` = ' . $request->bookingequipmentid);
+
+        if (count($qry) > 0) {
+            return FALSE;
+        } else {
+            return TRUE;
+        }
     }
 
     public function deleteEquipmentByID($id) {
@@ -354,17 +475,40 @@ class MRCController extends Controller {
         return Response::json(["message" => "saved"], 200);
     }
 
-    public function BookEquipment(Request $request) {
-        $book = new MRC_Booking;
-        $book->bookingdate = $request->bookingdate;
-        $book->bookingequipmentid = $request->bookingequipmentid;
-        $book->bookingstarttime = $request->bookingstarttime;
-        $book->bookingendtime = $request->bookingendtime;
-        $book->bookingstatus = 0;
-        $book->bookingaddby = Auth::user()->id;
-        $book->bookingisdelete = 0;
+    public function deleteBookingByIDByUser($id) {
+        $freq = DB::select('SELECT DATEDIFF(`bookingdate`,NOW()) AS difdate,`bookingdate` FROM `mrc_booking` WHERE `bookingid` = ' . $id . ' AND `bookingaddby` = ' . Auth::user()->id);
+        if ($freq[0]->difdate < 2) {
+            return Response::json(["message" => "cantdel", "message222" => $freq[0]->difdate], 200);
+        } else {
+            $book = MRC_Booking::find($id);
+            $book->bookingisdelete = 1;
+            $book->save();
+            return Response::json(["message" => "saved"], 200);
+        }
+    }
+
+    public function cfmBookingByID($id) {
+        $book = MRC_Booking::find($id);
+        $book->bookingstatus = 1;
         $book->save();
         return Response::json(["message" => "saved"], 200);
+    }
+
+    public function BookEquipment(Request $request) {
+        if ($this->checkTimeAvailable($request)) {
+            $book = new MRC_Booking;
+            $book->bookingdate = $request->bookingdate;
+            $book->bookingequipmentid = $request->bookingequipmentid;
+            $book->bookingstarttime = $request->bookingstarttime;
+            $book->bookingendtime = $request->bookingendtime;
+            $book->bookingstatus = 0;
+            $book->bookingaddby = Auth::user()->id;
+            $book->bookingisdelete = 0;
+            $book->save();
+            return Response::json(["message" => "saved"], 200);
+        } else {
+            return Response::json(["message" => "notavi"], 200);
+        }
     }
 
     public function getBookingbyEquipmentid($id) {
@@ -373,7 +517,7 @@ class MRCController extends Controller {
         for ($i = 0; $i < count($freq); $i++) {
             $json_data[] = array(
                 "id" => $freq[$i]->bookingid,
-                "title" => $freq[$i]->bookingstarttime . ' - ' . $freq[$i]->bookingendtime,
+                "title" => substr($freq[$i]->bookingstarttime, 0, -3) . ' - ' . substr($freq[$i]->bookingendtime, 0, -3),
                 "start" => $freq[$i]->bookingdate . 'T' . $freq[$i]->bookingstarttime,
                 "end" => $freq[$i]->bookingdate . 'T' . $freq[$i]->bookingendtime,
                 "url" => '',
@@ -381,6 +525,27 @@ class MRCController extends Controller {
             );
         }
         return Response::json($json_data);
+    }
+
+    public function getBookingbyEquipmentidWithUsername($id) {
+        $freq = DB::select('SELECT * FROM `bookingview` WHERE `bookingequipmentid` = ' . $id . ' AND `bookingisdelete` = 0');
+        $json_data = [];
+        for ($i = 0; $i < count($freq); $i++) {
+            $json_data[] = array(
+                "id" => $freq[$i]->bookingid,
+                "title" => $freq[$i]->firstname . " " . $freq[$i]->lastname . ' ' . substr($freq[$i]->bookingstarttime, 0, -3) . ' - ' . substr($freq[$i]->bookingendtime, 0, -3),
+                "start" => $freq[$i]->bookingdate . 'T' . $freq[$i]->bookingstarttime,
+                "end" => $freq[$i]->bookingdate . 'T' . $freq[$i]->bookingendtime,
+                "url" => '',
+                "allDay" => false
+            );
+        }
+        return Response::json($json_data);
+    }
+
+    public function testcomname() {
+        $freq = DB::select('SELECT now() as aaa');
+        echo $freq[0]->aaa;
     }
 
 }

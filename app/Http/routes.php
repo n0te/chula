@@ -101,11 +101,24 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('/getEquipmentforbooking', 'MRCController@getEquipmentforbooking');
     Route::post('/BookEquipment', 'MRCController@BookEquipment');
     Route::get('/getBookingbyEquipmentid/{id}', 'MRCController@getBookingbyEquipmentid');
+    Route::get('/getBookingbyEquipmentidWithUsername/{id}', 'MRCController@getBookingbyEquipmentidWithUsername');
     Route::get('/mymrcbooking', 'MRCController@mymrcbooking'); //getBookingByUserId
     Route::get('/getBookingByUserId', 'MRCController@getBookingByUserId');
 
 
     Route::get('/mrcbookingmngadmin', 'MRCController@mrcbookingmngadmin');
     Route::get('/deleteBookingByID/{id}', 'MRCController@deleteBookingByID');
+    Route::post('/checkTimeAvailable', 'MRCController@checkTimeAvailable');
+    Route::get('/testcomname', 'MRCController@testcomname');
+    Route::get('/cfmBookingByID/{id}', 'MRCController@cfmBookingByID');
+    Route::get('/deleteBookingByIDByUser/{id}', 'MRCController@deleteBookingByIDByUser');
+    Route::get('/mrcbookingstat', 'MRCController@mrcbookingstat');
+
+    Route::post('/setAccess', 'MRCController@setAccess');
+    Route::get('/banning', 'MRCController@banning');
+
+    Route::get('/banningadmin', 'MRCController@banningadmin');
+    Route::get('/getBanning', 'MRCController@getBanning');
+    Route::post('/activeBanning', 'MRCController@activeBanning');
 });
 

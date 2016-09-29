@@ -18,7 +18,7 @@ $(document).ready(function () {
         "pagingType": "full_numbers"
     });
     $('#txtMemoDate').datepicker({
-        format: 'dd/mm/yyyy'
+        format: 'dd-mm-yyyy'
     });
 });
 function OpenRejectForm(fid) {

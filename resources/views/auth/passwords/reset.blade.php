@@ -2,15 +2,15 @@
 
 @section('header')
 <!-- BEGIN PAGE LEVEL STYLES -->
-        <link href="/assets/pages/css/login.min.css" rel="stylesheet" type="text/css" />
+        <link href="/public/assets/pages/css/login.min.css" rel="stylesheet" type="text/css" />
 <!-- END PAGE LEVEL STYLES -->
 @endsection
 
 @section('content')
 <!-- BEGIN LOGO -->
         <div class="logo">
-            <a href="/index.html">
-                <img src="/assets/global/img/logo-big.png" alt="" /> </a>
+            <a href="/">
+                <img src="/public/assets/global/img/logo-big.png" alt="" /> </a>
         </div>
         <!-- END LOGO -->
         <div class="content">
@@ -42,8 +42,8 @@
 
 @section('footer')
     <!-- BEGIN PAGE LEVEL PLUGINS -->
-        <script src="/assets/global/plugins/jquery-validation/js/jquery.validate.min.js" type="text/javascript"></script>
+        <script src="/public/assets/global/plugins/jquery-validation/js/jquery.validate.min.js" type="text/javascript"></script>
         <!-- BEGIN PAGE LEVEL SCRIPTS -->
-        <script src="/assets/pages/scripts/resetpassword.js" type="text/javascript"></script>
+        <script src="/public/assets/pages/scripts/resetpassword.js" type="text/javascript"></script>
         <!-- END PAGE LEVEL SCRIPTS -->
 @endsection

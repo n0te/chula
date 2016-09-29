@@ -217,7 +217,7 @@
                                     @endforeach
                                     @else
                                     <tr>
-                                        <td class="text-center" colspan="6">
+                                        <td class="text-center" colspan="7">
                                             ยังไม่มีการสร้างฟอร์ม
                                         </td>
                                     </tr>

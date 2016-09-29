@@ -64,6 +64,10 @@ return [
             'prefix' => '',
             'strict' => false,
             'engine' => null,
+            'timezone'  => '+07:00',
+            'options'   => [
+                \PDO::ATTR_EMULATE_PREPARES => true
+            ]
         ],
 
         'pgsql' => [

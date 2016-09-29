@@ -110,7 +110,7 @@
                         <i class="fa fa-file"></i>
                         <span class="caption-subject font-dark bold uppercase">ตารางการจองอุปกรณ์ทั้งหมด</span>
                     </div>
-                  
+
                 </div>
                 <table id='tblReviewform' width="100%" class="table table-bordered table-hover">
                     <thead>
@@ -232,22 +232,28 @@
                                         return "<img width='200px' alt='' src='public/uploads/equipmentimg/" + full.equipmentpicturename + "' class='img-thumbnail' />";
                                     }
                                 },
-                                {data: 'bookingdate', name: 'bookingdate'},
                                 {"bVisible": true, "bSearchable": false, "bSortable": false,
                                     "mData": null,
                                     "mRender": function (data, type, full) {
-                                        return  full.bookingstarttime + " - " + full.bookingendtime;
+                                        return  moment(full.bookingdate).format("DD/MM/YYYY");
+                                        ;
                                     }
                                 },
                                 {"bVisible": true, "bSearchable": false, "bSortable": false,
                                     "mData": null,
                                     "mRender": function (data, type, full) {
-                                        if (full.bookingstatus === 0) {
-                                            return '<span class="label label-sm label-success">ยังไม่ได้ใช้งาน</span>';
-                                        } else if (full.bookingstatus === 1) {
+                                        return  moment(full.bookingdate + 'T' + full.bookingstarttime).format("HH:mm") + " - " + moment(full.bookingdate + 'T' + full.bookingendtime).format("HH:mm");
+                                    }
+                                },
+                                {"bVisible": true, "bSearchable": false, "bSortable": false,
+                                    "mData": null,
+                                    "mRender": function (data, type, full) {
+                                        if (String(full.bookingstatus) === '0') {
+                                            return '<span class="label label-sm label-info">ยังไม่ได้ใช้งาน</span>';
+                                        } else if (String(full.bookingstatus) === '1') {
                                             return '<span class="label label-sm label-success">ใช้งานแล้ว</span>';
-                                        } else if (full.bookingstatus === 2) {
-                                            return '<span class="label label-sm label-success">เลยกำหนดการใช้งาน</span>';
+                                        } else if (String(full.bookingstatus) === '-1') {
+                                            return '<span class="label label-sm label-danger">เลยกำหนดการใช้งาน</span>';
                                         }
                                     }
                                 },

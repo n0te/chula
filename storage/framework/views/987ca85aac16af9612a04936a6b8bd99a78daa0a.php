@@ -182,7 +182,18 @@
                                         <input  class="form-control placeholder-no-fix timepicker" type="text" placeholder="" name="bookingendtime" id="bookingendtime" value=""/>
                                     </div>
                                 </div>
-
+                                <div class="form-group">
+                                    <label class="col-md-6 control-label">ระยะเวลาสูงสุดในการใช้งาน (ชั่วโมง)</label>
+                                    <div class="col-md-6">
+                                        <input  class="form-control placeholder-no-fix" type="text" placeholder="" name="equipmenthourallow" readonly="true" id="equipmenthourallow" value=""/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-6 control-label">ราคา</label>
+                                    <div class="col-md-6">
+                                        <input  class="form-control placeholder-no-fix" type="text" placeholder="" name="equipmentprice" readonly="true" id="equipmentprice" value=""/>
+                                    </div>
+                                </div>
                             </div>
 
                         </form>
@@ -200,9 +211,12 @@
     <!-- /.modal-dialog -->
 </div>
 <input type="hidden" name="_token" value="<?php echo e(csrf_token()); ?>">
+<input type="hidden" name="hidusertype" id="hidusertype" value="<?php echo e(Auth::user()->type); ?>">
 <input type="hidden" name="hidsaveoredit" id="hidsaveoredit" value="">
 <input type="hidden" name="hidequipmentid" id="hidequipmentid" value="">
 <input type="hidden" name="hiddateselect" id="hiddateselect" value="">
+<input type="hidden" name="hiddateselect" id="hidchkavi" value="">
+
 <?php $__env->stopSection(); ?>
 
 <?php $__env->startSection('footer'); ?>
@@ -311,6 +325,36 @@
                                 error: function () {
 
                                 }
+                            },
+                            eventRender: function (event, element) {
+                                $(element).tooltip({title: event.title});
+                            }
+                        });
+
+                        $.ajax({
+                            url: '/getEquipmentByID/' + equipmentid,
+                            method: 'get',
+                            dataType: 'json',
+                            contentType: false,
+                            processData: false,
+                            error: function (data) {
+                                console.log(data.responseText);
+                            },
+                            success: function (data) {
+                                $("#hidequipmentid").val(data['MRCEquipment'][0].equipmentid);
+                                $("#equipmenthourallow").val(data['MRCEquipment'][0].equipmenthourallow);
+                                //equipmentprice
+                                var eqprice = 0;
+                                if ($("#hidusertype").val() === '1') {
+                                    eqprice = data['MRCEquipment'][0].equipmentpricefordoctordepartment;
+                                } else if ($("#hidusertype").val() === '2') {
+                                    eqprice = data['MRCEquipment'][0].equipmentpriceforuniversity;
+                                } else if ($("#hidusertype").val() === '3') {
+                                    eqprice = data['MRCEquipment'][0].equipmentforoutsideuniversitygov;
+                                } else if ($("#hidusertype").val() === '4') {
+                                    eqprice = data['MRCEquipment'][0].equipmentforoutsideuniversityprivate;
+                                }
+                                $("#equipmentprice").val(eqprice);
                             }
                         });
                         $('#mdlBookEquipment').modal('toggle');
@@ -319,7 +363,32 @@
                     $('#mdlBookEquipment').on('shown.bs.modal', function () {
                         $("#calendar").fullCalendar('render');
                     });
-
+                    function chkavi() {
+                        var start_time = ($("#bookingstarttime").val()).replace(/ /g, "");
+                        var end_time = ($("#bookingendtime").val()).replace(/ /g, "");
+                        var formData = new FormData();
+                        formData.append('bookingdate', $("#hiddateselect").val());
+                        formData.append('bookingequipmentid', $("#hidequipmentid").val());
+                        formData.append('bookingstarttime', start_time + ":00");
+                        formData.append('bookingendtime', end_time + ":00");
+                        $.ajax({
+                            url: '/checkTimeAvailable',
+                            method: 'post',
+                            dataType: 'json',
+                            contentType: false,
+                            processData: false,
+                            data: formData,
+                            error: function (data) {
+                                console.log(data.responseText);
+                                alert(data.responseText);
+                            },
+                            success: function (data) {
+                                if (data.message === 'notfree') {
+                                    $("#hidchkavi").val('notfree');
+                                }
+                            }
+                        });
+                    }
                     function BookEquipment() {
                         if ($.trim($("#bookingdate").val()).length === 0) {
                             sudoNotify.error("กรุณาเลือกวันที่จะเข้าใช้งาน");
@@ -347,11 +416,11 @@
                             sudoNotify.error("กรุณากรอกเวลาสิ้นสุดมากกว่าเวลาเริ่มต้น");
                             return false;
                         }
-
+                        if (Math.abs(endt - stt) / 36e5 > parseFloat($("#equipmenthourallow").val())) {
+                            sudoNotify.error("กรุณาจองอุปกรณ์ภายในระยะเวลาที่อนุญาติ");
+                            return false;
+                        }
                         var formData = new FormData();
-//                        $('input[type="text"], input[type="checkbox"], textarea, input[type="password"], input[type="hidden"], select').each(function (i) {
-//                            formData.append($(this).attr('id'), $(this).val());
-//                        });
                         formData.append('bookingdate', $("#hiddateselect").val());
                         formData.append('bookingequipmentid', $("#hidequipmentid").val());
                         formData.append('bookingstarttime', start_time + ":00");
@@ -370,17 +439,13 @@
                             },
                             success: function (data) {
                                 if (data.message === 'saved') {
-//                                    $('#tblReviewform').DataTable().ajax.reload();
-//                                    $('#mdlGroup').modal('toggle');
-//                                    if ($("#hidsaveoredit").val() === 'EditGroup') {
-//                                        sudoNotify.success("แก้ไขกลุ่มเครื่องมือเรียบร้อย");
-//                                    } else {
-//                                        sudoNotify.success("เพิ่มกลุ่มเครื่องมือเรียบร้อย");
-//                                    }
                                     sudoNotify.success("จองอุปกรณ์เรียบร้อย กำลังกลับไปหน้า การจองอุปกรณ์ทั้งหมด");
                                     setTimeout(function () {
                                         window.location.href = "/mymrcbooking";
                                     }, 3000);
+                                } else if (data.message === 'notavi') {
+                                    sudoNotify.error("อุปกรณ์ที่ท่านจองไม่ว่างในวันและเวลาดังกล่าว");
+                                    return false;
                                 }
                             }
 

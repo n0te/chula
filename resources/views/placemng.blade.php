@@ -130,9 +130,9 @@
                             <td>
                                 ชื่อย่อ
                             </td>
-                            <td>
+<!--                            <td>
                                 ชื่อเครื่องคอมพิวเตอร์
-                            </td>
+                            </td>-->
                             <td>
                                 คำสั่ง
                             </td>
@@ -172,12 +172,12 @@
                                     <input  class="form-control placeholder-no-fix" type="text" placeholder="" name="placeabbreviate" id="placeabbreviate" value=""/>
                                 </div>
                             </div>
-                            <div class="form-group">
+<!--                            <div class="form-group">
                                 <label class="col-md-3 control-label">ชื่อเครื่องคอมพิวเตอร์</label>
                                 <div class="col-md-9">
                                     <input  class="form-control placeholder-no-fix" type="text" placeholder="" name="placecomputername" id="placecomputername" value=""/>
                                 </div>
-                            </div>
+                            </div>-->
                         </div>
                     </form>
                 </div>
@@ -259,7 +259,7 @@
                                 {data: 'placeid', name: 'placeid'},
                                 {data: 'placename', name: 'placename'},
                                 {data: 'placeabbreviate', name: 'placeabbreviate'},
-                                {data: 'placecomputername', name: 'placecomputername'},
+                                //{data: 'placecomputername', name: 'placecomputername'},
                                 {"bVisible": true, "bSearchable": false, "bSortable": false,
                                     "fnCreatedCell": function (nTd, sData, oData, iRow, iCol)
                                     {
@@ -278,7 +278,7 @@
                     function resetfield() {
                         $("#placename").val('');
                         $("#placeabbreviate").val('');
-                        $("#placecomputername").val('');
+                        //$("#placecomputername").val('');
                     }
                     function OpenAddPlace() {
                         resetfield();
@@ -301,7 +301,7 @@
                                 $("#hidplaceid").val(data['MRCPlace'][0].placeid);
                                 $("#placename").val(data['MRCPlace'][0].placename);
                                 $("#placeabbreviate").val(data['MRCPlace'][0].placeabbreviate);
-                                $("#placecomputername").val(data['MRCPlace'][0].placecomputername);
+                                //$("#placecomputername").val(data['MRCPlace'][0].placecomputername);
                                 $('#mdlPlace').modal('toggle');
                             }
                         });
@@ -338,10 +338,10 @@
                             sudoNotify.error("กรุณาชื่อย่อสถานที่");
                             return false;
                         }
-                        if ($.trim($("#placecomputername").val()).length === 0) {
-                            sudoNotify.error("กรุณากรอกชื่อเครื่องคอมพิวเตอร์ที่สถานที่นั้น");
-                            return false;
-                        }
+//                        if ($.trim($("#placecomputername").val()).length === 0) {
+//                            sudoNotify.error("กรุณากรอกชื่อเครื่องคอมพิวเตอร์ที่สถานที่นั้น");
+//                            return false;
+//                        }
                      
                         var formData = new FormData();
                         $('input[type="text"], input[type="checkbox"], textarea, input[type="password"], input[type="hidden"], select').each(function (i) {
