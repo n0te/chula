@@ -176,7 +176,7 @@
                                             <?php endif; ?>
                                         </td>
                                         <td class="col-md-1">
-                                            <?php if($Formreq->FormReqStstus !== 1): ?>
+                                            <?php if((int)$Formreq->FormReqStstus !== 1): ?>
                                             <?php echo e(date("d-m-Y", strtotime($Formreq->FormReqSendDate))); ?>
 
                                             <?php else: ?>
@@ -184,34 +184,34 @@
                                             <?php endif; ?>
                                         </td>
                                         <td class="col-md-1">
-                                            <?php if($Formreq->FormReqStstus === 2): ?>
+                                            <?php if((int)$Formreq->FormReqStstus === 2): ?>
                                             <span class="label label-sm label-success"> รอการตรวจสอบจากฝ่ายวิจัย </span>
-                                            <?php elseif($Formreq->FormReqStstus === 1): ?>
+                                            <?php elseif((int)$Formreq->FormReqStstus === 1): ?>
                                             <?php if(is_null($Formreq->FormReqRejectReason)): ?>
                                             <span class="label label-sm label-warning"> ยังไม่ได้ส่งข้อมูล </span>
                                             <?php else: ?>
                                             <span class="label label-sm label-warning"> มีข้อแก้ไข (<?php echo e($Formreq->FormReqRejectReason); ?>) </span>
                                             <?php endif; ?>
-                                            <?php elseif($Formreq->FormReqStstus === 3): ?>
+                                            <?php elseif((int)$Formreq->FormReqStstus === 3): ?>
                                             <span class="label label-sm label-info"> จัดทำเอกสารตัวจริงส่งมายังฝ่ายวิจัย </span>
-                                            <?php elseif($Formreq->FormReqStstus === 4): ?>
+                                            <?php elseif((int)$Formreq->FormReqStstus === 4): ?>
                                             <span class="label label-sm label-info"> อยู่ระหว่างรออนุมัติจาก กรรมการคณะฯ </span>
-                                            <?php elseif($Formreq->FormReqStstus === 5): ?>
+                                            <?php elseif((int)$Formreq->FormReqStstus === 5): ?>
                                             <span class="label label-sm label-info"> ร่างประกาศส่งต่อไปยังมหาวิทยาลัย </span>
-                                            <?php elseif($Formreq->FormReqStstus === 6): ?>
+                                            <?php elseif((int)$Formreq->FormReqStstus === 6): ?>
                                             <span class="label label-sm label-info"> ประกาศแหล่งทุนภายนอกเสร็จสมบูรณ์ </span>
                                             <?php endif; ?>
                                         </td>
                                         <td class="col-md-3">
-                                            <?php if($Formreq->FormReqStstus === 3): ?>
+                                            <?php if((int)$Formreq->FormReqStstus === 3): ?>
                                             <a traget="_blank" href="/createdocx/<?php echo e($Formreq->FormReqID); ?>" class="btn btn-outline btn-circle blue btn-sm blue">
                                                 <i class="fa fa-file-word-o"></i> ดาวโหลดไฟล์ Word </a>
-                                            <?php elseif($Formreq->FormReqStstus === 1): ?>
+                                            <?php elseif((int)$Formreq->FormReqStstus === 1): ?>
                                             <a href="/requestform/<?php echo e($Formreq->FormReqID); ?>" class="btn btn-outline btn-circle blue btn-sm blue">
                                                 <i class="fa fa-edit"></i> แก้ไข </a>
                                             <a href="/deleteformrequest/<?php echo e($Formreq->FormReqID); ?>" data-toggle="confirmation" data-original-title="คุณแน่ใจว่าจะลบรายการนี้" data-popout="true" title=""  class="btn btn-outline btn-circle red btn-sm red">
                                                 <i class="fa fa-trash-o"></i> ลบ </a>
-                                            <?php elseif($Formreq->FormReqStstus === 6): ?>
+                                            <?php elseif((int)$Formreq->FormReqStstus === 6): ?>
                                             <a traget="_blank" href="uploads/pdf/<?php echo e($Formreq->FormReqCRCNumber); ?>.pdf" class="btn btn-outline btn-circle blue btn-sm blue">
                                                 <i class="fa fa-edit"></i> ดาวน์โหลด PDF </a>
                                             <?php endif; ?>

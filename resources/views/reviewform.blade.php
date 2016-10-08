@@ -165,20 +165,20 @@
                                             {{ date("d-m-Y", strtotime($Formreq->FormReqSendDate)) }}
                                         </td>
                                         <td>
-                                            @if ($Formreq->FormReqStstus === 2)
+                                            @if ((int)$Formreq->FormReqStstus === 2)
                                             <span class="label label-sm label-info"> รอตรวจสอบ </span>
-                                            @elseif ($Formreq->FormReqStstus === 3)
+                                            @elseif ((int)$Formreq->FormReqStstus === 3)
                                             <span class="label label-sm label-warning"> รอเอกสารตัวจริงจากผู้วิจัย </span>
-                                            @elseif ($Formreq->FormReqStstus === 4)
+                                            @elseif ((int)$Formreq->FormReqStstus === 4)
                                             <span class="label label-sm label-warning"> อยู่ระหว่างรออนุมัติจาก กรรมการคณะฯ </span>
-                                            @elseif ($Formreq->FormReqStstus === 5)
+                                            @elseif ((int)$Formreq->FormReqStstus === 5)
                                             <span class="label label-sm label-warning"> ร่างประกาศส่งต่อไปยังมหาวิทยาลัย </span>
-                                            @elseif ($Formreq->FormReqStstus === 6)
+                                            @elseif ((int)$Formreq->FormReqStstus === 6)
                                             <span class="label label-sm label-success"> ประกาศแหล่งทุนภายนอกเสร็จสมบูรณ์ </span>
                                             @endif
                                         </td>
                                         <td>
-                                            @if ($Formreq->FormReqStstus === 2)
+                                            @if ((int)$Formreq->FormReqStstus === 2)
                                             <a traget="_blank" href="/createdocx/{{$Formreq->FormReqID}}" class="btn btn-outline btn-circle blue btn-sm blue">
                                                 <i class="fa fa-file-word-o"></i> ดาวโหลดไฟล์ Word </a>
                                             <a href="/approveformbyadmin/{{$Formreq->FormReqID}}" data-toggle="confirmation" data-original-title="คุณแน่ใจว่าจะอนุมัติรายการนี้" data-popout="true" title=""  class="btn btn-outline btn-circle green btn-sm green">
@@ -187,25 +187,25 @@
                                                 <i class="fa fa-trash-o"></i> ปฏิเสธ </a>
                                             <a href="/deleteformrequestadmin/{{$Formreq->FormReqID}}"  data-toggle="confirmation" data-original-title="คุณแน่ใจว่าจะลบรายการนี้" data-popout="true" title=""  class="btn btn-outline btn-circle red btn-sm red">
                                                 <i class="fa fa-trash-o"></i> ลบ </a>
-                                            @elseif ($Formreq->FormReqStstus === 3)
+                                            @elseif ((int)$Formreq->FormReqStstus === 3)
                                             <a href="/receivepaper/{{$Formreq->FormReqID}}" data-toggle="confirmation" data-original-title="คุณแน่ใจว่าได้รับเอกสารตัวจริงแล้ว" data-popout="true" title=""  class="btn btn-outline btn-circle green btn-sm green">
                                                 <i class="fa fa-trash-o"></i> ได้รับเอกสารตัวจริง </a>
                                             <a href="/deleteformrequestadmin/{{$Formreq->FormReqID}}" data-toggle="confirmation" data-original-title="คุณแน่ใจว่าจะลบรายการนี้" data-popout="true" title=""  class="btn btn-outline btn-circle red btn-sm red">
                                                 <i class="fa fa-trash-o"></i> ลบ </a>
-                                            @elseif ($Formreq->FormReqStstus === 4)
+                                            @elseif ((int)$Formreq->FormReqStstus === 4)
                                             <a href="#mdlMemo" data-toggle="modal" onclick="OpenCreateMemo('{{$Formreq->FormReqID}}'); return false;" class="btn btn-outline btn-circle blue btn-sm blue">
                                                 <i class="fa fa-edit"></i> สร้างบรรทึกข้อความ </a>
                                             <a href="/deleteformrequestadmin/{{$Formreq->FormReqID}}" data-toggle="confirmation" data-original-title="คุณแน่ใจว่าจะลบรายการนี้" data-popout="true" title=""  class="btn btn-outline btn-circle red btn-sm red">
                                                 <i class="fa fa-trash-o"></i> ลบ </a>
 
-                                            @elseif ($Formreq->FormReqStstus === 5)
+                                            @elseif ((int)$Formreq->FormReqStstus === 5)
                                             <a href="#mdlMemo" data-toggle="modal" onclick="OpenCreateMemo('{{$Formreq->FormReqID}}'); return false;" class="btn btn-outline btn-circle blue btn-sm blue">
                                                 <i class="fa fa-edit"></i> สร้างบรรทึกข้อความ </a>
                                             <a href="#mdlAnnouncementNumber" data-toggle="modal" onclick="OpenAnnouncementNumber('{{$Formreq->FormReqID}}'); return false;" class="btn btn-outline btn-circle blue btn-sm blue">
                                                 <i class="fa fa-edit"></i> กรอกรหัสประกาศ </a>
                                             <a href="/deleteformrequestadmin/{{$Formreq->FormReqID}}" data-toggle="confirmation" data-original-title="คุณแน่ใจว่าจะลบรายการนี้" data-popout="true" title=""  class="btn btn-outline btn-circle red btn-sm red">
                                                 <i class="fa fa-trash-o"></i> ลบ </a>
-                                            @elseif ($Formreq->FormReqStstus === 6)
+                                            @elseif ((int)$Formreq->FormReqStstus === 6)
                                             <a href="#mdlMemo" data-toggle="modal" onclick="OpenCreateMemo('{{$Formreq->FormReqID}}'); return false;" class="btn btn-outline btn-circle blue btn-sm blue">
                                                 <i class="fa fa-edit"></i> สร้างบรรทึกข้อความ </a>
                                             <a href="#mdlAnnouncementNumber" data-toggle="modal" onclick="OpenAnnouncementNumber('{{$Formreq->FormReqID}}'); return false;" class="btn btn-outline btn-circle blue btn-sm blue">
