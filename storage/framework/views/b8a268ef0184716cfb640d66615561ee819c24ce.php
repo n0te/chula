@@ -303,8 +303,8 @@
                                         var cname = $("#hidcname").val();
                                         var res = cname.split(".");
 
-                                        if (jQuery.inArray(full.equipmentid, res) !== -1) {
-                                            if (full.bookingstatus === '0') {
+                                        if (jQuery.inArray(String(full.equipmentid), res) !== -1) {
+                                            if (String(full.bookingstatus) === '0') {
                                                 var start = new Date(full.bookingdate),
                                                         end = moment(),
                                                         diff = new Date(start - end),

@@ -43,6 +43,7 @@ use PhpOffice\PhpWord\PhpWord;
 use PHPExcel;
 use PHPExcel_IOFactory;
 use PHPExcel_Reader_Excel2007;
+use PHPExcel_Writer_Excel2007;
 use Yajra\Datatables\Datatables;
 use App\MRC_Couse;
 use App\MRC_Group;
@@ -64,6 +65,17 @@ class MRCController extends Controller {
 //        }
 //        //echo '555';
 //    }
+    public function __construct() {
+        $this->isLogin();
+    }
+
+    public function isLogin() {
+        if (!empty(Auth::user())) {
+            
+        } else {
+            return redirect('/')->send();
+        }
+    }
 
     public function index() {
         $Formreqs = Formreq::whereIn('FormReqStstus', array(2, 3, 4, 5, 6))
@@ -100,7 +112,9 @@ class MRCController extends Controller {
                 return view('banning', ['user' => Auth::user(), 'dateendbanning' => date('d/m/Y', strtotime($chkban . ' +1 day'))]);
             }
         } else {
-            return view('banning', ['user' => Auth::user(), 'dateendbanning' => date('d/m/Y', strtotime($chkban . ' +1 day'))]);
+            $bancount = DB::select("SELECT COUNT(`banid`) AS bancount FROM `mrc_ban` WHERE `banuserid` = " . Auth::user()->id);
+
+            return view('banning', ['user' => Auth::user(), 'bancounts' => $bancount, 'dateendbanning' => date('d/m/Y', strtotime($chkban . ' +1 day'))]);
         }
     }
 
@@ -111,6 +125,69 @@ class MRCController extends Controller {
         } else {
             return '0';
         }
+    }
+
+    public function getchart(Request $request) {
+        //$request->hidequipmentid
+        $sd = explode("-", $request->sd);
+        $ed = explode("-", $request->ed);
+        $d1 = date("Y-m-d", strtotime($sd[2] . '-' . $sd[1] . '-' . $sd[0]));
+        $d2 = date("Y-m-d", strtotime($ed[2] . '-' . $ed[1] . '-' . $ed[0]));
+        //echo "SELECT *,(SELECT COUNT(*) AS ce FROM `mrc_booking` WHERE `bookingequipmentid` = mrc_equipment.`equipmentid` and (`bookingdate` between '2016-10-30' and '2016-11-20')) AS ce FROM `mrc_equipment` WHERE `equipmentisdelete` = 0";
+        $eqc = DB::select("SELECT *,(SELECT COUNT(*) AS ce FROM `mrc_booking` WHERE `bookingequipmentid` = mrc_equipment.`equipmentid` and (`bookingdate` between '" . $d1 . "' and '" . $d2 . "')) AS ce FROM `mrc_equipment` WHERE `equipmentisdelete` = 0");
+        //return view('mrcbookingstat', ['user' => Auth::user(), 'eqcs' => $eqc]);
+        return Response::json($eqc);
+    }
+
+    public function mrcexporttoexcel($sdr, $edr) {
+        //$request->hidequipmentid
+        $sd = explode("-", $sdr);
+        $ed = explode("-", $edr);
+        $d1 = date("Y-m-d", strtotime($sd[2] . '-' . $sd[1] . '-' . $sd[0]));
+        $d2 = date("Y-m-d", strtotime($ed[2] . '-' . $ed[1] . '-' . $ed[0]));
+
+
+        $objPHPExcel = new PHPExcel();
+
+        $objPHPExcel->setActiveSheetIndex(0);
+        $objPHPExcel->getActiveSheet()->SetCellValue('A1', 'รายงานการใช้งานอุปกรณ์ต่างๆตั้งแต่วันที่ ' . $sdr . ' ถึงวันที่ ' . $edr);
+        $objPHPExcel->getActiveSheet()->SetCellValue('A2', 'อุปกรณ์');
+        $objPHPExcel->getActiveSheet()->SetCellValue('B2', 'บุคคลในคณะแพทย์');
+        $objPHPExcel->getActiveSheet()->SetCellValue('C2', 'บุคคลากรในจุฬา');
+        $objPHPExcel->getActiveSheet()->SetCellValue('D2', 'บุคคลากรในหน่วยงานรัฐ');
+        $objPHPExcel->getActiveSheet()->SetCellValue('E2', 'บุคคลากรและอื่นๆในภาคเอกชน');
+        $objPHPExcel->getActiveSheet()->SetCellValue('F2', 'รวม');
+        $objPHPExcel->getActiveSheet()->SetCellValue('G2', 'ไม่เข้าใช้งาน');
+        $objPHPExcel->getActiveSheet()->SetCellValue('H2', 'เข้าใช้งาน');
+        //$objPHPExcel->getActiveSheet()->SetCellValue('H1', 'สถานที่');
+
+        $freq = DB::select("SELECT *
+,(SELECT COUNT(*) AS ce FROM `mrc_booking` WHERE `bookingequipmentid` = mrc_equipment.`equipmentid` AND (`bookingdate` BETWEEN '" . $d1 . "' and '" . $d2 . "')) AS ce
+,(SELECT COUNT(*) AS cban FROM `mrc_booking` WHERE `bookingstatus` = -1 AND`bookingequipmentid` = mrc_equipment.`equipmentid` AND (`bookingdate` BETWEEN '" . $d1 . "' and '" . $d2 . "')) AS cban
+,(SELECT COUNT(*) AS cuse FROM `mrc_booking` WHERE `bookingstatus` = 1 AND`bookingequipmentid` = mrc_equipment.`equipmentid` AND (`bookingdate` BETWEEN '" . $d1 . "' and '" . $d2 . "')) AS cuse
+ FROM `mrc_equipment` WHERE `equipmentisdelete` = 0");
+        for ($i = 0; $i < count($freq); $i++) {
+
+            $c1 = DB::select("SELECT COUNT(*) AS c1 FROM `bookingview` WHERE  `equipmentid` = " . $freq[$i]->equipmentid . " AND `bookingstatus` = -1 AND `type` = 1 AND `bookingisdelete` = 0 AND (`bookingdate` BETWEEN '" . $d1 . "' and '" . $d2 . "')");
+            $c2 = DB::select("SELECT COUNT(*) AS c2 FROM `bookingview` WHERE  `equipmentid` = " . $freq[$i]->equipmentid . " AND `bookingstatus` = -1 AND `type` = 2 AND `bookingisdelete` = 0 AND (`bookingdate` BETWEEN '" . $d1 . "' and '" . $d2 . "')");
+            $c3 = DB::select("SELECT COUNT(*) AS c3 FROM `bookingview` WHERE  `equipmentid` = " . $freq[$i]->equipmentid . " AND `bookingstatus` = -1 AND `type` = 3 AND `bookingisdelete` = 0 AND (`bookingdate` BETWEEN '" . $d1 . "' and '" . $d2 . "')");
+            $c4 = DB::select("SELECT COUNT(*) AS c4 FROM `bookingview` WHERE  `equipmentid` = " . $freq[$i]->equipmentid . " AND `bookingstatus` = -1 AND `type` = 4 AND `bookingisdelete` = 0 AND (`bookingdate` BETWEEN '" . $d1 . "' and '" . $d2 . "')");
+
+            $objPHPExcel->getActiveSheet()->SetCellValue('A' . ($i + 3), $freq[$i]->equipmentname);
+            $objPHPExcel->getActiveSheet()->SetCellValue('B' . ($i + 3), $c1[0]->c1);
+            $objPHPExcel->getActiveSheet()->SetCellValue('C' . ($i + 3), $c2[0]->c2);
+            $objPHPExcel->getActiveSheet()->SetCellValue('D' . ($i + 3), $c3[0]->c3);
+            $objPHPExcel->getActiveSheet()->SetCellValue('E' . ($i + 3), $c4[0]->c4);
+            $objPHPExcel->getActiveSheet()->SetCellValue('F' . ($i + 3), $freq[$i]->ce);
+            $objPHPExcel->getActiveSheet()->SetCellValue('G' . ($i + 3), $freq[$i]->cban);
+            $objPHPExcel->getActiveSheet()->SetCellValue('H' . ($i + 3), $freq[$i]->cuse);
+        }
+
+        $objWriter = new PHPExcel_Writer_Excel2007($objPHPExcel);
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header("Content-Disposition: attachment;filename=Export.xls");
+        header('Cache-Control: max-age=0');
+        $objWriter->save('php://output');
     }
 
     public function checkbanning() {
@@ -159,7 +236,9 @@ class MRCController extends Controller {
                 return view('banning', ['user' => Auth::user(), 'dateendbanning' => date('d/m/Y', strtotime($chkban . ' +1 day'))]);
             }
         } else {
-            return view('banning', ['user' => Auth::user(), 'dateendbanning' => date('d/m/Y', strtotime($chkban . ' +1 day'))]);
+            $bancount = DB::select("SELECT COUNT(`banid`) AS bancount FROM `mrc_ban` WHERE `banuserid` = " . Auth::user()->id);
+
+            return view('banning', ['user' => Auth::user(), 'bancounts' => $bancount, 'dateendbanning' => date('d/m/Y', strtotime($chkban . ' +1 day'))]);
         }
     }
 
@@ -191,24 +270,25 @@ class MRCController extends Controller {
     public function equipmentmng() {
         return view('equipmentmng', ['user' => Auth::user(),
             'places' => MRC_Place::where('placeisdelete', '=', 0)->get(),
-            'couses' => MRC_Couse::where('couseisdelete', '=', 0)->get(),
-            'groups' => MRC_Group::where('groupisdelete', '=', 0)->get()]);
+            'couses' => MRC_Couse::where('couseisdelete', '=', 0)->get()]);
+        //'groups' => MRC_Group::where('groupisdelete', '=', 0)->get()]);
     }
 
     public function getEquipmentforbooking() {
         $equipment = DB::TABLE('equipmentview')
-                ->SELECT('equipmentid', 'equipmentname', 'groupname', 'placename', 'cousename', 'equipmentpicturename')
+                ->SELECT('equipmentid', 'equipmentname', 'placename', 'cousename', 'equipmentpicturename')
                 ->WHERE('equipmentisdelete', '=', 0)
                 ->WHERE('equipmentstatus', '=', 1);
+
         return Datatables::of($equipment)->make(true);
     }
 
     public function getEquipment() {
         $equipment = DB::TABLE('mrc_equipment')
-                ->JOIN('mrc_group', 'mrc_equipment.equipmentgroup', '=', 'mrc_group.groupid')
+                //->JOIN('mrc_group', 'mrc_equipment.equipmentgroup', '=', 'mrc_group.groupid')
                 ->JOIN('mrc_place', 'mrc_equipment.equipmentplace', '=', 'mrc_place.placeid')
                 ->JOIN('mrc_couse', 'mrc_equipment.equipmentcouse', '=', 'mrc_couse.couseid')
-                ->SELECT('equipmentid', 'equipmentname', 'groupname', 'placename', 'equipmentstatus', 'equipmentpicturename', 'equipmentstatus')
+                ->SELECT('equipmentid', 'equipmentname', 'placename', 'equipmentstatus', 'equipmentpicturename', 'equipmentstatus')
                 ->WHERE('equipmentisdelete', '=', 0);
         return Datatables::of($equipment)->make(true);
     }
@@ -318,7 +398,7 @@ WHERE ((`bookingstarttime` BETWEEN \'' . $request->bookingstarttime . '\' AND \'
         // $equipment->equipmentpicturename = $request->equipmentpicturename;
         $equipment->equipmentstatus = $request->equipmentstatus;
         $equipment->equipmentcouse = $request->equipmentcouse;
-        $equipment->equipmentgroup = $request->equipmentgroup;
+        //$equipment->equipmentgroup = $request->equipmentgroup;
         $equipment->equipmentplace = $request->equipmentplace;
         $equipment->equipmentaddate = Date("Y/m/d");
         $equipment->equipmentaddby = Auth::user()->id;
@@ -345,6 +425,32 @@ WHERE ((`bookingstarttime` BETWEEN \'' . $request->bookingstarttime . '\' AND \'
         return Response::json(["message" => "saved"], 200);
     }
 
+    public function uploadpictureforannouncement(Request $request) {
+        $allowed = array('png', 'jpg', 'jpeg');
+        $rules = [
+            'file' => 'required|image|mimes:jpeg,jpg,png'
+        ];
+        $data = Input::all();
+        $validator = Validator::make($data, $rules);
+        if ($validator->fails()) {
+            return '{"status":"Invalid File type"}';
+        }
+        if (Input::hasFile('file')) {
+            $extension = Input::file('file')->getClientOriginalExtension();
+            if (!in_array(strtolower($extension), $allowed)) {
+                return '{"status":"Invalid File type"}';
+            } else {
+                $filename = uniqid() . '_attachment.' . $extension;
+                if (Input::file('file')->move('public/uploads/announcement/', $filename)) {
+                    echo url('public/uploads/announcement/' . $filename);
+                    exit;
+                }
+            }
+        } else {
+            return '{"status":"Invalid File type"}';
+        }
+    }
+
     public function EditEquipment(Request $request) {
         $equipment = MRC_Equipment::find($request->hidequipmentid);
         $equipment->equipmentname = $request->equipmentname;
@@ -359,7 +465,7 @@ WHERE ((`bookingstarttime` BETWEEN \'' . $request->bookingstarttime . '\' AND \'
         // $equipment->equipmentpicturename = $request->equipmentpicturename;
         $equipment->equipmentstatus = $request->equipmentstatus;
         $equipment->equipmentcouse = $request->equipmentcouse;
-        $equipment->equipmentgroup = $request->equipmentgroup;
+        //$equipment->equipmentgroup = $request->equipmentgroup;
         $equipment->equipmentplace = $request->equipmentplace;
         $equipment->save();
         $picname = '';
@@ -546,6 +652,31 @@ WHERE ((`bookingstarttime` BETWEEN \'' . $request->bookingstarttime . '\' AND \'
     public function testcomname() {
         $freq = DB::select('SELECT now() as aaa');
         echo $freq[0]->aaa;
+    }
+
+    public function saveannouncementmrc(Request $request) {
+        DB::table('announcement')
+                ->where('announcementfor', 'mrc')
+                ->update(array('announcementhtml' => $request->antext));
+        return Response::json(["message" => "saved"], 200);
+    }
+
+    public function mrcannouncementadmin() {
+
+        $eqc = DB::select("SELECT * FROM `announcement` WHERE `announcementfor` = 'mrc'");
+        $dd = $eqc[0]->announcementhtml;
+        return view('mrcannouncementadmin', ['user' => Auth::user(), 'eqcs' => $dd]);
+    }
+
+    public function gethtmlannouncementmrc() {
+        $eqc = DB::select("SELECT * FROM `announcement` WHERE `announcementfor` = 'mrc'");
+        return Response::json($eqc);
+    }
+
+    public function mrcannouncement() {
+        $eqc = DB::select("SELECT * FROM `announcement` WHERE `announcementfor` = 'mrc'");
+        $dd = $eqc[0]->announcementhtml;
+        return view('mrcannoucement', ['user' => Auth::user(), 'eqcs' => $dd]);
     }
 
 }

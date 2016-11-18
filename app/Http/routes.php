@@ -113,6 +113,7 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('/cfmBookingByID/{id}', 'MRCController@cfmBookingByID');
     Route::get('/deleteBookingByIDByUser/{id}', 'MRCController@deleteBookingByIDByUser');
     Route::get('/mrcbookingstat', 'MRCController@mrcbookingstat');
+    Route::post('/getchart', 'MRCController@getchart');
 
     Route::post('/setAccess', 'MRCController@setAccess');
     Route::get('/banning', 'MRCController@banning');
@@ -120,5 +121,13 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('/banningadmin', 'MRCController@banningadmin');
     Route::get('/getBanning', 'MRCController@getBanning');
     Route::post('/activeBanning', 'MRCController@activeBanning');
+    Route::get('/mrcexporttoexcel/{d1}/{d2}', 'MRCController@mrcexporttoexcel');
+    Route::get('/mrcannouncementadmin', 'MRCController@mrcannouncementadmin');
+
+    Route::post('/saveannouncementmrc', 'MRCController@saveannouncementmrc');
+    Route::get('/gethtmlannouncementmrc', 'MRCController@gethtmlannouncementmrc');
+    Route::get('/mrcannouncement', 'MRCController@mrcannouncement');
+    
+    Route::post('/uploadpictureforannouncement', 'MRCController@uploadpictureforannouncement');
 });
 

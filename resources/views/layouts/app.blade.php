@@ -111,7 +111,7 @@
                     <!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing -->
                     <!-- DOC: Set data-keep-expand="true" to keep the submenues expanded -->
                     <!-- DOC: Set data-auto-speed="200" to adjust the sub menu slide up/down speed -->
-                    <ul class="page-sidebar-menu  page-header-fixed page-sidebar-menu-closed " data-keep-expanded="false" data-auto-scroll="true" data-slide-speed="200" style="padding-top: 20px">
+                    <ul class="page-sidebar-menu  page-header-fixed page-sidebar-menu-closed " data-keep-expanded="false" data-auto-scroll="true" data-slide-speed="200">
                         <!-- DOC: To remove the sidebar toggler from the sidebar you just need to completely remove the below "sidebar-toggler-wrapper" LI element -->
                         <li class="sidebar-toggler-wrapper hide">
                             <!-- BEGIN SIDEBAR TOGGLER BUTTON -->
@@ -138,7 +138,7 @@
                          </form> -->
                         <!-- END RESPONSIVE QUICK SEARCH FORM -->
                         <!--  </li> -->
-                        <li class="nav-item start ">
+                        <li class="nav-item">
                             <a href="/" class="nav-link nav-toggle">
                                 <i class="icon-home"></i>
                                 <span class="title">Home</span>
@@ -186,6 +186,12 @@
                                 <span class="arrow"></span>
                             </a>
                             <ul class="sub-menu"> 
+                                 <li class="nav-item  ">
+                                    <a href="/mrcannouncement" class="nav-link ">
+                                        <span class="title">ประกาศ MRC</span>
+                                    </a>
+
+                                </li>
                                 <li class="nav-item  ">
                                     <a href="/mrcbookingmng" class="nav-link ">
                                         <span class="title">จองอุปกรณ์</span>
@@ -250,22 +256,58 @@
                            </li> -->
                         @if(Utility::isAdminOfAnyModule(Auth::user()->id))
                         <li class="nav-item">
+                            <a href="/reviewmembers" class="nav-link nav-toggle">
+                                <i class="icon-settings"></i>
+                                <span class="title">ผู้ดูแลระบบจัดการผู้ใช้</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
                             <a href="javascript:;" class="nav-link nav-toggle">
                                 <i class="icon-settings"></i>
-                                <span class="title">ผู้ดูแลระบบ</span>
+                                <span class="title">ผู้ดูแลระบบทุนภายนอก</span>
                                 <span class="arrow"></span>
                             </a>
                             <ul class="sub-menu">
-                                <li class="nav-item">
-                                    <a href="/reviewmembers" class="nav-link ">
-                                        <span class="title">จัดการผู้ใช้</span>
-                                    </a>
-                                </li>
+                                <!--                                <li class="nav-item">
+                                                                    <a href="/reviewmembers" class="nav-link ">
+                                                                        <span class="title">จัดการผู้ใช้</span>
+                                                                    </a>
+                                                                </li>-->
                                 <li class="nav-item">
                                     <a href="/reviewform" class="nav-link ">
                                         <span class="title">จัดการแบบฟอร์ม</span>
                                     </a>
                                 </li>
+
+                                <!--                                <li class="nav-item">
+                                                                    <a href="/homeannouncement" class="nav-link ">
+                                                                        <span class="title">จัดการประกาศหน้าแรก</span>
+                                                                    </a>
+                                                                </li>
+                                                                <li class="nav-item">
+                                                                    <a href="/mrcannouncement" class="nav-link ">
+                                                                        <span class="title">จัดการประกาศ MRC</span>
+                                                                    </a>
+                                                                </li>-->
+                            </ul>
+                        </li>
+                        <li class="nav-item">
+                            <a href="javascript:;" class="nav-link nav-toggle">
+                                <i class="icon-settings"></i>
+                                <span class="title">ผู้ดูแลระบบ MRC</span>
+                                <span class="arrow"></span>
+                            </a>
+                            <ul class="sub-menu">
+                                <!--                                <li class="nav-item">
+                                                                    <a href="/reviewmembers" class="nav-link ">
+                                                                        <span class="title">จัดการผู้ใช้</span>
+                                                                    </a>
+                                                                </li>
+                                                                <li class="nav-item">
+                                                                    <a href="/reviewform" class="nav-link ">
+                                                                        <span class="title">จัดการแบบฟอร์ม</span>
+                                                                    </a>
+                                                                </li>-->
                                 <li class="nav-item">
                                     <a href="/mrcbookingmngadmin" class="nav-link ">
                                         <span class="title">จัดการ MRC</span>
@@ -281,11 +323,11 @@
                                         <span class="title">จัดการสถานที่</span>
                                     </a>
                                 </li>
-                                <li class="nav-item">
-                                    <a href="/groupmng" class="nav-link ">
-                                        <span class="title">จัดการกลุ่มเครื่องมือ</span>
-                                    </a>
-                                </li>
+                                <!--                                <li class="nav-item">
+                                                                    <a href="/groupmng" class="nav-link ">
+                                                                        <span class="title">จัดการกลุ่มเครื่องมือ</span>
+                                                                    </a>
+                                                                </li>-->
                                 <li class="nav-item">
                                     <a href="/cousemng" class="nav-link ">
                                         <span class="title">จัดการหลักสูตรการอบรม</span>
@@ -294,6 +336,16 @@
                                 <li class="nav-item">
                                     <a href="/banningadmin" class="nav-link ">
                                         <span class="title">จัดการผู้ถูกระงับการใช้งาน(MRC)</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/mrcbookingstat" class="nav-link ">
+                                        <span class="title">รายงานการใช้งานอุปกรณ์ MRC</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/mrcannouncementadmin" class="nav-link ">
+                                        <span class="title">จัดการประกาศ MRC</span>
                                     </a>
                                 </li>
                             </ul>

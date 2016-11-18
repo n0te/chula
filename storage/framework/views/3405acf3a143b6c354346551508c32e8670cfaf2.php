@@ -211,9 +211,9 @@
                     "mData": null,
                     "mRender": function (data, type, full) {
                         if (full.banactive === '1') {
-                            return "<select onchange='return setActive(\"" + full.banid + "\",this)' class='form-control'><option value='1' selected>เปิดระงับการใช้งาน</option><option value='0'>ปิดระงับการใช้งาน</option></select>";
+                            return "<select onchange='return setActive(\"" + full.banid + "\",this)' class='form-control'><option value='1' selected>ระงับการใช้งาน</option><option value='0'>ยกเลิกระงับการใช้งาน</option></select>";
                         } else {
-                            return "<select onchange='return setActive(\"" + full.banid + "\",this)' class='form-control'><option value='1'>เปิดระงับการใช้งาน</option><option value='0' selected>ปิดระงับการใช้งาน</option></select>";
+                            return "<select onchange='return setActive(\"" + full.banid + "\",this)' class='form-control'><option value='1'>ระงับการใช้งาน</option><option value='0' selected>ยกเลิกระงับการใช้งาน</option></select>";
                         }
 
                     }

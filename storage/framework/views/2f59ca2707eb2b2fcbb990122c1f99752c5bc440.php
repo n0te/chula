@@ -128,9 +128,9 @@
                             <td>
                                 ชื่ออุปกรณ์
                             </td>
-                            <td>
+<!--                            <td>
                                 ประเภท
-                            </td>
+                            </td>-->
                             <td>
                                 สถานที่
                             </td>
@@ -158,7 +158,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                <h4 class="modal-title">กลุ่มเครื่องมือ</h4>
+                <h4 class="modal-title">อุปกรณ์</h4>
             </div>
             <div class="modal-body">
                 <div class="portlet-body form">
@@ -254,18 +254,14 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="form-group">
+<!--                            <div class="form-group">
                                 <label class="col-md-3 control-label">กลุ่มเครื่องมือ</label>
                                 <div class="col-md-9">
                                     <select name="equipmentgroup"  id="equipmentgroup" class="form-control">
-                                        <?php foreach($groups as $group): ?>
-                                        <option value='<?php echo e($group -> groupid); ?>'> <?php echo e($group -> groupname); ?>
-
-                                        </option>
-                                        <?php endforeach; ?>
+                                    
                                     </select>
                                 </div>
-                            </div>
+                            </div>-->
                             <div class="form-group">
                                 <label class="col-md-3 control-label">สถานะ</label>
                                 <div class="col-md-9">
@@ -384,6 +380,7 @@
                             processing: true,
                             serverSide: true,
                             ajax: '/getequipmentfortbl',
+                            "order": [[ 0, "desc" ]],
                             "lengthChange": false,
                             "info": false,
                             "pagingType": "full_numbers",
@@ -396,7 +393,7 @@
                                     }
                                 },
                                 {data: 'equipmentname', name: 'equipmentname'},
-                                {data: 'groupname', name: 'groupname'},
+                                //{data: 'groupname', name: 'groupname'},
                                 {data: 'placename', name: 'placename'},
                                 {"bVisible": true, "bSearchable": false, "bSortable": false,
                                     "fnCreatedCell": function (nTd, sData, oData, iRow, iCol)
@@ -441,7 +438,7 @@
                         $("#equipmentforoutsideuniversitygov").val('');
                         $("#equipmentforoutsideuniversityprivate").val('');
                         $('#equipmentplace option:first-child').attr("selected", "selected");
-                        $('#equipmentgroup option:first-child').attr("selected", "selected");
+                        //$('#equipmentgroup option:first-child').attr("selected", "selected");
                         $('#equipmentcouse option:first-child').attr("selected", "selected");
                         $('#equipmentpicturename').fileinput('clear');
                     }
@@ -453,6 +450,7 @@
                     }
                     function OpenEditEquipment(equipmentid) {
                         //hidequipmentid();
+                        resetfield();
                         $("#hidsaveoredit").val('EditEquipment');
                         $.ajax({
                             url: '/getEquipmentByID/' + equipmentid,
@@ -475,7 +473,7 @@
                                 $("#equipmentforoutsideuniversitygov").val(data['MRCEquipment'][0].equipmentforoutsideuniversitygov);
                                 $("#equipmentforoutsideuniversityprivate").val(data['MRCEquipment'][0].equipmentforoutsideuniversityprivate);
                                 $('#equipmentplace').val(data['MRCEquipment'][0].equipmentplace);
-                                $('#equipmentgroup').val(data['MRCEquipment'][0].equipmentgroup);
+                               // $('#equipmentgroup').val(data['MRCEquipment'][0].equipmentgroup);
                                 $('#equipmentcouse').val(data['MRCEquipment'][0].equipmentcouse);
                                 $('#equipmentstatus').val(data['MRCEquipment'][0].equipmentstatus);
                                 $('#fupPDF').fileinput('clear');

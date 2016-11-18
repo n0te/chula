@@ -10,7 +10,7 @@
 <link href="public/assets/global/plugins/sudobar/dist/style/jquery.sudo-notify.css" rel="stylesheet" type="text/css"/>
 <link href="public/assets/global/plugins/datatables/DataTables-1.10.12/media/css/jquery.dataTables.css" rel="stylesheet" type="text/css"/>
 <link href="public/assets/global/plugins/fullcalendar/fullcalendar.css" rel="stylesheet" type="text/css"/>
-<link href="public/assets/global/plugins/timepicker/css/timepicki.css" rel="stylesheet" type="text/css"/>
+<link href="public/assets/global/plugins/bootstrap-timepicker/css/bootstrap-timepicker.css" rel="stylesheet" type="text/css"/>
 <style>
     .file-panel{
         position:relative;
@@ -128,9 +128,9 @@
                             <td>
                                 ชื่ออุปกรณ์
                             </td>
-                            <td>
+<!--                            <td>
                                 ประเภท
-                            </td>
+                            </td>-->
                             <td>
                                 สถานที่
                             </td>
@@ -174,14 +174,14 @@
                                 <div class="form-group">
                                     <label class="col-md-6 control-label">เวลาที่จะเข้าใช้งาน</label>
                                     <div class="col-md-6">
-                                        <input  class="form-control placeholder-no-fix timepicker" type="text" placeholder="" name="bookingstarttime" id="bookingstarttime" value=""/>
+                                        <input  class="form-control placeholder-no-fix timepicker timepicker-24" type="text" placeholder="" name="bookingstarttime" id="bookingstarttime" value=""/>
                                     </div>
                                 </div>
 
                                 <div class="form-group">
                                     <label class="col-md-6 control-label">เวลาเมื่อเสร็จสิ้นการใช้งาน</label>
                                     <div class="col-md-6">
-                                        <input  class="form-control placeholder-no-fix timepicker" type="text" placeholder="" name="bookingendtime" id="bookingendtime" value=""/>
+                                        <input  class="form-control placeholder-no-fix  timepicker timepicker-24" type="text" placeholder="" name="bookingendtime" id="bookingendtime" value=""/>
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -191,7 +191,7 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="col-md-6 control-label">ราคา</label>
+                                    <label class="col-md-6 control-label">ราคา / ชั่วโมง</label>
                                     <div class="col-md-6">
                                         <input  class="form-control placeholder-no-fix" type="text" placeholder="" name="equipmentprice" readonly="true" id="equipmentprice" value=""/>
                                     </div>
@@ -241,7 +241,7 @@
 <script src="public/assets/global/plugins/jquery-number-master/jquery.number.js" type="text/javascript"></script>
 <script src="public/assets/global/plugins/fullcalendar/lib/moment.min.js" type="text/javascript"></script>
 <script src="public/assets/global/plugins/fullcalendar/fullcalendar.js" type="text/javascript"></script>
-<script src="public/assets/global/plugins/timepicker/js/timepicki.js" type="text/javascript"></script>
+<script src="public/assets/global/plugins/bootstrap-timepicker/js/bootstrap-timepicker.js" type="text/javascript"></script>
 <script>
                     var sudoNotify = $('.notification-container').sudoNotify({
                         log: true,
@@ -270,7 +270,7 @@
                                     }
                                 },
                                 {data: 'equipmentname', name: 'equipmentname'},
-                                {data: 'groupname', name: 'groupname'},
+                                //{data: 'groupname', name: 'groupname'},
                                 {data: 'placename', name: 'placename'},
                                 {data: 'cousename', name: 'cousename'},
                                 {"bVisible": true, "bSearchable": false, "bSortable": false,
@@ -285,14 +285,14 @@
                                 }
                             ]
                         });
-                        $('.timepicker').timepicki({
-                            show_meridian: false,
-                            min_hour_value: 0,
-                            max_hour_value: 23,
-                            overflow_minutes: true,
-                            increase_direction: 'up',
-                            disable_keyboard_mobile: true
-                        });
+//                        $('.timepicker').timepicki({
+//                            show_meridian: false,
+//                            min_hour_value: 0,
+//                            max_hour_value: 23,
+//                            overflow_minutes: true,
+//                            increase_direction: 'up',
+//                            disable_keyboard_mobile: true
+//                        });
                         //  $('input.number').number(true, 2);
                     });
                     function resetfield() {
@@ -319,8 +319,19 @@
                             timeFormat: 'H(:mm)',
                             displayEventTime: false,
                             select: function (start, end) {
-                                $('#bookingdate').val(moment(start).format('DD/MM/YYYY'));
-                                $('#hiddateselect').val(moment(start).format('YYYY/MM/DD'));
+
+
+                                var check = moment(start, 'DD.MM.YYYY').format('YYYY-MM-DD');
+                                var today = moment(new Date()).format('YYYY-MM-DD');
+                                if (check < today)
+                                {
+                                    sudoNotify.error("คุณไม่สามารถจองวันย้อนหลังได้");
+                                } else
+                                {
+                                    $('#bookingdate').val(moment(start).format('DD/MM/YYYY'));
+                                    $('#hiddateselect').val(moment(start).format('YYYY/MM/DD'));
+                                }
+
                             },
                             events: {
                                 url: '/getBookingbyEquipmentid/' + equipmentid,

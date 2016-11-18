@@ -72,7 +72,9 @@
     hdmargin{
         margin-bottom: 20px;
     }
-
+    .borderless td, .borderless th {
+        border: 0px;
+    }
 </style>
 <!-- END PAGE LEVEL STYLES -->
 @endsection
@@ -89,7 +91,7 @@
                 <i class="fa fa-circle"></i>
             </li>
             <li>
-                <span>อุปกรณ์</span>
+                <span>รายงานการใช้งานอุปกรณ์ MRC</span>
             </li>
         </ul>
     </div>
@@ -109,11 +111,51 @@
                 <div class="portlet-title">
                     <div class="caption">
                         <i class="fa fa-file"></i>
-                        <span class="caption-subject font-dark bold uppercase">แผนภูมิแท่งแสดงการใช้งานทั้งหมดของอปกรณ์ต่างๆ</span>
+                        <span class="caption-subject font-dark bold uppercase">แผนภูมิแท่งแสดงการใช้งานทั้งหมดของอุปกรณ์ต่างๆ</span>
                     </div>
+
                     <div class="actions">
-                        <!--                        <a href="#" onclick="OpenAddEquipment(); return false;" class="btn green-meadow">
-                                                    <i class="fa fa-plus"></i> เพิ่มอุปกรณ์</a>-->
+
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <table class="table table-borderless borderless">
+                            <tr>
+                                <td style=" border:0px;">
+                                    <div class="col-md-10">
+                                        <div class="input-group">
+                                            <input class="form-control form-control-inline" type="text" value="" id="txtStartDate" name="txtStartDate">
+                                            <span class="input-group-addon">
+                                                <i class="fa fa-calendar"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td style=" border:0px;">
+                                    ถึง
+                                </td>
+                                <td style=" border:0px;">
+                                    <div class="col-md-10">
+                                        <div class="input-group">
+                                            <input class="form-control form-control-inline" type="text" value="" id="txtEndDate" name="txtEndDate">
+                                            <span class="input-group-addon">
+                                                <i class="fa fa-calendar"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td style=" border:0px;">
+                                    <a onclick="getChart(); return false;" class="btn btn-circle btn-primary">
+                                        <i class="fa fa-search"></i> ค้นหา
+                                    </a>
+                                </td>
+                                <td style=" border:0px;">
+                                    <a id="btntoexcel" onclick="mrcexporttoexcel(); return false;" traget="_blank" class="btn btn-outline btn-circle green btn-sm green">
+                                        <i class="fa fa-file-excel-o"></i> Export to excel</a>
+                                </td>
+                            </tr>
+                        </table>
                     </div>
                 </div>
                 <div id="columnchart_values"></div>
@@ -156,51 +198,104 @@
 
 <script src="public/assets/global/plugins/gchart/loader.js" type="text/javascript"></script>
 <script type="text/javascript">
-    google.charts.load("current", {packages: ['corechart']});
-    google.charts.setOnLoadCallback(drawChart);
-    function drawChart() {
-    var data = google.visualization.arrayToDataTable([
-    ["eqm", "time", {role: "style"}],
-            @foreach($eqcs as $eqc)
-    ["{{$eqc -> equipmentname}}", {{$eqc -> ce}}, ""],
-            @endforeach
-    ]);
-    var view = new google.visualization.DataView(data);
-    view.setColumns([0, 1,
-    {calc: "stringify",
-            sourceColumn: 1,
-            type: "string",
-            role: "annotation"},
-            2]);
-    var options = {
-    title: "จำนวนการใช้งานอุปกรณ์ทั้งหมด",
-            legend: {position: "none"},
-            height: 600,
-            hAxis: {
-            title: 'อุปกรณ์'
-            },
-            vAxis: {
-            title: 'จำนวนครั้ง'
-            }
-    };
-    var chart = new google.visualization.ColumnChart(document.getElementById("columnchart_values"));
-    chart.draw(view, options);
-    }
+                                        google.charts.load("current", {packages: ['corechart']});
+                                        function getChart() {
+                                            if ($.trim($("#txtStartDate").val()).length === 0) {
+                                                sudoNotify.error("กรุณาเลือกวันเริ่มต้น");
+                                                return false;
+                                            }
+                                            if ($.trim($("#txtEndDate").val()).length === 0) {
+                                                sudoNotify.error("กรุณาเลือกวันสิ้นสุด");
+                                                return false;
+                                            }
+                                            google.charts.setOnLoadCallback(drawChart);
+                                            $('#btntoexcel').show();
+                                        }
+
+                                        function drawChart() {
+//    var data = google.visualization.arrayToDataTable([
+//    ["eqm", "time", {role: "style"}],
+//            @foreach($eqcs as $eqc)
+//    ["{{$eqc -> equipmentname}}", {{$eqc -> ce}}, ""],
+//            @endforeach
+//    ]);
+
+                                            var formData = new FormData();
+                                            formData.append('sd', $("#txtStartDate").val());
+                                            formData.append('ed', $("#txtEndDate").val());
+                                            $.ajax({
+                                                url: '/getchart',
+                                                method: 'post',
+                                                dataType: 'json',
+                                                contentType: false,
+                                                processData: false,
+                                                data: formData,
+                                                error: function (data) {
+                                                    console.log(data.responseText);
+                                                    alert(data.responseText);
+                                                },
+                                                success: function (result) {
+                                                    var Combined = new Array();
+                                                    Combined[0] = ['eqm', 'time', {role: "style"}];
+                                                    for (var i = 0; i < result.length; i++) {
+                                                        Combined[i + 1] =
+                                                                [result[i].equipmentname,
+                                                                    parseInt(result[i].ce),
+                                                                    ''];
+                                                    }
+//second parameter is false because first row is headers, not data.
+                                                    var table = google.visualization.arrayToDataTable(Combined, false);
+                                                    //var datag = google.visualization.arrayToDataTable([["eqm", "time", {role: "style"}], jsonArr]);
+                                                    var view = new google.visualization.DataView(table);
+                                                    view.setColumns([0, 1,
+                                                        {calc: "stringify",
+                                                            sourceColumn: 1,
+                                                            type: "string",
+                                                            role: "annotation"},
+                                                        2]);
+                                                    var options = {
+                                                        title: "จำนวนการใช้งานอุปกรณ์ทั้งหมด",
+                                                        legend: {position: "none"},
+                                                        height: 600,
+                                                        hAxis: {
+                                                            title: 'อุปกรณ์'
+                                                        },
+                                                        vAxis: {
+                                                            title: 'จำนวนครั้ง'
+                                                        }
+                                                    };
+                                                    var chart = new google.visualization.ColumnChart(document.getElementById("columnchart_values"));
+                                                    chart.draw(view, options);
+                                                }
+                                            });
+                                        }
 </script>
 <script>
     var sudoNotify = $('.notification-container').sudoNotify({
-    log: true,
-            position: "top",
-            animation: {
+        log: true,
+        position: "top",
+        animation: {
             type: "slide-fade", //fade, scroll-left, scroll-left-fade, scroll-right, scroll-right-fade, slide, slide-fade or none
-                    showSpeed: 400,
-                    hideSpeed: 250
-            }
+            showSpeed: 400,
+            hideSpeed: 250
+        }
     });
     $(document).ready(function () {
-
-
+        $('#btntoexcel').hide();
+        $('#txtStartDate').datepicker({
+            format: 'dd-mm-yyyy'
+        });
+        $('#txtEndDate').datepicker({
+            format: 'dd-mm-yyyy'
+        });
     });
+    function mrcexporttoexcel() {
+//        alert('5555');
+//        var formData = new FormData();
+//        formData.append('sd', $("#txtStartDate").val());
+//        formData.append('ed', $("#txtEndDate").val());
+        window.open('/mrcexporttoexcel/' + $("#txtStartDate").val() + '/' + $("#txtEndDate").val());
 
+    }
 </script>
 @endsection

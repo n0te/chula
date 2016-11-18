@@ -53,8 +53,14 @@ class RequestFormController extends Controller {
      * @return void
      */
     public function __construct() {
-        if (Auth::check()) {
+        $this->isLogin();
+    }
+
+    public function isLogin() {
+        if (!empty(Auth::user())) {
             
+        } else {
+            return redirect('/')->send();
         }
     }
 
