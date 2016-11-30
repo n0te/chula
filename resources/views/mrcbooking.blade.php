@@ -72,6 +72,9 @@
     hdmargin{
         margin-bottom: 20px;
     }
+    .disabled {
+        background-color: #eef1f5;
+    }
 
 </style>
 <!-- END PAGE LEVEL STYLES -->
@@ -341,9 +344,14 @@
                             },
                             eventRender: function (event, element) {
                                 $(element).tooltip({title: event.title});
+                            },
+                            dayRender: function (date, cell) {
+                                var today = new Date();
+                                if (date < today) {
+                                    $(cell).addClass('disabled');
+                                }
                             }
                         });
-
                         $.ajax({
                             url: '/getEquipmentByID/' + equipmentid,
                             method: 'get',

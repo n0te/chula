@@ -186,7 +186,7 @@
                                 <span class="arrow"></span>
                             </a>
                             <ul class="sub-menu"> 
-                                 <li class="nav-item  ">
+                                <li class="nav-item  ">
                                     <a href="/mrcannouncement" class="nav-link ">
                                         <span class="title">ประกาศ MRC</span>
                                     </a>
@@ -201,6 +201,60 @@
                                 <li class="nav-item  ">
                                     <a href="/mymrcbooking" class="nav-link ">
                                         <span class="title">รายการจอง</span>
+                                    </a>
+                                </li>
+                            </ul>
+
+                        </li>
+                        <li class="nav-item">
+                            <a href="javascript:;" class="nav-link nav-toggle">
+                                <i class="icon-diamond"></i>
+                                <span class="title">Biostatistics</span>
+                                <span class="arrow"></span>
+                            </a>
+                            <ul class="sub-menu"> 
+                                <li class="nav-item  ">
+                                    <a href="/bioannouncement" class="nav-link ">
+                                        <span class="title">ประกาศ Biostatistics</span>
+                                    </a>
+
+                                </li>
+                                <li class="nav-item  ">
+                                    <a href="/biobooking" class="nav-link ">
+                                        <span class="title">นัดพบอาจารย์ที่ปรึกษา</span>
+                                    </a>
+
+                                </li>
+                                <li class="nav-item  ">
+                                    <a href="/mybiobooking" class="nav-link ">
+                                        <span class="title">รายการนัดพบ</span>
+                                    </a>
+                                </li>
+                            </ul>
+
+                        </li>
+                         <li class="nav-item">
+                            <a href="javascript:;" class="nav-link nav-toggle">
+                                <i class="icon-diamond"></i>
+                                <span class="title">Animal House</span>
+                                <span class="arrow"></span>
+                            </a>
+                            <ul class="sub-menu"> 
+                                <li class="nav-item  ">
+                                    <a href="/aniannouncement" class="nav-link ">
+                                        <span class="title">ประกาศ Animal House</span>
+                                    </a>
+
+                                </li>
+                                <li class="nav-item  ">
+                                    <a href="/anibooking" class="nav-link ">
+                                        <span class="title">จอง Animal House</span>
+                                    </a>
+
+                                </li>
+                                <li class="nav-item  ">
+                                    <a href="/myanibooking" class="nav-link ">
+                                        <span class="title">รายการจอง Animal House</span>
                                     </a>
                                 </li>
                             </ul>
@@ -346,6 +400,96 @@
                                 <li class="nav-item">
                                     <a href="/mrcannouncementadmin" class="nav-link ">
                                         <span class="title">จัดการประกาศ MRC</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="nav-item">
+                            <a href="javascript:;" class="nav-link nav-toggle">
+                                <i class="icon-settings"></i>
+                                <span class="title">ผู้ดูแลระบบ Biostatistics</span>
+                                <span class="arrow"></span>
+                            </a>
+                            <ul class="sub-menu">
+                                <!--                                <li class="nav-item">
+                                                                    <a href="/reviewmembers" class="nav-link ">
+                                                                        <span class="title">จัดการผู้ใช้</span>
+                                                                    </a>
+                                                                </li>
+                                                                <li class="nav-item">
+                                                                    <a href="/reviewform" class="nav-link ">
+                                                                        <span class="title">จัดการแบบฟอร์ม</span>
+                                                                    </a>
+                                                                </li>-->
+                                <li class="nav-item">
+                                    <a href="/biobookingmngadmin" class="nav-link ">
+                                        <span class="title">จัดการ Biostatistics</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/teachermng" class="nav-link ">
+                                        <span class="title">จัดการบุคลากร</span>
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a href="/biobanningadmin" class="nav-link ">
+                                        <span class="title">จัดการผู้ถูกระงับการใช้งาน(Biostatistics)</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/biobookingreport" class="nav-link ">
+                                        <span class="title">รายงานบุคลากร Biostatistics</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/bioannouncementadmin" class="nav-link ">
+                                        <span class="title">จัดการประกาศ Biostatistics</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="nav-item">
+                            <a href="javascript:;" class="nav-link nav-toggle">
+                                <i class="icon-settings"></i>
+                                <span class="title">ผู้ดูแลระบบ Animal House</span>
+                                <span class="arrow"></span>
+                            </a>
+                            <ul class="sub-menu">
+                                <!--                                <li class="nav-item">
+                                                                    <a href="/reviewmembers" class="nav-link ">
+                                                                        <span class="title">จัดการผู้ใช้</span>
+                                                                    </a>
+                                                                </li>
+                                                                <li class="nav-item">
+                                                                    <a href="/reviewform" class="nav-link ">
+                                                                        <span class="title">จัดการแบบฟอร์ม</span>
+                                                                    </a>
+                                                                </li>-->
+                                <li class="nav-item">
+                                    <a href="/mrcbookingmngadmin" class="nav-link ">
+                                        <span class="title">การจอง Animal House</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/aniroommng" class="nav-link ">
+                                        <span class="title">จัดการ Animal House</span>
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a href="/banningadmin" class="nav-link ">
+                                        <span class="title">จัดการผู้ถูกระงับการใช้งาน(Animal House)</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/mrcbookingstat" class="nav-link ">
+                                        <span class="title">รายงานการใช้งาน Animal House</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/aniannouncementadmin" class="nav-link ">
+                                        <span class="title">จัดการประกาศ Animal House</span>
                                     </a>
                                 </li>
                             </ul>

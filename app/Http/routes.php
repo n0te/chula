@@ -127,7 +127,60 @@ Route::group(['middleware' => 'web'], function () {
     Route::post('/saveannouncementmrc', 'MRCController@saveannouncementmrc');
     Route::get('/gethtmlannouncementmrc', 'MRCController@gethtmlannouncementmrc');
     Route::get('/mrcannouncement', 'MRCController@mrcannouncement');
-    
+
     Route::post('/uploadpictureforannouncement', 'MRCController@uploadpictureforannouncement');
+
+    Route::get('/teachermng', 'BiostatController@teachermng');
+    Route::post('/SaveTeacher', 'BiostatController@SaveTeacher');
+    Route::get('/getTeacher', 'BiostatController@getTeacher');
+    Route::get('/deleteTeacherByID/{id}', 'BiostatController@deleteTeacherByID');
+    Route::get('/getTeacherByID/{id}', 'BiostatController@getTeacherByID');
+    Route::post('/EditTeacher', 'BiostatController@EditTeacher');
+    Route::get('/bioannouncementadmin', 'BiostatController@bioannouncementadmin');
+    Route::post('/saveannouncementbio', 'BiostatController@saveannouncementbio');
+    Route::get('/gethtmlannouncementbio', 'BiostatController@gethtmlannouncementbio');
+    Route::get('/bioannouncement', 'BiostatController@bioannouncement');
+    Route::get('/biobooking', 'BiostatController@biobooking');
+    Route::get('/getTeacherforbooking', 'BiostatController@getTeacherforbooking');
+    Route::get('/getBookingbyTeacherid/{id}', 'BiostatController@getBookingbyTeacherid');
+    Route::post('/biocheckTimeAvailable', 'BiostatController@biocheckTimeAvailable');
+    Route::post('/BookTeacher', 'BiostatController@BookTeacher');
+    Route::get('/getBioBookingByUserId', 'BiostatController@getBioBookingByUserId');
+    Route::get('/mybiobooking', 'BiostatController@mybiobooking');
+    Route::post('/setAccessBio', 'BiostatController@setAccessBio');
+    Route::get('/getBookingbyTeacheridWithUsername/{id}', 'BiostatController@getBookingbyTeacheridWithUsername');
+    Route::get('/deleteBioBookingByIDByUser/{id}', 'BiostatController@deleteBioBookingByIDByUser');
+    Route::get('/cfmBioBookingByID/{id}', 'BiostatController@cfmBioBookingByID');
+    Route::get('/biobookingmngadmin', 'BiostatController@biobookingmngadmin');
+    Route::get('/deleteBioBookingByID/{id}', 'BiostatController@deleteBioBookingByID');
+    Route::get('/getBioBanning', 'BiostatController@getBioBanning');
+    Route::get('/biobanningadmin', 'BiostatController@biobanningadmin');
+    Route::post('/activeBioBanning', 'BiostatController@activeBioBanning');
+    Route::get('/biobookingreport', 'BiostatController@biobookingreport');
+    Route::post('/getchartbio', 'BiostatController@getchartbio');
+    Route::get('/bioexporttoexcel/{d1}/{d2}', 'BiostatController@bioexporttoexcel');
+
+    Route::get('/aniroommng', 'AniController@aniroommng');
+    Route::post('/SaveAniRoom', 'AniController@SaveAniRoom');
+    Route::get('/getaniroomfortbl', 'AniController@getaniroomfortbl');
+    Route::get('/deleteAniRoomByID/{id}', 'AniController@deleteAniRoomByID');
+    Route::get('/getAniRoomByID/{id}', 'AniController@getAniRoomByID');
+    Route::post('/EditAniRoom', 'AniController@EditAniRoom');
+    Route::get('/aniannouncementadmin', 'AniController@aniannouncementadmin');
+    Route::post('/saveannouncementani', 'AniController@saveannouncementani');
+    Route::get('/gethtmlannouncementani', 'AniController@gethtmlannouncementani');
+    Route::get('/aniannouncement', 'AniController@aniannouncement');
+    Route::get('/cfmAniBookingByID/{id}', 'AniController@cfmAniBookingByID');
+    Route::post('/setAccessAni', 'AniController@setAccessAni');
+    Route::get('/anibooking', 'AniController@anibooking');
+    Route::get('/getAniRoomforbooking', 'AniController@getAniRoomforbooking');
+    Route::get('/getBookingbyAniRoomid/{id}', 'AniController@getBookingbyAniRoomid');
+    Route::get('/getBookingbyAniRoomIDWithUsername/{id}', 'AniController@getBookingbyAniRoomIDWithUsername');
+    Route::get('/getAniRoomByID/{id}', 'AniController@getAniRoomByID');
+    Route::post('/anicheckTimeAvailable', 'AniController@anicheckTimeAvailable');
+    Route::post('/BookAniRoom', 'AniController@BookAniRoom');
+    Route::get('/getAniBookingByUserId', 'AniController@getAniBookingByUserId');
+    Route::get('/myanibooking', 'AniController@myanibooking');
+    Route::get('/deleteAniBookingByIDByUser/{id}', 'AniController@deleteAniBookingByIDByUser');
 });
 

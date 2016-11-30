@@ -106,7 +106,7 @@
                 <div class="portlet-title">
                     <div class="caption">
                         <i class="fa fa-file"></i>
-                        <span class="caption-subject font-dark bold uppercase">ตารางการระงับการใช้งานชั่วคราวทั้งหมด</span>
+                        <span class="caption-subject font-dark bold uppercase">ตารางการระงับการใช้งาน MRC ชั่วคราวทั้งหมด</span>
                     </div>
 
                 </div>

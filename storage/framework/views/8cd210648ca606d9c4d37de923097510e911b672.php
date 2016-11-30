@@ -149,20 +149,20 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                <h4 class="modal-title">กลุ่มเครื่องมือ</h4>
+                <h4 class="modal-title">หลักสูตรการอบรม</h4>
             </div>
             <div class="modal-body">
                 <div class="portlet-body form">
                     <form class="form-horizontal" role="form">
                         <div class="form-body">
                             <div class="form-group">
-                                <label class="col-md-3 control-label">ชื่อกลุ่มเครื่องมือ</label>
+                                <label class="col-md-3 control-label">ชื่อหลักสูตรการอบรม</label>
                                 <div class="col-md-9">
                                     <input  class="form-control placeholder-no-fix" type="text" placeholder="" name="cousename" id="cousename" value=""/>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="col-md-3 control-label">ชื่อกลุ่มเครื่องมือภาษาอังกฤษ</label>
+                                <label class="col-md-3 control-label">ชื่อหลักสูตรการอบรมภาษาอังกฤษ</label>
                                 <div class="col-md-9">
                                     <input  class="form-control placeholder-no-fix" type="text" placeholder="" name="couseengname" id="couseengname" value=""/>
                                 </div>

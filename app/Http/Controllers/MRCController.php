@@ -255,8 +255,8 @@ class MRCController extends Controller {
     }
 
     public function mrcbookingstat() {
-        $eqc = DB::select('SELECT *,(SELECT COUNT(*) AS ce  FROM `mrc_booking` WHERE `bookingequipmentid` = mrc_equipment.`equipmentid`) AS ce FROM `mrc_equipment` WHERE `equipmentisdelete` = 0');
-        return view('mrcbookingstat', ['user' => Auth::user(), 'eqcs' => $eqc]);
+        // $eqc = DB::select('SELECT *,(SELECT COUNT(*) AS ce  FROM `mrc_booking` WHERE `bookingequipmentid` = mrc_equipment.`equipmentid`) AS ce FROM `mrc_equipment` WHERE `equipmentisdelete` = 0');
+        return view('mrcbookingstat', ['user' => Auth::user()]);
     }
 
     public function groupmng() {

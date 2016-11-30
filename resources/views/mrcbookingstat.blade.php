@@ -213,13 +213,6 @@
                                         }
 
                                         function drawChart() {
-//    var data = google.visualization.arrayToDataTable([
-//    ["eqm", "time", {role: "style"}],
-//            @foreach($eqcs as $eqc)
-//    ["{{$eqc -> equipmentname}}", {{$eqc -> ce}}, ""],
-//            @endforeach
-//    ]);
-
                                             var formData = new FormData();
                                             formData.append('sd', $("#txtStartDate").val());
                                             formData.append('ed', $("#txtEndDate").val());

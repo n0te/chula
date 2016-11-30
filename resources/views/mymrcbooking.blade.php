@@ -88,7 +88,7 @@
                 <i class="fa fa-circle"></i>
             </li>
             <li>
-                <span>กลุ่มเครื่องมือ</span>
+                <span>การจองอุปกรณ์ทั้งหมด</span>
             </li>
         </ul>
     </div>
@@ -304,7 +304,12 @@
                                     "mRender": function (data, type, full) {
                                         var cname = $("#hidcname").val();
                                         var res = cname.split(".");
-
+                                        var start = new Date(full.bookingdate),
+                                                end = moment(),
+                                                diff = new Date(start - end),
+                                                days = diff / 1000 / 60 / 60 / 24;
+                                        var displaybuttontime = moment(full.bookingdate + 'T' + full.bookingstarttime);
+                                        var tdif = Math.abs((end - displaybuttontime) / 60000);
                                         if (jQuery.inArray(String(full.equipmentid), res) !== -1) {
                                             if (String(full.bookingstatus) === '0') {
                                                 var start = new Date(full.bookingdate),
@@ -317,7 +322,7 @@
                                                     if (tdif < 15) {
                                                         return "<a class='btn btn-primary btn-sm' href='#' onclick='return Opencfmuse(\"" + full.bookingid + "\")'><span class='glyphicon glyphicon-check'></span> เข้าใช้งาน</a>";
                                                     } else {
-                                                        return '';
+                                                        return "<span class='label label-sm label-success'>กรุณาล๊อคอินที่ " + full.placename + " ก่อนเวลานัดหมาย 15 นาที</span>";
                                                     }
                                                 } else {
                                                     return  "<a class='btn btn-danger btn-sm' href='#' placename onclick='return OpenDelete(\"" + full.bookingid + "\")'><span class='glyphicon glyphicon-trash'></span> ลบ</a>";
@@ -327,7 +332,12 @@
                                                 return '';
                                             }
                                         } else {
-                                            return "<span class='label label-sm label-success'>กรุณาล๊อคอินที่ " + full.placename + "</span>";
+                                            if (days > 2) {
+                                                return  "<a class='btn btn-danger btn-sm' href='#' placename onclick='return OpenDelete(\"" + full.biobookingid + "\")'><span class='glyphicon glyphicon-trash'></span> ลบ</a>";
+                                            } else {
+                                                return "<span class='label label-sm label-success'>กรุณาล๊อคอินที่ " + full.placename + " ก่อนเวลานัดหมาย 15 นาที</span>";
+                                            }
+
                                         }
                                         //+ "&nbsp; <a class='btn btn-danger btn-sm' href='#' placename onclick='return OpenDelete(\"" + full.groupid + "\")'><span class='glyphicon glyphicon-trash'></span> ลบ</a>";
                                     }

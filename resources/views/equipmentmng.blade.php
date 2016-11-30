@@ -476,7 +476,7 @@
                                // $('#equipmentgroup').val(data['MRCEquipment'][0].equipmentgroup);
                                 $('#equipmentcouse').val(data['MRCEquipment'][0].equipmentcouse);
                                 $('#equipmentstatus').val(data['MRCEquipment'][0].equipmentstatus);
-                                $('#fupPDF').fileinput('clear');
+                                $('#equipmentpicturename').fileinput('clear');
                                 $('#divimgequipment').show();
                                 $('#imgequipment').attr('src', 'public/uploads/equipmentimg/' + data['MRCEquipment'][0].equipmentpicturename);
                                 $('#mdlEquipment').modal('toggle');
