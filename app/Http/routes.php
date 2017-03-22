@@ -159,6 +159,16 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('/biobookingreport', 'BiostatController@biobookingreport');
     Route::post('/getchartbio', 'BiostatController@getchartbio');
     Route::get('/bioexporttoexcel/{d1}/{d2}', 'BiostatController@bioexporttoexcel');
+    Route::get('/deleteBioBooking1DayByIDByUser/{id}', 'BiostatController@deleteBioBooking1DayByIDByUser');
+    Route::get('/biobookingapprove', 'BiostatController@biobookingapprove');
+    Route::get('/getbookingbyteacheridforapprove', 'BiostatController@getbookingbyteacheridforapprove');
+
+    Route::get('/cancelBioBookingByBookingid/{id}/{reason}', 'BiostatController@cancelBioBookingByBookingid');
+    Route::get('/approveBioBookingByBookingid/{id}', 'BiostatController@approveBioBookingByBookingid');
+    Route::get('/sendBookedTeacherToUser', 'BiostatController@sendBookedTeacherToUser');
+    Route::get('/Meeted/{id}', 'BiostatController@Meeted');
+    Route::get('/UnMeet/{id}', 'BiostatController@UnMeet');
+
 
     Route::get('/aniroommng', 'AniController@aniroommng');
     Route::post('/SaveAniRoom', 'AniController@SaveAniRoom');
@@ -182,5 +192,13 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('/getAniBookingByUserId', 'AniController@getAniBookingByUserId');
     Route::get('/myanibooking', 'AniController@myanibooking');
     Route::get('/deleteAniBookingByIDByUser/{id}', 'AniController@deleteAniBookingByIDByUser');
+    Route::get('/anibookingmngadmin', 'AniController@anibookingmngadmin');
+    Route::get('/deleteAniBookingByID/{id}', 'AniController@deleteAniBookingByID');
+    Route::get('/getAniBanning', 'AniController@getAniBanning');
+    Route::get('/anibanningadmin', 'AniController@anibanningadmin');
+    Route::post('/activeAniBanning', 'AniController@activeAniBanning');
+    Route::get('/anibookingreport', 'AniController@anibookingreport');
+    Route::post('/getchartani', 'AniController@getchartani');
+    Route::get('/aniexporttoexcel/{d1}/{d2}', 'AniController@aniexporttoexcel');
 });
 

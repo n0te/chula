@@ -173,23 +173,23 @@ function showReviewModules(data){
         var lb_type = '';
         var request_btntext = '';                                   
         var action_element = '';                                 
-        switch(v.status){
-            case 1:
+        switch(v.status+''){
+            case '1':
                 lb_type = 'label-info';
                 action_element = '';
                 break;
-            case 2:
+            case '2':
                 lb_type = 'label-warning';
                 action_element = '<form><button type="submit" module-id="'+v.m_id+'"" class="btn green approve">' +
                                  module_adminapprovebtntext+'</button>'+
                                  '<button type="reject" module-id="'+v.m_id+'" class="btn red">' +
                                  module_adminrejectbtntext+'</button></form>'
                 break;
-            case 3:
+            case '3':
                 lb_type = 'label-success';
                 action_element = '';
                 break;
-            case 4:
+            case '4':
                 lb_type = 'label-danger';
                 action_element = '';
                 break;

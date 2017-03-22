@@ -155,6 +155,7 @@ class AuthController extends Controller
         }
 
         $user->address = $data["address"];
+        //$user->address = "testing function";
         $user->tel = $data["tel"];
         $user->student_id = $data['student_id'];
         $user->citizen_id = $data['citizen_id'];

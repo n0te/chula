@@ -187,6 +187,10 @@
                     </select>
                 </div>
                 <div id="pre-hidden-group" style="display:none;">
+                    <div class="form-group">
+                    <!--ie8, ie9 does not support html5 placeholder, so we just show field title for that-->
+                    <label class="control-label visible-ie8 visible-ie9">อื่นๆโปรดระบุ</label>
+                    <input class="form-control placeholder-no-fix" type="text" placeholder="อื่นๆโปรดระบุ" name="orther_specify" value="<?php echo e(old('orther_specify')); ?>" hide other/> </div>
                 <div>
                 <div class="form-group">
                     <!--ie8, ie9 does not support html5 placeholder, so we just show field title for that-->

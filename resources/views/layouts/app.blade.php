@@ -148,6 +148,7 @@
                         <li class="heading">
                             <h3 class="uppercase">SERVICES</h3>
                         </li>
+			@if(Utility::isMemberOfModule(1, Auth::user()->id) || Utility::isAdminOfModule(1, Auth::user()->id))
                         <li class="nav-item">
                             <a href="javascript:;" class="nav-link nav-toggle">
                                 <i class="icon-diamond"></i>
@@ -179,6 +180,8 @@
                             </ul>
 
                         </li>
+			@endif
+			@if(Utility::isMemberOfModule(2, Auth::user()->id) || Utility::isAdminOfModule(2, Auth::user()->id))
                         <li class="nav-item">
                             <a href="javascript:;" class="nav-link nav-toggle">
                                 <i class="icon-diamond"></i>
@@ -206,6 +209,8 @@
                             </ul>
 
                         </li>
+			@endif
+			@if(Utility::isMemberOfModule(3, Auth::user()->id) || Utility::isAdminOfModule(3, Auth::user()->id))
                         <li class="nav-item">
                             <a href="javascript:;" class="nav-link nav-toggle">
                                 <i class="icon-diamond"></i>
@@ -230,10 +235,19 @@
                                         <span class="title">รายการนัดพบ</span>
                                     </a>
                                 </li>
+                                @if(Utility::isTeacher(Auth::user()->email))
+                                <li class="nav-item  ">
+                                    <a href="/biobookingapprove" class="nav-link ">
+                                        <span class="title">อนุมัติการนัดพบ</span>
+                                    </a>
+                                </li>
+                                @endif
                             </ul>
 
                         </li>
-                         <li class="nav-item">
+			@endif
+			@if(Utility::isMemberOfModule(4, Auth::user()->id) || Utility::isAdminOfModule(4, Auth::user()->id))
+                        <li class="nav-item">
                             <a href="javascript:;" class="nav-link nav-toggle">
                                 <i class="icon-diamond"></i>
                                 <span class="title">Animal House</span>
@@ -260,6 +274,7 @@
                             </ul>
 
                         </li>
+			@endif
                         <li class="nav-item">
                             <a href="http://rs.md.chula.ac.th" target="_blank" class="nav-link nav-toggle">
                                 <i class="icon-home"></i>
@@ -315,6 +330,8 @@
                                 <span class="title">ผู้ดูแลระบบจัดการผู้ใช้</span>
                             </a>
                         </li>
+			@endif
+			@if(Utility::isAdminOfModule(1, Auth::user()->id))
                         <li class="nav-item">
                             <a href="javascript:;" class="nav-link nav-toggle">
                                 <i class="icon-settings"></i>
@@ -345,6 +362,8 @@
                                                                 </li>-->
                             </ul>
                         </li>
+			@endif
+			@if(Utility::isAdminOfModule(2, Auth::user()->id))
                         <li class="nav-item">
                             <a href="javascript:;" class="nav-link nav-toggle">
                                 <i class="icon-settings"></i>
@@ -404,6 +423,8 @@
                                 </li>
                             </ul>
                         </li>
+			@endif
+			@if(Utility::isAdminOfModule(3, Auth::user()->id))
                         <li class="nav-item">
                             <a href="javascript:;" class="nav-link nav-toggle">
                                 <i class="icon-settings"></i>
@@ -449,6 +470,8 @@
                                 </li>
                             </ul>
                         </li>
+			@endif
+			@if(Utility::isAdminOfModule(4, Auth::user()->id))
                         <li class="nav-item">
                             <a href="javascript:;" class="nav-link nav-toggle">
                                 <i class="icon-settings"></i>
@@ -467,7 +490,7 @@
                                                                     </a>
                                                                 </li>-->
                                 <li class="nav-item">
-                                    <a href="/mrcbookingmngadmin" class="nav-link ">
+                                    <a href="/anibookingmngadmin" class="nav-link ">
                                         <span class="title">การจอง Animal House</span>
                                     </a>
                                 </li>
@@ -478,12 +501,12 @@
                                 </li>
 
                                 <li class="nav-item">
-                                    <a href="/banningadmin" class="nav-link ">
+                                    <a href="/anibanningadmin" class="nav-link ">
                                         <span class="title">จัดการผู้ถูกระงับการใช้งาน(Animal House)</span>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="/mrcbookingstat" class="nav-link ">
+                                    <a href="/anibookingreport" class="nav-link ">
                                         <span class="title">รายงานการใช้งาน Animal House</span>
                                     </a>
                                 </li>

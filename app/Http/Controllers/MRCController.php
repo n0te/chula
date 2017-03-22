@@ -66,11 +66,12 @@ class MRCController extends Controller {
 //        //echo '555';
 //    }
     public function __construct() {
+       
         $this->isLogin();
     }
 
     public function isLogin() {
-        if (!empty(Auth::user())) {
+        if (Auth::check()) {
             
         } else {
             return redirect('/')->send();
@@ -101,7 +102,7 @@ class MRCController extends Controller {
     }
 
     public function mrcbookingmng() {
-
+        $bancount = DB::select("SELECT COUNT(`banid`) AS bancount FROM `mrc_ban` WHERE `banuserid` = " . Auth::user()->id);
         $chkban = $this->checkgotban();
         if ($chkban == '0') {
             $this->checkbanning();
@@ -109,11 +110,9 @@ class MRCController extends Controller {
             if ($chkban == '0') {
                 return view('mrcbooking', ['user' => Auth::user()]);
             } else {
-                return view('banning', ['user' => Auth::user(), 'dateendbanning' => date('d/m/Y', strtotime($chkban . ' +1 day'))]);
+                return view('banning', ['user' => Auth::user(), 'bancounts' => $bancount, 'dateendbanning' => date('d/m/Y', strtotime($chkban . ' +1 day'))]);
             }
         } else {
-            $bancount = DB::select("SELECT COUNT(`banid`) AS bancount FROM `mrc_ban` WHERE `banuserid` = " . Auth::user()->id);
-
             return view('banning', ['user' => Auth::user(), 'bancounts' => $bancount, 'dateendbanning' => date('d/m/Y', strtotime($chkban . ' +1 day'))]);
         }
     }
@@ -134,7 +133,7 @@ class MRCController extends Controller {
         $d1 = date("Y-m-d", strtotime($sd[2] . '-' . $sd[1] . '-' . $sd[0]));
         $d2 = date("Y-m-d", strtotime($ed[2] . '-' . $ed[1] . '-' . $ed[0]));
         //echo "SELECT *,(SELECT COUNT(*) AS ce FROM `mrc_booking` WHERE `bookingequipmentid` = mrc_equipment.`equipmentid` and (`bookingdate` between '2016-10-30' and '2016-11-20')) AS ce FROM `mrc_equipment` WHERE `equipmentisdelete` = 0";
-        $eqc = DB::select("SELECT *,(SELECT COUNT(*) AS ce FROM `mrc_booking` WHERE `bookingequipmentid` = mrc_equipment.`equipmentid` and (`bookingdate` between '" . $d1 . "' and '" . $d2 . "')) AS ce FROM `mrc_equipment` WHERE `equipmentisdelete` = 0");
+        $eqc = DB::select("SELECT *,(SELECT COUNT(*) AS ce FROM `mrc_booking` WHERE `bookingequipmentid` = mrc_equipment.`equipmentid`  AND `bookingisdelete` = 0 and (`bookingdate` between '" . $d1 . "' and '" . $d2 . "')) AS ce FROM `mrc_equipment` WHERE `equipmentisdelete` = 0");
         //return view('mrcbookingstat', ['user' => Auth::user(), 'eqcs' => $eqc]);
         return Response::json($eqc);
     }
@@ -162,16 +161,16 @@ class MRCController extends Controller {
         //$objPHPExcel->getActiveSheet()->SetCellValue('H1', 'สถานที่');
 
         $freq = DB::select("SELECT *
-,(SELECT COUNT(*) AS ce FROM `mrc_booking` WHERE `bookingequipmentid` = mrc_equipment.`equipmentid` AND (`bookingdate` BETWEEN '" . $d1 . "' and '" . $d2 . "')) AS ce
-,(SELECT COUNT(*) AS cban FROM `mrc_booking` WHERE `bookingstatus` = -1 AND`bookingequipmentid` = mrc_equipment.`equipmentid` AND (`bookingdate` BETWEEN '" . $d1 . "' and '" . $d2 . "')) AS cban
-,(SELECT COUNT(*) AS cuse FROM `mrc_booking` WHERE `bookingstatus` = 1 AND`bookingequipmentid` = mrc_equipment.`equipmentid` AND (`bookingdate` BETWEEN '" . $d1 . "' and '" . $d2 . "')) AS cuse
+,(SELECT COUNT(*) AS ce FROM `mrc_booking` WHERE `bookingequipmentid` = mrc_equipment.`equipmentid` AND (`bookingdate` BETWEEN '" . $d1 . "' and '" . $d2 . "') AND `bookingisdelete` = 0) AS ce
+,(SELECT COUNT(*) AS cban FROM `mrc_booking` WHERE `bookingstatus` = -1 AND`bookingequipmentid` = mrc_equipment.`equipmentid` AND (`bookingdate` BETWEEN '" . $d1 . "' and '" . $d2 . "') AND `bookingisdelete` = 0) AS cban
+,(SELECT COUNT(*) AS cuse FROM `mrc_booking` WHERE `bookingstatus` = 1 AND`bookingequipmentid` = mrc_equipment.`equipmentid` AND (`bookingdate` BETWEEN '" . $d1 . "' and '" . $d2 . "') AND `bookingisdelete` = 0) AS cuse
  FROM `mrc_equipment` WHERE `equipmentisdelete` = 0");
         for ($i = 0; $i < count($freq); $i++) {
 
-            $c1 = DB::select("SELECT COUNT(*) AS c1 FROM `bookingview` WHERE  `equipmentid` = " . $freq[$i]->equipmentid . " AND `bookingstatus` = -1 AND `type` = 1 AND `bookingisdelete` = 0 AND (`bookingdate` BETWEEN '" . $d1 . "' and '" . $d2 . "')");
-            $c2 = DB::select("SELECT COUNT(*) AS c2 FROM `bookingview` WHERE  `equipmentid` = " . $freq[$i]->equipmentid . " AND `bookingstatus` = -1 AND `type` = 2 AND `bookingisdelete` = 0 AND (`bookingdate` BETWEEN '" . $d1 . "' and '" . $d2 . "')");
-            $c3 = DB::select("SELECT COUNT(*) AS c3 FROM `bookingview` WHERE  `equipmentid` = " . $freq[$i]->equipmentid . " AND `bookingstatus` = -1 AND `type` = 3 AND `bookingisdelete` = 0 AND (`bookingdate` BETWEEN '" . $d1 . "' and '" . $d2 . "')");
-            $c4 = DB::select("SELECT COUNT(*) AS c4 FROM `bookingview` WHERE  `equipmentid` = " . $freq[$i]->equipmentid . " AND `bookingstatus` = -1 AND `type` = 4 AND `bookingisdelete` = 0 AND (`bookingdate` BETWEEN '" . $d1 . "' and '" . $d2 . "')");
+            $c1 = DB::select("SELECT COUNT(*) AS c1 FROM `bookingview` WHERE  `equipmentid` = " . $freq[$i]->equipmentid . " AND `type` = 1 AND `bookingisdelete` = 0 AND (`bookingdate` BETWEEN '" . $d1 . "' and '" . $d2 . "')");
+            $c2 = DB::select("SELECT COUNT(*) AS c2 FROM `bookingview` WHERE  `equipmentid` = " . $freq[$i]->equipmentid . " AND `type` = 2 AND `bookingisdelete` = 0 AND (`bookingdate` BETWEEN '" . $d1 . "' and '" . $d2 . "')");
+            $c3 = DB::select("SELECT COUNT(*) AS c3 FROM `bookingview` WHERE  `equipmentid` = " . $freq[$i]->equipmentid . " AND `type` = 3 AND `bookingisdelete` = 0 AND (`bookingdate` BETWEEN '" . $d1 . "' and '" . $d2 . "')");
+            $c4 = DB::select("SELECT COUNT(*) AS c4 FROM `bookingview` WHERE  `equipmentid` = " . $freq[$i]->equipmentid . " AND `type` = 4 AND `bookingisdelete` = 0 AND (`bookingdate` BETWEEN '" . $d1 . "' and '" . $d2 . "')");
 
             $objPHPExcel->getActiveSheet()->SetCellValue('A' . ($i + 3), $freq[$i]->equipmentname);
             $objPHPExcel->getActiveSheet()->SetCellValue('B' . ($i + 3), $c1[0]->c1);
@@ -191,7 +190,7 @@ class MRCController extends Controller {
     }
 
     public function checkbanning() {
-        $freq = DB::select('SELECT * FROM `mrc_booking` WHERE (`bookingstarttime`+ INTERVAL 15 MINUTE) < NOW() AND `bookingdate` <= NOW() AND bookingstatus = 0 AND bookingisdelete != 1 AND `bookingaddby` = ' . Auth::user()->id);
+        $freq = DB::select('SELECT * FROM `mrc_booking` WHERE (CONCAT(`bookingdate`,\' \',`bookingstarttime`)+ INTERVAL 10 MINUTE) < NOW() AND `bookingdate` <= NOW() AND bookingstatus = 0 AND bookingisdelete != 1 AND `bookingaddby` = ' . Auth::user()->id);
         if (count($freq) > 0) {
             for ($i = 0; $i < count($freq); $i++) {
                 $mybook = MRC_Booking::find($freq[$i]->bookingid);
@@ -205,11 +204,11 @@ class MRCController extends Controller {
                     $bantime = $bantime + $banlist[0]->bantime;
                 }
                 if ($bantime == 1) {
-                    $banday = 14;
+                    $banday = 7;
                 } else if ($bantime == 2) {
-                    $banday = 30;
+                    $banday = 14;
                 } else if ($bantime >= 3) {
-                    $banday = 60;
+                    $banday = 30;
                 }
 
                 $banning = new MRC_Ban;
@@ -220,24 +219,34 @@ class MRCController extends Controller {
                 $banning->banenddate = Date('Y/m/d', strtotime("+" . $banday . " days"));
                 $banning->banactive = 1;
                 $banning->save();
+                $this->BanEmailMRC(Auth::user()->email, Date('d/m/Y', strtotime("+" . $banday . " days")));
             }
         }
+    }
+
+    public function BanEmailMRC($useremail, $date) {
+        $emails = [];
+        array_push($emails, $useremail);
+        Mail::send('form.email.banemailmrc', [
+            'date' => $date
+                ], function($message) use ($emails) {
+            $message->to($emails)->subject('MRC - ท่านถูกระงับการใช้งานชั่วคราว');
+        });
     }
 
     public function mymrcbooking() {
 
         $chkban = $this->checkgotban();
+        $bancount = DB::select("SELECT COUNT(`banid`) AS bancount FROM `mrc_ban` WHERE `banuserid` = " . Auth::user()->id);
         if ($chkban == '0') {
             $this->checkbanning();
             $chkban = $this->checkgotban();
             if ($chkban == '0') {
                 return view('mymrcbooking', ['user' => Auth::user()]);
             } else {
-                return view('banning', ['user' => Auth::user(), 'dateendbanning' => date('d/m/Y', strtotime($chkban . ' +1 day'))]);
+                return view('banning', ['user' => Auth::user(), 'bancounts' => $bancount, 'dateendbanning' => date('d/m/Y', strtotime($chkban . ' +1 day'))]);
             }
         } else {
-            $bancount = DB::select("SELECT COUNT(`banid`) AS bancount FROM `mrc_ban` WHERE `banuserid` = " . Auth::user()->id);
-
             return view('banning', ['user' => Auth::user(), 'bancounts' => $bancount, 'dateendbanning' => date('d/m/Y', strtotime($chkban . ' +1 day'))]);
         }
     }
@@ -597,7 +606,17 @@ WHERE ((`bookingstarttime` BETWEEN \'' . $request->bookingstarttime . '\' AND \'
         $book = MRC_Booking::find($id);
         $book->bookingstatus = 1;
         $book->save();
+        $this->sendcfmuseeqpToUser(Auth::user()->email);
         return Response::json(["message" => "saved"], 200);
+    }
+
+    public function sendcfmuseeqpToUser($useremail) {
+        // $useremail = 'perachart@hotmail.com';
+        $emails = [];
+        array_push($emails, $useremail);
+        Mail::send('form.email.confirmusemrc', ['approve_url' => 'www.google.com'], function($message) use ($emails) {
+            $message->to($emails)->subject('MRC - ท่านได้เข้าใช้อุปกรณ์แล้ว');
+        });
     }
 
     public function BookEquipment(Request $request) {
@@ -611,10 +630,20 @@ WHERE ((`bookingstarttime` BETWEEN \'' . $request->bookingstarttime . '\' AND \'
             $book->bookingaddby = Auth::user()->id;
             $book->bookingisdelete = 0;
             $book->save();
+            $this->sendBookedEqpToUser(Auth::user()->email);
             return Response::json(["message" => "saved"], 200);
         } else {
             return Response::json(["message" => "notavi"], 200);
         }
+    }
+
+    public function sendBookedEqpToUser($useremail) {
+        // $useremail = 'perachart@hotmail.com';
+        $emails = [];
+        array_push($emails, $useremail);
+        Mail::send('form.email.bookedmrctouser', ['approve_url' => 'www.google.com'], function($message) use ($emails) {
+            $message->to($emails)->subject('MRC - ท่านได้ทำการจองอุปกรณ์สำเร็จแล้ว');
+        });
     }
 
     public function getBookingbyEquipmentid($id) {

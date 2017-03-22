@@ -188,4 +188,12 @@ class Utility{
     $user_role->role = $member_role_id;
     $user_role->save();
   }
+    public static function isTeacher($email) {
+        $chkteacher = DB::select("SELECT * FROM `bio_teacher` WHERE `bioteacheremail` = '" . $email . "' AND `bioteacherisdelete` = 0");
+        if (count($chkteacher) > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

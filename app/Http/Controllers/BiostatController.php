@@ -276,7 +276,7 @@ class BiostatController extends Controller {
     }
 
     public function checkbanning() {
-        $freq = DB::select('SELECT * FROM `bio_booking` WHERE (`biobookingstarttime`+ INTERVAL 15 MINUTE) < NOW() AND `biobookingdate` <= NOW() AND biobookingstatus = 0 AND biobookingisdelete != 1 AND `biobookingaddby` = ' . Auth::user()->id);
+        $freq = DB::select('SELECT * FROM `bio_booking` WHERE (CONCAT(`biobookingdate`,\' \',`biobookingstarttime`)+ INTERVAL 15 MINUTE) < NOW() AND `biobookingdate` <= NOW() AND biobookingstatus = 0 AND biobookingisdelete != 1 AND `biobookingaddby` = ' . Auth::user()->id);
         if (count($freq) > 0) {
             for ($i = 0; $i < count($freq); $i++) {
                 $mybook = Bio_Booking::find($freq[$i]->biobookingid);
@@ -285,17 +285,17 @@ class BiostatController extends Controller {
 
                 $banlist = DB::select('SELECT * FROM `bio_ban` WHERE `biobanuserid` = ' . Auth::user()->id . ' ORDER BY `biobanid` DESC LIMIT 1');
                 $bantime = 1;
-                $banday = 0;
+                $banday = 30;
                 if (count($banlist) > 0) {
                     $bantime = $bantime + $banlist[0]->biobantime;
                 }
-                if ($bantime == 1) {
-                    $banday = 14;
-                } else if ($bantime == 2) {
-                    $banday = 30;
-                } else if ($bantime >= 3) {
-                    $banday = 60;
-                }
+//                if ($bantime == 1) {
+//                    $banday = 14;
+//                } else if ($bantime == 2) {
+//                    $banday = 30;
+//                } else if ($bantime >= 3) {
+//                    $banday = 60;
+//                }
 
                 $banning = new Bio_Ban;
                 $banning->biobanuserid = Auth::user()->id;
@@ -305,8 +305,8 @@ class BiostatController extends Controller {
                 $banning->biobanenddate = Date('Y/m/d', strtotime("+" . $banday . " days"));
                 $banning->biobanactive = 1;
                 $banning->save();
+                $this->BanEmailBio(Auth::user()->email, Date('d/m/Y', strtotime("+" . $banday . " days")));
             }
-            
         }
     }
 
@@ -320,7 +320,7 @@ class BiostatController extends Controller {
     }
 
     public function getBookingbyTeacherid($id) {
-        $freq = DB::select('SELECT * FROM `bio_booking` WHERE `biobookingteacherid` = ' . $id . ' AND `biobookingisdelete` = 0');
+        $freq = DB::select('SELECT * FROM `bio_booking` WHERE `biobookingteacherid` = ' . $id . ' AND `biobookingisdelete` = 0 AND `biobookingstatus` != -10');
         $json_data = [];
         for ($i = 0; $i < count($freq); $i++) {
             $json_data[] = array(
@@ -340,7 +340,7 @@ class BiostatController extends Controller {
 FROM `bio_booking`
 WHERE ((`biobookingstarttime` BETWEEN \'' . $request->biobookingstarttime . '\' AND \'' . $request->biobookingendtime . '\') 
   OR (`biobookingendtime` BETWEEN \'' . $request->biobookingstarttime . '\' AND \'' . $request->biobookingendtime . '\')) 
-  AND `biobookingisdelete` = 0 AND `biobookingdate` = \'' . $request->biobookingdate . '\'  AND `biobookingteacherid` = ' . $request->biobookingteacherid);
+  AND biobookingstatus IN (0,1,-1,10) AND `biobookingisdelete` = 0 AND `biobookingdate` = \'' . $request->biobookingdate . '\'  AND `biobookingteacherid` = ' . $request->biobookingteacherid);
 
         if (count($qry) > 0) {
             return FALSE;
@@ -363,24 +363,79 @@ AND `bioavailableendtime` >= '" . $request->biobookingendtime . "'");
         }
     }
 
+    public function sendBookedTeacherToUser($useremail) {
+        // $useremail = 'perachart@hotmail.com';
+        $emails = [];
+        array_push($emails, $useremail);
+        Mail::send('form.email.bookedteachertouser', ['approve_url' => 'www.google.com'], function($message) use ($emails) {
+            $message->to($emails)->subject('Biostatistics - ท่านได้ทำการนัดพบนักสถิติแล้ว');
+        });
+    }
+
+    public function sendBookedTeacherToTeacher($useremail) {
+        // $useremail = 'perachart@hotmail.com';
+        $emails = [];
+        array_push($emails, $useremail);
+        Mail::send('form.email.bookedteachertoteacher', ['approve_url' => 'www.google.com'], function($message) use ($emails) {
+            $message->to($emails)->subject('Biostatistics - ท่านมีการนัดหมายใหม่(You have an appointment)');
+        });
+    }
+
     public function BookTeacher(Request $request) {
-        if ($this->biocheckDayTimeAvailable($request)) {
-            if ($this->biocheckTimeAvailable($request)) {
-                $book = new Bio_Booking;
-                $book->biobookingdate = $request->biobookingdate;
-                $book->biobookingteacherid = $request->biobookingteacherid;
-                $book->biobookingstarttime = $request->biobookingstarttime;
-                $book->biobookingendtime = $request->biobookingendtime;
-                $book->biobookingstatus = 0;
-                $book->biobookingaddby = Auth::user()->id;
-                $book->biobookingisdelete = 0;
-                $book->save();
-                return Response::json(["message" => "saved"], 200);
+        if ($this->chkmonth($request->biobookingdate)) {
+            if ($this->chkweek($request->biobookingdate)) {
+                if ($this->biocheckDayTimeAvailable($request)) {
+                    if ($this->biocheckTimeAvailable($request)) {
+                        $book = new Bio_Booking;
+                        $book->biobookingdate = $request->biobookingdate;
+                        $book->biobookingteacherid = $request->biobookingteacherid;
+                        $book->biobookingstarttime = $request->biobookingstarttime;
+                        $book->biobookingendtime = $request->biobookingendtime;
+                        $book->biobookingstatus = 10;
+                        $book->biobookingaddby = Auth::user()->id;
+                        $book->biobookingisdelete = 0;
+                        $book->biobookingadddate = Date("Y/m/d");
+                        $book->save();
+                        $this->sendBookedTeacherToUser(Auth::user()->email);
+                        $teacheremail = Bio_Teacher::where('bioteacherid', '=', $request->biobookingteacherid)->get();
+                        $this->sendBookedTeacherToTeacher($teacheremail[0]->bioteacheremail);
+                        return Response::json(["message" => "saved"], 200);
+                    } else {
+                        return Response::json(["message" => "notavi"], 200);
+                    }
+                } else {
+                    return Response::json(["message" => "daytimenotavi"], 200);
+                }
             } else {
-                return Response::json(["message" => "notavi"], 200);
+                return Response::json(["message" => "weekfull"], 200);
             }
         } else {
-            return Response::json(["message" => "daytimenotavi"], 200);
+            return Response::json(["message" => "monthfull"], 200);
+        }
+    }
+
+    public function chkweek($date) {
+        $chkweek = DB::select("SELECT * FROM bio_booking WHERE `biobookingaddby` = " . Auth::user()->id
+                        . " AND WEEKOFYEAR(biobookingdate) = WEEKOFYEAR('" . $date . "') "
+                        . " AND `biobookingisdelete` = 0");
+        $cweek = count($chkweek);
+        if ($cweek == 0) {
+            return TRUE;
+        } else {
+            return FALSE;
+        }
+    }
+
+    public function chkmonth($date) {
+        $chkmonth = DB::select("SELECT * FROM bio_booking "
+                        . " WHERE MONTH(biobookingdate) = MONTH('" . $date . "') "
+                        . "AND YEAR(biobookingdate) = YEAR('" . $date . "') "
+                        . "AND `biobookingisdelete` = 0");
+        $cmonth = count($chkmonth);
+        if ($cmonth <= 4) {
+            return TRUE;
+        } else {
+            return FALSE;
         }
     }
 
@@ -456,6 +511,39 @@ AND `bioavailableendtime` >= '" . $request->biobookingendtime . "'");
         }
     }
 
+    public function deleteBioBooking1DayByIDByUser($id) {
+
+        $book = Bio_Booking::find($id);
+        $book->biobookingisdelete = 1;
+        $book->save();
+
+
+        $banlist = DB::select('SELECT * FROM `bio_ban` WHERE `biobanuserid` = ' . Auth::user()->id . ' ORDER BY `biobanid` DESC LIMIT 1');
+        $bantime = 1;
+        $banday = 7;
+        if (count($banlist) > 0) {
+            $bantime = $bantime + $banlist[0]->biobantime;
+        }
+//        if ($bantime == 1) {
+//            $banday = 14;
+//        } else if ($bantime == 2) {
+//            $banday = 30;
+//        } else if ($bantime >= 3) {
+//            $banday = 60;
+//        }
+
+        $banning = new Bio_Ban;
+        $banning->biobanuserid = Auth::user()->id;
+        $banning->biobanfrombookingid = $id;
+        $banning->biobantime = $bantime;
+        $banning->biobanstartdate = Date("Y/m/d");
+        $banning->biobanenddate = Date('Y/m/d', strtotime("+" . $banday . " days"));
+        $banning->biobanactive = 1;
+        $banning->save();
+
+        return Response::json(["message" => "savedre"], 200);
+    }
+
     public function cfmBioBookingByID($id) {
         $book = Bio_Booking::find($id);
         $book->biobookingstatus = 1;
@@ -504,7 +592,7 @@ AND `bioavailableendtime` >= '" . $request->biobookingendtime . "'");
         $d2 = date("Y-m-d", strtotime($ed[2] . '-' . $ed[1] . '-' . $ed[0]));
 
         $eqc = DB::select("SELECT *,(SELECT COUNT(*) AS ce FROM `bio_booking` 
-WHERE `biobookingteacherid` = `bio_teacher`.`bioteacherid`
+WHERE `biobookingteacherid` = `bio_teacher`.`bioteacherid` AND `biobookingisdelete` = 0
 AND (`biobookingdate` BETWEEN '" . $d1 . "' AND '" . $d2 . "')) AS ce 
 FROM `bio_teacher` WHERE `bioteacherisdelete` = 0");
 
@@ -534,16 +622,16 @@ FROM `bio_teacher` WHERE `bioteacherisdelete` = 0");
         //$objPHPExcel->getActiveSheet()->SetCellValue('H1', 'สถานที่');
 
         $freq = DB::select("SELECT *
-,(SELECT COUNT(*) AS ce FROM `bio_booking` WHERE `biobookingteacherid` = `bio_teacher`.`bioteacherid` AND (`biobookingdate` BETWEEN '" . $d1 . "' AND '" . $d2 . "')) AS ce
-,(SELECT COUNT(*) AS cban FROM `bio_booking` WHERE `biobookingstatus` = -1 AND `biobookingteacherid` = `bio_teacher`.`bioteacherid` AND (`biobookingdate` BETWEEN '" . $d1 . "' AND '" . $d2 . "')) AS cban
-,(SELECT COUNT(*) AS cuse FROM `bio_booking` WHERE `biobookingstatus` = 1 AND `biobookingteacherid` = `bio_teacher`.`bioteacherid` AND (`biobookingdate` BETWEEN '" . $d1 . "' AND '" . $d2 . "')) AS cuse
+,(SELECT COUNT(*) AS ce FROM `bio_booking` WHERE `biobookingteacherid` = `bio_teacher`.`bioteacherid` AND (`biobookingdate` BETWEEN '" . $d1 . "' AND '" . $d2 . "') AND `biobookingisdelete` = 0) AS ce
+,(SELECT COUNT(*) AS cban FROM `bio_booking` WHERE `biobookingstatus` = -1 AND `biobookingteacherid` = `bio_teacher`.`bioteacherid` AND (`biobookingdate` BETWEEN '" . $d1 . "' AND '" . $d2 . "') AND `biobookingisdelete` = 0) AS cban
+,(SELECT COUNT(*) AS cuse FROM `bio_booking` WHERE `biobookingstatus` = 1 AND `biobookingteacherid` = `bio_teacher`.`bioteacherid` AND (`biobookingdate` BETWEEN '" . $d1 . "' AND '" . $d2 . "') AND `biobookingisdelete` = 0) AS cuse
  FROM `bio_teacher` WHERE `bioteacherisdelete` = 0");
         for ($i = 0; $i < count($freq); $i++) {
 
-            $c1 = DB::select("SELECT COUNT(*) AS c1 FROM `biobanningview` WHERE  `bioteacherid` = " . $freq[$i]->bioteacherid . " AND `biobookingstatus` = -1 AND `type` = 1 AND `biobookingisdelete` = 0 AND (`biobookingdate` BETWEEN '" . $d1 . "' and '" . $d2 . "')");
-            $c2 = DB::select("SELECT COUNT(*) AS c2 FROM `biobanningview` WHERE  `bioteacherid` = " . $freq[$i]->bioteacherid . " AND `biobookingstatus` = -1 AND `type` = 2 AND `biobookingisdelete` = 0 AND (`biobookingdate` BETWEEN '" . $d1 . "' and '" . $d2 . "')");
-            $c3 = DB::select("SELECT COUNT(*) AS c3 FROM `biobanningview` WHERE  `bioteacherid` = " . $freq[$i]->bioteacherid . " AND `biobookingstatus` = -1 AND `type` = 3 AND `biobookingisdelete` = 0 AND (`biobookingdate` BETWEEN '" . $d1 . "' and '" . $d2 . "')");
-            $c4 = DB::select("SELECT COUNT(*) AS c4 FROM `biobanningview` WHERE  `bioteacherid` = " . $freq[$i]->bioteacherid . " AND `biobookingstatus` = -1 AND `type` = 4 AND `biobookingisdelete` = 0 AND (`biobookingdate` BETWEEN '" . $d1 . "' and '" . $d2 . "')");
+            $c1 = DB::select("SELECT COUNT(*) AS c1 FROM `biobooking` WHERE  `bioteacherid` = " . $freq[$i]->bioteacherid . " AND `type` = 1 AND `biobookingisdelete` = 0 AND (`biobookingdate` BETWEEN '" . $d1 . "' and '" . $d2 . "')");
+            $c2 = DB::select("SELECT COUNT(*) AS c2 FROM `biobooking` WHERE  `bioteacherid` = " . $freq[$i]->bioteacherid . " AND `type` = 2 AND `biobookingisdelete` = 0 AND (`biobookingdate` BETWEEN '" . $d1 . "' and '" . $d2 . "')");
+            $c3 = DB::select("SELECT COUNT(*) AS c3 FROM `biobooking` WHERE  `bioteacherid` = " . $freq[$i]->bioteacherid . " AND `type` = 3 AND `biobookingisdelete` = 0 AND (`biobookingdate` BETWEEN '" . $d1 . "' and '" . $d2 . "')");
+            $c4 = DB::select("SELECT COUNT(*) AS c4 FROM `biobooking` WHERE  `bioteacherid` = " . $freq[$i]->bioteacherid . " AND `type` = 4 AND `biobookingisdelete` = 0 AND (`biobookingdate` BETWEEN '" . $d1 . "' and '" . $d2 . "')");
 
             $objPHPExcel->getActiveSheet()->SetCellValue('A' . ($i + 3), $freq[$i]->bioteachername);
             $objPHPExcel->getActiveSheet()->SetCellValue('B' . ($i + 3), $c1[0]->c1);
@@ -560,6 +648,147 @@ FROM `bio_teacher` WHERE `bioteacherisdelete` = 0");
         header("Content-Disposition: attachment;filename=Export.xls");
         header('Cache-Control: max-age=0');
         $objWriter->save('php://output');
+    }
+
+    public function biobookingapprove() {
+        return view('biobookingapprove', ['user' => Auth::user()]);
+    }
+
+    public function getbookingbyteacheridforapprove() {
+        $groups = DB::table('biobooking')->select(['biobookingid', 'biobookingteacherid', 'biobookingdate', 'biobookingstarttime', 'biobookingendtime', 'biobookingstatus', 'bioteacherid', 'bioteachername', 'bioteacherpicturename', 'firstname', 'lastname', 'bioplacename'])
+                ->where('biobookingisdelete', '=', 0)
+                ->where('biobookingdate', '>=', Date("Y-m-d"))
+                ->where('bioteacheremail', '=', Auth::user()->email);
+        return Datatables::of($groups)->make(true);
+        //`bookingid``bookingdate``bookingstarttime``bookingendtime``equipmentname``equipmentpicturename`
+    }
+
+    public function cancelBioBookingByBookingid($id, $reason) {
+        $book = Bio_Booking::find($id);
+        $book->biobookingstatus = -10;
+        $book->biobookingrejectreason = $reason;
+        $book->save();
+        $freq = DB::select('SELECT * FROM `biobooking` WHERE `biobookingid` = ' . $id);
+        $this->cancelBioBookingByBookingidEmail($freq[0]->email, $reason, url('/biobooking'));
+        $this->cancelBioBookingByBookingidEmailTeacher($freq[0]->bioteacheremail, date("d-m-Y", strtotime($freq[0]->biobookingdate)), substr($freq[0]->biobookingstarttime, 0, -3) . ' - ' . substr($freq[0]->biobookingendtime, 0, -3));
+        return Response::json(["message" => "saved"], 200);
+        //send email
+    }
+
+    public function Meeted($id) {
+        $book = Bio_Booking::find($id);
+        $book->biobookingstatus = 1;
+        $book->save();
+        $freq = DB::select('SELECT * FROM `biobooking` WHERE `biobookingid` = ' . $id);
+        $emails = [];
+        array_push($emails, $freq[0]->email);
+        Mail::send('form.email.meetteacher', [
+            'link' => 'www.google.com'
+                ], function($message) use ($emails) {
+            $message->to($emails)->subject('Biostatistics - ท่านเข้าพบนักสถิติ');
+        });
+
+
+        return Response::json(["message" => "saved"], 200);
+    }
+
+    public function UnMeet($id) {
+        $book = Bio_Booking::find($id);
+        $book->biobookingstatus = -1;
+        $book->save();
+
+
+        $banlist = DB::select('SELECT * FROM `bio_ban` WHERE `biobanuserid` = ' . Auth::user()->id . ' ORDER BY `biobanid` DESC LIMIT 1');
+        $bantime = 1;
+        $banday = 30;
+        if (count($banlist) > 0) {
+            $bantime = $bantime + $banlist[0]->biobantime;
+        }
+        $freq = DB::select('SELECT * FROM `biobooking` WHERE `biobookingid` = ' . $id);
+        $banning = new Bio_Ban;
+        $banning->biobanuserid = $freq[0]->biobookingaddby;
+        $banning->biobanfrombookingid = $freq[0]->biobookingid;
+        $banning->biobantime = $bantime;
+        $banning->biobanstartdate = Date("Y/m/d");
+        $banning->biobanenddate = Date('Y/m/d', strtotime("+" . $banday . " days"));
+        $banning->biobanactive = 1;
+        $banning->save();
+        $this->BanEmailBio(Auth::user()->email, Date('d/m/Y', strtotime("+" . $banday . " days")));
+        return Response::json(["message" => "saved"], 200);
+    }
+
+    public function approveBioBookingByBookingid($id) {
+        $book = Bio_Booking::find($id);
+        $book->biobookingstatus = 0;
+        $book->save();
+
+        //send email
+
+        $freq = DB::select('SELECT * FROM `biobooking` WHERE `biobookingid` = ' . $id);
+        $userfname = $freq[0]->firstname . ' ' . $freq[0]->lastname;
+        $this->approveBioBookingByBookingidEmail($freq[0]->email, $userfname, $freq[0]->bioteachername, date("d-m-Y", strtotime($freq[0]->biobookingdate)), substr($freq[0]->biobookingstarttime, 0, -3) . ' - ' . substr($freq[0]->biobookingendtime, 0, -3), $freq[0]->bioplacename);
+        $this->approveBioBookingByBookingidEmailToTeacher($freq[0]->bioteacheremail, $userfname, $freq[0]->bioteachername, date("d-m-Y", strtotime($freq[0]->biobookingdate)), substr($freq[0]->biobookingstarttime, 0, -3) . ' - ' . substr($freq[0]->biobookingendtime, 0, -3), $freq[0]->bioplacename);
+        return Response::json(["message" => "saved"], 200);
+    }
+
+    public function approveBioBookingByBookingidEmail($useremail, $username, $teachername, $bookingdate, $bookingtime, $bookingplace) {
+        $emails = [];
+        array_push($emails, $useremail);
+        Mail::send('form.email.approvebookedteachertouser', [
+            'username' => $username,
+            'teachername' => $teachername,
+            'bookingdate' => $bookingdate,
+            'bookingtime' => $bookingtime,
+            'bookingplace' => $bookingplace,
+                ], function($message) use ($emails) {
+            $message->to($emails)->subject('Biostatistics - นักสถิติอนุมัติการนัดพบของท่านแล้ว');
+        });
+    }
+
+    public function approveBioBookingByBookingidEmailToTeacher($useremail, $username, $teachername, $bookingdate, $bookingtime, $bookingplace) {
+        $emails = [];
+        array_push($emails, $useremail);
+        Mail::send('form.email.approvebookedteachertoteacher', [
+            'username' => $username,
+            'teachername' => $teachername,
+            'bookingdate' => $bookingdate,
+            'bookingtime' => $bookingtime,
+            'bookingplace' => $bookingplace,
+                ], function($message) use ($emails) {
+            $message->to($emails)->subject('Biostatistics - ยืนยันวันนัดให้คำปรึกษา (Confirmed appointment for biostats consultant)');
+        });
+    }
+
+    public function cancelBioBookingByBookingidEmail($useremail, $reason, $link) {
+        $emails = [];
+        array_push($emails, $useremail);
+        Mail::send('form.email.rejectbookedteachertouser', [
+            'reason' => $reason,
+            'link' => $link
+                ], function($message) use ($emails) {
+            $message->to($emails)->subject('Biostatistics - นักสถิติยกเลิกการนัดพบของท่านแล้ว');
+        });
+    }
+
+    public function cancelBioBookingByBookingidEmailTeacher($useremail, $bookingdate, $bookingtime) {
+        $emails = [];
+        array_push($emails, $useremail);
+        Mail::send('form.email.rejectbookedteachertoteacher', [
+            'bookingdate' => $bookingdate,
+            'bookingtime' => $bookingtime,
+                ], function($message) use ($emails) {
+            $message->to($emails)->subject('Biostatistics - ปฎิเสธวันนัดให้คำปรึกษา (Reject appointment for biostats consultant)');
+        });
+    }
+
+    public function BanEmailBio($useremail, $date) {
+        $emails = [];
+        array_push($emails, $useremail);
+        Mail::send('form.email.banemailbio', [
+            'date' => $date
+                ], function($message) use ($emails) {
+            $message->to($emails)->subject('Biostatistics - ท่านถูกระงับการใช้งานชั่วคราว');
+        });
     }
 
 }

@@ -8,7 +8,7 @@
 <link href="public/assets/global/plugins/sudobar/dist/style/jquery.sudo-notify.css" rel="stylesheet" type="text/css"/>
 <link href="public/assets/global/plugins/datatables/DataTables-1.10.12/media/css/jquery.dataTables.css" rel="stylesheet" type="text/css"/>
 <link href="public/assets/global/plugins/fullcalendar/fullcalendar.css" rel="stylesheet" type="text/css"/>
-<link href="public/assets/global/plugins/bootstrap-timepicker/css/bootstrap-timepicker.css" rel="stylesheet" type="text/css"/>
+
 <style>
     .file-panel{
         position:relative;
@@ -174,14 +174,32 @@
                                 <div class="form-group">
                                     <label class="col-md-6 control-label">เวลาที่จะนัดพบ</label>
                                     <div class="col-md-6">
-                                        <input  class="form-control placeholder-no-fix timepicker timepicker-24" type="text" placeholder="" name="biobookingstarttime" id="biobookingstarttime" value=""/>
+                                        <select name="biobookingstarttime" id="biobookingstarttime" class="form-control">
+                                            <option value="09:00" selected>09:00</option>
+                                            <option value="10:00">10:00</option>
+                                            <option value="11:00">11:00</option>
+                                            <option value="12:00">12:00</option>
+                                            <option value="13:00">13:00</option>
+                                            <option value="14:00">14:00</option>
+                                            <option value="15:00">15:00</option>
+                                            <option value="16:00">16:00</option>
+                                        </select>
                                     </div>
                                 </div>
 
                                 <div class="form-group">
                                     <label class="col-md-6 control-label">เวลาสิ้นสุดการนัดพบ</label>
                                     <div class="col-md-6">
-                                        <input  class="form-control placeholder-no-fix  timepicker timepicker-24" type="text" placeholder="" name="biobookingendtime" id="biobookingendtime" value=""/>
+                                        <select name="biobookingendtime" id="biobookingendtime" class="form-control">
+                                            <option value="09:00" selected>09:00</option>
+                                            <option value="10:00">10:00</option>
+                                            <option value="11:00">11:00</option>
+                                            <option value="12:00">12:00</option>
+                                            <option value="13:00">13:00</option>
+                                            <option value="14:00">14:00</option>
+                                            <option value="15:00">15:00</option>
+                                            <option value="16:00">16:00</option>
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -214,6 +232,7 @@
 </div>
 <input type="hidden" name="_token" value="<?php echo e(csrf_token()); ?>">
 <input type="hidden" name="hidusertype" id="hidusertype" value="<?php echo e(Auth::user()->type); ?>">
+<input type="hidden" name="hidusertype" id="hiduseremail" value="<?php echo e(Auth::user()->email); ?>">
 <input type="hidden" name="hidsaveoredit" id="hidsaveoredit" value="">
 <input type="hidden" name="hidteacherid" id="hidteacherid" value="">
 <input type="hidden" name="hiddateselect" id="hiddateselect" value="">
@@ -241,7 +260,7 @@
 <script src="public/assets/global/plugins/jquery-number-master/jquery.number.js" type="text/javascript"></script>
 <script src="public/assets/global/plugins/fullcalendar/lib/moment.min.js" type="text/javascript"></script>
 <script src="public/assets/global/plugins/fullcalendar/fullcalendar.js" type="text/javascript"></script>
-<script src="public/assets/global/plugins/bootstrap-timepicker/js/bootstrap-timepicker.js" type="text/javascript"></script>
+
 <script>
                     var sudoNotify = $('.notification-container').sudoNotify({
                         log: true,
@@ -253,6 +272,7 @@
                         }
                     });
                     $(document).ready(function () {
+
                         $('#tblReviewform').DataTable({
                             processing: true,
                             serverSide: true,
@@ -283,18 +303,19 @@
                                 }
                             ]
                         });
+
                     });
                     function resetfield() {
-                        $("#biobookingstarttime").val('');
-                        $("#biobookingendtime").val('');
+                        $("#biobookingstarttime").val('09:00');
+                        $("#biobookingendtime").val('09:00');
                         $("#biobookingdate").val('');
                     }
 
                     function OpenBookingTeacher(teacherid) {
                         $('#calendar').fullCalendar('destroy');
                         $("#biobookingdate").val('');
-                        $("#biobookingstarttime").val('');
-                        $("#biobookingendtime").val('');
+                        $("#biobookingstarttime").val('09:00');
+                        $("#biobookingendtime").val('09:00');
                         $("#hidteacherid").val(teacherid);
                         $('#calendar').fullCalendar({
                             header: {
@@ -327,6 +348,7 @@
                                 error: function () {
 
                                 }
+
                             },
                             eventRender: function (event, element) {
                                 $(element).tooltip({title: event.title});
@@ -367,6 +389,12 @@
                                     txtavi += data['tavi'][i].biodayname + ' เวลา ' + (data['tavi'][0].bioavailablestarttime).slice(0, -3) + ' ถึง ' + (data['tavi'][0].bioavailableendtime).slice(0, -3) + '<br>';
                                 }
                                 $("#divaviday").html(txtavi);
+                                if ($("#hiduseremail").val() === data['teacher'][0].bioteacheremail) {
+                                    $('#teacherhourallow').attr("readonly", false);
+                                    $("#teacherhourallow").val('10');
+                                } else {
+                                    $('#teacherhourallow').attr("readonly", true);
+                                }
                             }
                         });
                         $('#mdlBookTeacher').modal('toggle');
@@ -406,12 +434,16 @@
                             sudoNotify.error("กรุณาเลือกวันที่นัดพบ");
                             return false;
                         }
-                        if ($.trim($("#biobookingstarttime").val()).length === 0) {
-                            sudoNotify.error("กรุณากรอกเวลาเริ่มต้น");
-                            return false;
-                        }
-                        if ($.trim($("#biobookingendtime").val()).length === 0) {
-                            sudoNotify.error("กรุณากรอกเวลาสิ้นสุด");
+//                        if ($.trim($("#biobookingstarttime").val()).length === 0) {
+//                            sudoNotify.error("กรุณากรอกเวลาเริ่มต้น");
+//                            return false;
+//                        }
+//                        if ($.trim($("#biobookingendtime").val()).length === 0) {
+//                            sudoNotify.error("กรุณากรอกเวลาสิ้นสุด");
+//                            return false;
+//                        }
+                        if ($("#biobookingstarttime").val() === $("#biobookingendtime").val()) {
+                            sudoNotify.error("กรุณาเลือกเวลาสิ้นสุด");
                             return false;
                         }
 
@@ -460,6 +492,12 @@
                                     return false;
                                 } else if (data.message === 'daytimenotavi') {
                                     sudoNotify.error("อาจารย์ที่ท่านนัดพบไม่อณุญาตให้นัดหมายในวันและเวลาดังกล่าว");
+                                    return false;
+                                } else if (data.message === 'weekfull') {
+                                    sudoNotify.error("การนัดพบอาจารย์ในอาทิตย์นี้ของคุณครบแล้ว");
+                                    return false;
+                                } else if (data.message === 'monthfull') {
+                                    sudoNotify.error("การนัดพบอาจารย์ในเดือนนี้ของคุณครบแล้ว");
                                     return false;
                                 }
                             }

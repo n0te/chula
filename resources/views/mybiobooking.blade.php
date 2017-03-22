@@ -111,7 +111,7 @@
                         <span class="caption-subject font-dark bold uppercase">ตารางการนัดพบอาจารย์ทั้งหมด</span>
                     </div>
                     <div class="actions">
-                        <a href="/mrcbookingmng" class="btn green-meadow">
+                        <a href="/biobooking" class="btn green-meadow">
                             <i class="fa fa-plus"></i> นัดพบอาจารย์</a>
                     </div>
                 </div>
@@ -219,6 +219,28 @@
     </div>
     <!-- /.modal-dialog -->
 </div>
+<div class="modal fade" id="mdlBookingCfm1dayDel" tabindex="-1" role="basic" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content warning">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">ยืนยันการลบ</h4>
+            </div>
+            <div class="modal-body">
+                <div class="portlet-body form">
+                    คุณแน่ใจว่าจะลบรายการนี้ คุณจะโดนพักการใช้งาน 7 วัน
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a class='btn dark btn-outline btn-sm' data-dismiss="modal" href='#'><span class='glyphicon glyphicon-remove'></span> ยกเลิก</a>
+                <a class='btn btn-danger btn-sm' href='#' onclick='DeleteBy1DayID(); return false;'><span class='glyphicon glyphicon-trash'></span> ลบ</a>
+
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
 <input type="hidden" name="hidsaveoredit" id="hidsaveoredit" value="">
 <input type="hidden" name="hidfid" id="hidbookingid" value="">
 <input type="hidden" name="hidcname" id="hidcname" value="{{ (isset($_COOKIE['setaccessbio']) ? $_COOKIE['setaccessbio'] : '') }}">
@@ -287,11 +309,15 @@
                                     "mData": null,
                                     "mRender": function (data, type, full) {
                                         if (String(full.biobookingstatus) === '0') {
-                                            return '<span class="label label-sm label-info">ยังไม่ได้ใช้งาน</span>';
+                                            return '<span class="label label-sm label-info">อนุมัติ</span>';
                                         } else if (String(full.biobookingstatus) === '1') {
-                                            return '<span class="label label-sm label-success">ใช้งานแล้ว</span>';
+                                            return '<span class="label label-sm label-success">เข้าพบแล้ว</span>';
                                         } else if (String(full.biobookingstatus) === '-1') {
-                                            return '<span class="label label-sm label-danger">เลยกำหนดการใช้งาน</span>';
+                                            return '<span class="label label-sm label-danger">เลยกำหนดการนัดพบ</span>';
+                                        } else if (String(full.biobookingstatus) === '10') {
+                                            return '<span class="label label-sm label-info">รอการอนุมัติ</span>';
+                                        } else if (String(full.biobookingstatus) === '-10') {
+                                            return '<span class="label label-sm label-danger">ยกเลิก</span>';
                                         }
                                     }
                                 },
@@ -304,37 +330,28 @@
                                     "mRender": function (data, type, full) {
                                         var cname = $("#hidcname").val();
                                         var res = cname.split(".");
+                                        var start = moment(full.biobookingdate + 'T' + full.biobookingstarttime),
+                                                end = moment(),
+                                                diff = new Date(start - end),
+                                                days = diff / 1000 / 60 / 60 / 24;
+                                        var displaybuttontime = moment(full.biobookingdate + 'T' + full.biobookingstarttime);
+                                        var tdif = Math.abs((end - displaybuttontime) / 60000);
 
-                                        if (jQuery.inArray(String(full.biobookingteacherid), res) !== -1) {
-                                            if (String(full.biobookingstatus) === '0') {
-                                                var start = new Date(full.biobookingdate),
-                                                        end = moment(),
-                                                        diff = new Date(start - end),
-                                                        days = diff / 1000 / 60 / 60 / 24;
-                                                var displaybuttontime = moment(full.biobookingdate + 'T' + full.biobookingstarttime);
-                                                var tdif = Math.abs((end - displaybuttontime) / 60000);
-                                                if (days < 2) {
-                                                    if (tdif < 15) {
-                                                        return "<a class='btn btn-primary btn-sm' href='#' onclick='return Opencfmuse(\"" + full.biobookingid + "\")'><span class='glyphicon glyphicon-check'></span> เข้าใช้งาน</a>";
-                                                    } else {
-                                                        return "<span class='label label-sm label-success'>กรุณาล๊อคอินที่ " + full.bioplacename + " ก่อนเวลานัดหมาย 15 นาที</span>";
-                                                    }
+                                        if (String(full.biobookingstatus) === '0') {
+                                            if (days >= 2) {
+                                                return  "<a class='btn btn-danger btn-sm' href='#' placename onclick='return OpenDelete(\"" + full.biobookingid + "\")'><span class='glyphicon glyphicon-trash'></span> ลบ</a>";
+                                            } else if (days < 2 && days >= 1) {//cancel 1 day
+                                                return "<a class='btn btn-danger btn-sm' href='#' placename onclick='return OpenDelete1Day(\"" + full.biobookingid + "\")'><span class='glyphicon glyphicon-trash'></span> ยกเลิกการนัด</a>";
+                                            } else if (days < 1) {
+                                                if (tdif < 15) {
+                                                    return "<a class='btn btn-primary btn-sm' href='#' onclick='return Opencfmuse(\"" + full.biobookingid + "\")'><span class='glyphicon glyphicon-check'></span> เข้าใช้งาน</a>";
                                                 } else {
-                                                    return  "<a class='btn btn-danger btn-sm' href='#' placename onclick='return OpenDelete(\"" + full.biobookingid + "\")'><span class='glyphicon glyphicon-trash'></span> ลบ</a>";
+                                                    return "<span class='label label-sm label-success'>กรุณาเข้าพบที่ " + full.bioplacename + " ก่อนเวลานัดหมาย 15 นาที</span>";
                                                 }
-
-                                            } else {
-                                                return "";
                                             }
                                         } else {
-                                            if (days > 2) {
-                                                return  "<a class='btn btn-danger btn-sm' href='#' placename onclick='return OpenDelete(\"" + full.biobookingid + "\")'><span class='glyphicon glyphicon-trash'></span> ลบ</a>";
-                                            } else {
-                                                return "<span class='label label-sm label-success'>กรุณาล๊อคอินที่ " + full.bioplacename + " ก่อนเวลานัดหมาย 15 นาที</span>";
-                                            }
-
+                                            return '';
                                         }
-                                        //+ "&nbsp; <a class='btn btn-danger btn-sm' href='#' placename onclick='return OpenDelete(\"" + full.groupid + "\")'><span class='glyphicon glyphicon-trash'></span> ลบ</a>";
                                     }
                                 }
                             ]
@@ -344,9 +361,30 @@
                         $('#mdlBookingCfmDel').modal('toggle');
                         $("#hidbookingid").val(bookingid);
                     }
+                    function OpenDelete1Day(bookingid) {
+                        $('#mdlBookingCfm1dayDel').modal('toggle');
+                        $("#hidbookingid").val(bookingid);
+                    }
                     function Opencfmuse(bookingid) {
                         $('#mdlBookingCfmUse').modal('toggle');
                         $("#hidbookingid").val(bookingid);
+                    }
+                    function DeleteBy1DayID() {
+                        $.ajax({
+                            url: '/deleteBioBooking1DayByIDByUser/' + $("#hidbookingid").val(),
+                            method: 'get',
+                            dataType: 'json',
+                            contentType: false,
+                            processData: false,
+                            error: function (data) {
+                                console.log(data.responseText);
+                            },
+                            success: function (data) {
+                                if (data.message === 'savedre') {
+                                    window.location.href = "/mybiobooking";
+                                }
+                            }
+                        });
                     }
                     function DeleteByID() {
                         $.ajax({

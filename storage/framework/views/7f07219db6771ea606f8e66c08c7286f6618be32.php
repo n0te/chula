@@ -213,7 +213,7 @@
 </div>
 
 <input type="hidden" name="hidsaveoredit" id="hidsaveoredit" value="">
-<input type="hidden" name="hidgroupid" id="hidgroupid" value="">
+<input type="hidden" name="hidfid" id="hidgroupid" value="">
 <?php $__env->stopSection(); ?>
 
 <?php $__env->startSection('footer'); ?>

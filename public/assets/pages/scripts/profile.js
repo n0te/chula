@@ -86,43 +86,43 @@ var Profile = function() {
                 lastname: {
                     required: true
                 },
-                sex: {
-                    required: true
-                },
-                email: {
-                    required: true,
-                    email: true
-                },
-                nationality: {
-                    required: true
-                },
-                type: {
-                    required: true
-                },
-                occupation: {
-                    required: true
-                },
-                student_id: {
-                    required: true
-                },
-                advisor: {
-                    required: true
-                },
-                researchtopic: {
-                    required: true
-                },
-                department: {
-                    required: true
-                },
-                company: {
-                    required: true
-                },
-                citizen_id: {
-                    required: true
-                },
-                passport_id: {
-                    required: true
-                },
+//                sex: {
+//                    required: true
+//                },
+//                email: {
+//                    required: true,
+//                    email: true
+//                },
+//                nationality: {
+//                    required: true
+//                },
+//                type: {
+//                    required: true
+//                },
+//                occupation: {
+//                    required: true
+//                },
+//                student_id: {
+//                    required: true
+//                },
+//                advisor: {
+//                    required: true
+//                },
+//                researchtopic: {
+//                    required: true
+//                },
+//                department: {
+//                    required: true
+//                },
+//                company: {
+//                    required: true
+//                },
+//                citizen_id: {
+//                    required: true
+//                },
+//                passport_id: {
+//                    required: true
+//                },
                 address: {
                     required: true
                 },
@@ -156,9 +156,9 @@ var Profile = function() {
             submitHandler: function(form, event) {
                 event.preventDefault();
                 //clear all disabled input
-                $('.profile-form input:disabled').each(function(){
-                    $(this).val('');
-                });
+//                $('.profile-form input:disabled').each(function(){
+//                    $(this).val('');
+//                });
 
                 var errorDiv = $(form).parents('#profile').find('div.alert');
                 if(ValidateFileInput()){
@@ -383,14 +383,14 @@ function OnTypeAndOccupationChange(){
                 var $dept = $('div.department-panel');
 
                 $('div[hide]').hide();
-                $('div[hide] input').prop("disabled",true);
+                //$('div[hide] input').prop("disabled",true);
                 if($type_v == ''){
                     $oc.hide();
-                    $oc.find('select').prop("disabled",true);
+                    //$oc.find('select').prop("disabled",true);
                     $oc.slideUp();
                 }else if($type_v == 1 || $type_v == 2){
                     $oc.show();
-                    $oc.find('select').prop("disabled",false);
+                    //$oc.find('select').prop("disabled",false);
                     if($oc_v != ''){
                         $div.slideDown();
                     }else{
@@ -398,38 +398,42 @@ function OnTypeAndOccupationChange(){
                     }
                     if($oc_v == 1){//student
                         $('div[student]').show();
-                        $('div[student] input').prop("disabled",false);
+                        //$('div[student] input').prop("disabled",false);
+                    }
+                    if($oc_v == 3){//other
+                        $('div[other]').show();
+                        //$('div[other] input').prop("disabled",false);
                     }
                     if($type_v==1){//in med
                         $dept.show();
-                        $dept.find('select').prop("disabled",false);
+                        //$dept.find('select').prop("disabled",false);
                     }else{
                         $dept.hide();
-                        $dept.find('select').prop("disabled",true);
+                        //$dept.find('select').prop("disabled",true);
                     }   
                 }else{
                     $dept.hide();
-                    $dept.find('select').prop("disabled",true);
+                    //$dept.find('select').prop("disabled",true);
                     $oc.hide();
-                    $oc.find('select').prop("disabled",true);
+                    //$oc.find('select').prop("disabled",true);
                     $('div[student]').slideUp();
-                    $('div[student] input').prop("disabled",true);
+                    //$('div[student] input').prop("disabled",true);
                     $('div[outsider]').show();
-                    $('div[outsider] input').prop("disabled",false);
+                    //$('div[outsider] input').prop("disabled",false);
                     $div.slideDown();
                 }
 }
 
 function OnNationalityChange(){
     if($('select[name="nationality"]').val() == "1"){
-                    $('input[name="citizen_id"]').prop("disabled",false);
+                    //$('input[name="citizen_id"]').prop("disabled",false);
                     $('input[name="citizen_id"]').parents("div.form-group").show();
-                    $('input[name="passport_id"]').prop("disabled",true);
+                    //$('input[name="passport_id"]').prop("disabled",true);
                     $('input[name="passport_id"]').parents("div.form-group").hide();
                 }else if($('select[name="nationality"]').val() != ""){
-                    $('input[name="citizen_id"]').prop("disabled",true);
+                    //$('input[name="citizen_id"]').prop("disabled",true);
                     $('input[name="citizen_id"]').parents("div.form-group").hide();
-                    $('input[name="passport_id"]').prop("disabled",false);
+                    //$('input[name="passport_id"]').prop("disabled",false);
                     $('input[name="passport_id"]').parents("div.form-group").show();
                 }
 }

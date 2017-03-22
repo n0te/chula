@@ -586,6 +586,10 @@ function OnTypeAndOccupationChange(){
                         $('input[student]').show();
                         $('input[student]').prop("disabled",false);
                     }
+                    if($oc_v == 3){//other
+                        $('input[other]').show();
+                        $('input[other]').prop("disabled",false);
+                    }
                     if($type_v==1){//in med
                         $dept.show();
                         $dept.find('select').prop("disabled",false);

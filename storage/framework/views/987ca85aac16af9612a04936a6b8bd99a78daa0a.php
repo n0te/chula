@@ -8,7 +8,7 @@
 <link href="public/assets/global/plugins/sudobar/dist/style/jquery.sudo-notify.css" rel="stylesheet" type="text/css"/>
 <link href="public/assets/global/plugins/datatables/DataTables-1.10.12/media/css/jquery.dataTables.css" rel="stylesheet" type="text/css"/>
 <link href="public/assets/global/plugins/fullcalendar/fullcalendar.css" rel="stylesheet" type="text/css"/>
-<link href="public/assets/global/plugins/bootstrap-timepicker/css/bootstrap-timepicker.css" rel="stylesheet" type="text/css"/>
+<link href="public/assets/global/plugins/timepicker/css/timepicki.css" rel="stylesheet" type="text/css"/>
 <style>
     .file-panel{
         position:relative;
@@ -70,9 +70,6 @@
     hdmargin{
         margin-bottom: 20px;
     }
-    .disabled {
-        background-color: #eef1f5;
-    }
 
 </style>
 <!-- END PAGE LEVEL STYLES -->
@@ -129,9 +126,9 @@
                             <td>
                                 ชื่ออุปกรณ์
                             </td>
-<!--                            <td>
+                            <td>
                                 ประเภท
-                            </td>-->
+                            </td>
                             <td>
                                 สถานที่
                             </td>
@@ -175,28 +172,17 @@
                                 <div class="form-group">
                                     <label class="col-md-6 control-label">เวลาที่จะเข้าใช้งาน</label>
                                     <div class="col-md-6">
-                                        <input  class="form-control placeholder-no-fix timepicker timepicker-24" type="text" placeholder="" name="bookingstarttime" id="bookingstarttime" value=""/>
+                                        <input  class="form-control placeholder-no-fix timepicker" type="text" placeholder="" name="bookingstarttime" id="bookingstarttime" value=""/>
                                     </div>
                                 </div>
 
                                 <div class="form-group">
                                     <label class="col-md-6 control-label">เวลาเมื่อเสร็จสิ้นการใช้งาน</label>
                                     <div class="col-md-6">
-                                        <input  class="form-control placeholder-no-fix  timepicker timepicker-24" type="text" placeholder="" name="bookingendtime" id="bookingendtime" value=""/>
+                                        <input  class="form-control placeholder-no-fix timepicker" type="text" placeholder="" name="bookingendtime" id="bookingendtime" value=""/>
                                     </div>
                                 </div>
-                                <div class="form-group">
-                                    <label class="col-md-6 control-label">ระยะเวลาสูงสุดในการใช้งาน (ชั่วโมง)</label>
-                                    <div class="col-md-6">
-                                        <input  class="form-control placeholder-no-fix" type="text" placeholder="" name="equipmenthourallow" readonly="true" id="equipmenthourallow" value=""/>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="col-md-6 control-label">ราคา / ชั่วโมง</label>
-                                    <div class="col-md-6">
-                                        <input  class="form-control placeholder-no-fix" type="text" placeholder="" name="equipmentprice" readonly="true" id="equipmentprice" value=""/>
-                                    </div>
-                                </div>
+
                             </div>
 
                         </form>
@@ -214,12 +200,9 @@
     <!-- /.modal-dialog -->
 </div>
 <input type="hidden" name="_token" value="<?php echo e(csrf_token()); ?>">
-<input type="hidden" name="hidusertype" id="hidusertype" value="<?php echo e(Auth::user()->type); ?>">
 <input type="hidden" name="hidsaveoredit" id="hidsaveoredit" value="">
 <input type="hidden" name="hidequipmentid" id="hidequipmentid" value="">
 <input type="hidden" name="hiddateselect" id="hiddateselect" value="">
-<input type="hidden" name="hiddateselect" id="hidchkavi" value="">
-
 <?php $__env->stopSection(); ?>
 
 <?php $__env->startSection('footer'); ?>
@@ -242,7 +225,7 @@
 <script src="public/assets/global/plugins/jquery-number-master/jquery.number.js" type="text/javascript"></script>
 <script src="public/assets/global/plugins/fullcalendar/lib/moment.min.js" type="text/javascript"></script>
 <script src="public/assets/global/plugins/fullcalendar/fullcalendar.js" type="text/javascript"></script>
-<script src="public/assets/global/plugins/bootstrap-timepicker/js/bootstrap-timepicker.js" type="text/javascript"></script>
+<script src="public/assets/global/plugins/timepicker/js/timepicki.js" type="text/javascript"></script>
 <script>
                     var sudoNotify = $('.notification-container').sudoNotify({
                         log: true,
@@ -271,7 +254,7 @@
                                     }
                                 },
                                 {data: 'equipmentname', name: 'equipmentname'},
-                                //{data: 'groupname', name: 'groupname'},
+                                {data: 'groupname', name: 'groupname'},
                                 {data: 'placename', name: 'placename'},
                                 {data: 'cousename', name: 'cousename'},
                                 {"bVisible": true, "bSearchable": false, "bSortable": false,
@@ -286,14 +269,14 @@
                                 }
                             ]
                         });
-//                        $('.timepicker').timepicki({
-//                            show_meridian: false,
-//                            min_hour_value: 0,
-//                            max_hour_value: 23,
-//                            overflow_minutes: true,
-//                            increase_direction: 'up',
-//                            disable_keyboard_mobile: true
-//                        });
+                        $('.timepicker').timepicki({
+                            show_meridian: false,
+                            min_hour_value: 0,
+                            max_hour_value: 23,
+                            overflow_minutes: true,
+                            increase_direction: 'up',
+                            disable_keyboard_mobile: true
+                        });
                         //  $('input.number').number(true, 2);
                     });
                     function resetfield() {
@@ -320,60 +303,14 @@
                             timeFormat: 'H(:mm)',
                             displayEventTime: false,
                             select: function (start, end) {
-
-
-                                var check = moment(start, 'DD.MM.YYYY').format('YYYY-MM-DD');
-                                var today = moment(new Date()).format('YYYY-MM-DD');
-                                if (check < today)
-                                {
-                                    sudoNotify.error("คุณไม่สามารถจองวันย้อนหลังได้");
-                                } else
-                                {
-                                    $('#bookingdate').val(moment(start).format('DD/MM/YYYY'));
-                                    $('#hiddateselect').val(moment(start).format('YYYY/MM/DD'));
-                                }
-
+                                $('#bookingdate').val(moment(start).format('DD/MM/YYYY'));
+                                $('#hiddateselect').val(moment(start).format('YYYY/MM/DD'));
                             },
                             events: {
                                 url: '/getBookingbyEquipmentid/' + equipmentid,
                                 error: function () {
 
                                 }
-                            },
-                            eventRender: function (event, element) {
-                                $(element).tooltip({title: event.title});
-                            },
-                            dayRender: function (date, cell) {
-                                var today = new Date();
-                                if (date < today) {
-                                    $(cell).addClass('disabled');
-                                }
-                            }
-                        });
-                        $.ajax({
-                            url: '/getEquipmentByID/' + equipmentid,
-                            method: 'get',
-                            dataType: 'json',
-                            contentType: false,
-                            processData: false,
-                            error: function (data) {
-                                console.log(data.responseText);
-                            },
-                            success: function (data) {
-                                $("#hidequipmentid").val(data['MRCEquipment'][0].equipmentid);
-                                $("#equipmenthourallow").val(data['MRCEquipment'][0].equipmenthourallow);
-                                //equipmentprice
-                                var eqprice = 0;
-                                if ($("#hidusertype").val() === '1') {
-                                    eqprice = data['MRCEquipment'][0].equipmentpricefordoctordepartment;
-                                } else if ($("#hidusertype").val() === '2') {
-                                    eqprice = data['MRCEquipment'][0].equipmentpriceforuniversity;
-                                } else if ($("#hidusertype").val() === '3') {
-                                    eqprice = data['MRCEquipment'][0].equipmentforoutsideuniversitygov;
-                                } else if ($("#hidusertype").val() === '4') {
-                                    eqprice = data['MRCEquipment'][0].equipmentforoutsideuniversityprivate;
-                                }
-                                $("#equipmentprice").val(eqprice);
                             }
                         });
                         $('#mdlBookEquipment').modal('toggle');
@@ -382,32 +319,7 @@
                     $('#mdlBookEquipment').on('shown.bs.modal', function () {
                         $("#calendar").fullCalendar('render');
                     });
-                    function chkavi() {
-                        var start_time = ($("#bookingstarttime").val()).replace(/ /g, "");
-                        var end_time = ($("#bookingendtime").val()).replace(/ /g, "");
-                        var formData = new FormData();
-                        formData.append('bookingdate', $("#hiddateselect").val());
-                        formData.append('bookingequipmentid', $("#hidequipmentid").val());
-                        formData.append('bookingstarttime', start_time + ":00");
-                        formData.append('bookingendtime', end_time + ":00");
-                        $.ajax({
-                            url: '/checkTimeAvailable',
-                            method: 'post',
-                            dataType: 'json',
-                            contentType: false,
-                            processData: false,
-                            data: formData,
-                            error: function (data) {
-                                console.log(data.responseText);
-                                alert(data.responseText);
-                            },
-                            success: function (data) {
-                                if (data.message === 'notfree') {
-                                    $("#hidchkavi").val('notfree');
-                                }
-                            }
-                        });
-                    }
+
                     function BookEquipment() {
                         if ($.trim($("#bookingdate").val()).length === 0) {
                             sudoNotify.error("กรุณาเลือกวันที่จะเข้าใช้งาน");
@@ -435,11 +347,11 @@
                             sudoNotify.error("กรุณากรอกเวลาสิ้นสุดมากกว่าเวลาเริ่มต้น");
                             return false;
                         }
-                        if (Math.abs(endt - stt) / 36e5 > parseFloat($("#equipmenthourallow").val())) {
-                            sudoNotify.error("กรุณาจองอุปกรณ์ภายในระยะเวลาที่อนุญาติ");
-                            return false;
-                        }
+
                         var formData = new FormData();
+//                        $('input[type="text"], input[type="checkbox"], textarea, input[type="password"], input[type="hidden"], select').each(function (i) {
+//                            formData.append($(this).attr('id'), $(this).val());
+//                        });
                         formData.append('bookingdate', $("#hiddateselect").val());
                         formData.append('bookingequipmentid', $("#hidequipmentid").val());
                         formData.append('bookingstarttime', start_time + ":00");
@@ -458,13 +370,17 @@
                             },
                             success: function (data) {
                                 if (data.message === 'saved') {
+//                                    $('#tblReviewform').DataTable().ajax.reload();
+//                                    $('#mdlGroup').modal('toggle');
+//                                    if ($("#hidsaveoredit").val() === 'EditGroup') {
+//                                        sudoNotify.success("แก้ไขกลุ่มเครื่องมือเรียบร้อย");
+//                                    } else {
+//                                        sudoNotify.success("เพิ่มกลุ่มเครื่องมือเรียบร้อย");
+//                                    }
                                     sudoNotify.success("จองอุปกรณ์เรียบร้อย กำลังกลับไปหน้า การจองอุปกรณ์ทั้งหมด");
                                     setTimeout(function () {
                                         window.location.href = "/mymrcbooking";
                                     }, 3000);
-                                } else if (data.message === 'notavi') {
-                                    sudoNotify.error("อุปกรณ์ที่ท่านจองไม่ว่างในวันและเวลาดังกล่าว");
-                                    return false;
                                 }
                             }
 

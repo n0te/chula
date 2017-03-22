@@ -310,36 +310,25 @@
                                                 days = diff / 1000 / 60 / 60 / 24;
                                         var displaybuttontime = moment(full.bookingdate + 'T' + full.bookingstarttime);
                                         var tdif = Math.abs((end - displaybuttontime) / 60000);
-                                        if (jQuery.inArray(String(full.equipmentid), res) !== -1) {
-                                            if (String(full.bookingstatus) === '0') {
-                                                var start = new Date(full.bookingdate),
-                                                        end = moment(),
-                                                        diff = new Date(start - end),
-                                                        days = diff / 1000 / 60 / 60 / 24;
-                                                var displaybuttontime = moment(full.bookingdate + 'T' + full.bookingstarttime);
-                                                var tdif = Math.abs((end - displaybuttontime) / 60000);
-                                                if (days < 2) {
-                                                    if (tdif < 15) {
+                                        if (String(full.bookingstatus) === '0') {
+                                            var start = new Date(full.bookingdate),
+                                                    end = moment(),
+                                                    diff = new Date(start - end),
+                                                    days = diff / 1000 / 60 / 60 / 24;
+                                            if (days < 2) {
+                                                if (tdif < 15) {
+                                                    if (jQuery.inArray(String(full.equipmentid), res) !== -1) {
                                                         return "<a class='btn btn-primary btn-sm' href='#' onclick='return Opencfmuse(\"" + full.bookingid + "\")'><span class='glyphicon glyphicon-check'></span> เข้าใช้งาน</a>";
-                                                    } else {
-                                                        return "<span class='label label-sm label-success'>กรุณาล๊อคอินที่ " + full.placename + " ก่อนเวลานัดหมาย 15 นาที</span>";
                                                     }
                                                 } else {
-                                                    return  "<a class='btn btn-danger btn-sm' href='#' placename onclick='return OpenDelete(\"" + full.bookingid + "\")'><span class='glyphicon glyphicon-trash'></span> ลบ</a>";
+                                                    return "<span class='label label-sm label-success'>กรุณาล๊อคอินที่ " + full.placename + " ก่อนเวลานัดหมาย 15 นาที</span>";
                                                 }
-
                                             } else {
-                                                return '';
+                                                return  "<a class='btn btn-danger btn-sm' href='#' placename onclick='return OpenDelete(\"" + full.bookingid + "\")'><span class='glyphicon glyphicon-trash'></span> ลบ</a>";
                                             }
                                         } else {
-                                            if (days > 2) {
-                                                return  "<a class='btn btn-danger btn-sm' href='#' placename onclick='return OpenDelete(\"" + full.biobookingid + "\")'><span class='glyphicon glyphicon-trash'></span> ลบ</a>";
-                                            } else {
-                                                return "<span class='label label-sm label-success'>กรุณาล๊อคอินที่ " + full.placename + " ก่อนเวลานัดหมาย 15 นาที</span>";
-                                            }
-
+                                            return '';
                                         }
-                                        //+ "&nbsp; <a class='btn btn-danger btn-sm' href='#' placename onclick='return OpenDelete(\"" + full.groupid + "\")'><span class='glyphicon glyphicon-trash'></span> ลบ</a>";
                                     }
                                 }
                             ]

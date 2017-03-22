@@ -8,7 +8,6 @@
         <link href="/public/assets/global/plugins/jquery-ui/jquery-ui.min.css" rel="stylesheet" type="text/css">
         <!-- END PAGE LEVEL PLUGINS -->
 		<!-- BEGIN PAGE LEVEL STYLES -->
-        <link href="/public/assets/pages/css/profile.min.css" rel="stylesheet" type="text/css" />
         <link href="/public/assets/global/plugins/bootstrap-switch/css/bootstrap-switch.min.css" rel="stylesheet" type="text/css">
         <style>
         .file-panel{
@@ -180,6 +179,12 @@
                         </div>
                         <div id="pre-hidden-group">
                             <div>
+                                <div class="form-group" hide student>
+                                    <label class="control-label">อื่นๆ</label>
+                                        <!--ie8, ie9 does not support html5 placeholder, so we just show field title for that-->
+                                        <label class="control-label visible-ie8 visible-ie9">อื่นๆ</label>
+                                        <input class="form-control placeholder-no-fix" type="text"  name="orther_specify" value="{{ old('orther_specify')!=null ? old('orther_specify') : $reviewuser->orther_specify}}" />
+                                </div>
                                 <div class="form-group" hide student>
                                     <label class="control-label">รหัสนิสิต</label>
                                         <!--ie8, ie9 does not support html5 placeholder, so we just show field title for that-->

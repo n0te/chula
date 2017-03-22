@@ -281,29 +281,69 @@
                                         var displaybuttontime = moment(full.anibookingdate + 'T' + full.anibookingstarttime);
                                         var tdif = Math.abs((end - displaybuttontime) / 60000);
 
-                                        if (jQuery.inArray(String(full.anibookingroomid), res) !== -1) {
-                                            if (String(full.anibookingstatus) === '0') {
-                                                if (days < 2) {
-                                                    if (tdif < 15) {
-                                                        return "<a class='btn btn-primary btn-sm' href='#' onclick='return Opencfmuse(\"" + full.anibookingid + "\")'><span class='glyphicon glyphicon-check'></span> เข้าใช้งาน</a>";
-                                                    } else {
-                                                        return "<span class='label label-sm label-success'>กรุณาล๊อคอินที่ " + full.aniroomname + " ก่อนเวลานัดหมาย 15 นาที</span>";
-                                                    }
-                                                } else {
-                                                    return  "<a class='btn btn-danger btn-sm' href='#' placename onclick='return OpenDelete(\"" + full.anibookingid + "\")'><span class='glyphicon glyphicon-trash'></span> ลบ</a>";
-                                                }
 
-                                            } else {
-                                                return "";
-                                            }
-                                        } else {
-                                            if (days > 2) {
+
+
+                                        if (String(full.anibookingstatus) === '0') {
+                                            if (days >= 2) {
                                                 return  "<a class='btn btn-danger btn-sm' href='#' placename onclick='return OpenDelete(\"" + full.anibookingid + "\")'><span class='glyphicon glyphicon-trash'></span> ลบ</a>";
+                                            } else if (days < 1) {
+                                                if (tdif < 15 && jQuery.inArray(String(full.anibookingroomid), res) !== -1) {
+                                                    return "<a class='btn btn-primary btn-sm' href='#' onclick='return Opencfmuse(\"" + full.anibookingid + "\")'><span class='glyphicon glyphicon-check'></span> เข้าใช้งาน</a>";
+                                                } else {
+                                                    return "<span class='label label-sm label-success'>กรุณาล๊อคอินที่ " + full.aniroomname + " ก่อนเวลานัดหมาย 15 นาที</span>";
+                                                }
                                             } else {
                                                 return "<span class='label label-sm label-success'>กรุณาล๊อคอินที่ " + full.aniroomname + " ก่อนเวลานัดหมาย 15 นาที</span>";
                                             }
-
+                                        } else {
+                                            return '';
                                         }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//                                        if (jQuery.inArray(String(full.anibookingroomid), res) !== -1) {
+//                                            if (String(full.anibookingstatus) === '0') {
+//                                                if (days < 2) {
+//                                                    if (tdif < 15) {
+//                                                        return "<a class='btn btn-primary btn-sm' href='#' onclick='return Opencfmuse(\"" + full.anibookingid + "\")'><span class='glyphicon glyphicon-check'></span> เข้าใช้งาน</a>";
+//                                                    } else {
+//                                                        return "<span class='label label-sm label-success'>กรุณาล๊อคอินที่ " + full.aniroomname + " ก่อนเวลานัดหมาย 15 นาที</span>";
+//                                                    }
+//                                                } else {
+//                                                    return  "<a class='btn btn-danger btn-sm' href='#' placename onclick='return OpenDelete(\"" + full.anibookingid + "\")'><span class='glyphicon glyphicon-trash'></span> ลบ</a>";
+//                                                }
+//
+//                                            } else {
+//                                                return "";
+//                                            }
+//                                        } else {
+//                                            if (days > 2) {
+//                                                return  "<a class='btn btn-danger btn-sm' href='#' placename onclick='return OpenDelete(\"" + full.anibookingid + "\")'><span class='glyphicon glyphicon-trash'></span> ลบ</a>";
+//                                            } else {
+//                                                return "<span class='label label-sm label-success'>กรุณาล๊อคอินที่ " + full.aniroomname + " ก่อนเวลานัดหมาย 15 นาที</span>";
+//                                            }
+//
+//                                        }
                                         //+ "&nbsp; <a class='btn btn-danger btn-sm' href='#' placename onclick='return OpenDelete(\"" + full.groupid + "\")'><span class='glyphicon glyphicon-trash'></span> ลบ</a>";
                                     }
                                 }

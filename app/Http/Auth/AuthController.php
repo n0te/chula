@@ -163,7 +163,7 @@ class AuthController extends Controller
         $user->advisor = $data['advisor'];
         $user->researchtopic = $data['researchtopic'];
         $user->company = $data['company'];
-
+        $user->orther_specify = $data['orther_specify'];
         $user->save();
         
         //for upload file
@@ -205,7 +205,7 @@ class AuthController extends Controller
             }
         }
 
-        
+        Utility::sendRegisterAcknowledgedEmailtoUser($user);
 
         return $user;
     }

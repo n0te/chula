@@ -34,7 +34,7 @@ $(document).ajaxSend(function(event,jqxhr,settings){
 		var btn = form.find('button[type="submit"]');
 		btn.data('content', btn.html());
 		btn.html('');
-		btn.html('<img src="/assets/global/img/ajax-loader-progress.gif"/>');
+		btn.html('<img src="/public/assets/global/img/ajax-loader-progress.gif"/>');
 		btn.prop("disabled",true);
 	}
 }).ajaxComplete(function(){

@@ -153,7 +153,7 @@
                         <div class="form-group">
                             <label class="control-label">เพศ</label>
                                 <label class="control-label visible-ie8 visible-ie9">เพศ</label>
-                                <select name="sex" class="form-control">
+                                <select name="sex" class="form-control" disabled>
                                     <option value="">เพศ</option>
                                     @foreach($sexes as $sex)
                                     <option value='{{$sex->id}}' @if(old('sex')!=null) {{ old( 'sex')== $sex->id ? 'selected' : '' }} @elseif($user->sex == $sex->id) {{ 'selected' }} @endif > {{$sex->name}}
@@ -169,12 +169,12 @@
                         </div>
                         <div class="form-group">
                             <label class="control-label">เกิดวันที่</label>
-                                <input data-date-format="dd-mm-yyyy" class="form-control form-control-inline date-picker" size="16" type="text" value="{{ old('dob')!=null ? old('dob') : $user->get_userDOB()}}" name="dob">
+                                <input data-date-format="dd-mm-yyyy" class="form-control form-control-inline date-picker" size="16" type="text" value="{{ old('dob')!=null ? old('dob') : $user->get_userDOB()}}" name="dob" disabled>
                         </div>
                         <div class="form-group">
                             <label class="control-label">สัญชาติ</label>
                                 <label class="control-label visible-ie8 visible-ie9">สัญชาติ</label>
-                                <select name="nationality" class="form-control">
+                                <select name="nationality" class="form-control" disabled>
                                     <option value=''>กรุณาระบุสัญชาติ</option>
                                     @foreach($nationalities as $nationality)
                                     <option value='{{$nationality->id}}' @if(old( 'nationality')!=null) {{ old('nationality')== $nationality->id ? 'selected' : '' }} @elseif($user->nationality == $nationality->id) {{ 'selected' }} @endif > {{$nationality->name}}
@@ -185,7 +185,7 @@
                         <div class="form-group">
                             <label class="control-label">กลุ่มสมาชิก</label>
                                 <label class="control-label visible-ie8 visible-ie9">กลุ่มสมาชิก</label>
-                                <select name="type" class="form-control">
+                                <select name="type" class="form-control" disabled>
                                     <option value="">กรุณาเลือกประเภทสมาชิก</option>
                                     @foreach($types as $type)
                                     <option value='{{$type->id}}' @if(old('type')!=null) {{ old('type')==$type->id ? 'selected' : '' }} @elseif($user->type == $type->id) {{ 'selected' }} @endif > {{$type->name}}
@@ -196,7 +196,7 @@
                         <div class="form-group user_occupation_panel" style="display:none;">
                             <label class="control-label">ประเภทของบุคคลากร</label>
                                 <label class="control-label visible-ie8 visible-ie9">ประเภทของบุคคลากร</label>
-                                <select name="occupation" class="form-control">
+                                <select name="occupation" class="form-control" disabled>
                                     <option value="">กรุณาเลือกประเภทบุคคลากร</option>
                                     @foreach($occupations as $occupation)
                                     <option value='{{$occupation->id}}' @if(old( 'occupation')!=null) {{ old('occupation')==$occupation->id ? 'selected' : '' }} @elseif($user->occupation == $occupation->id) {{ 'selected' }} @endif > {{$occupation->name}}
@@ -204,30 +204,37 @@
                                     @endforeach
                                 </select>
                         </div>
+                     
                         <div id="pre-hidden-group" style="display:none;">
                             <div>
+                                <div class="form-group" hide other>
+                                    <label class="control-label">อื่นๆ</label>
+                                        <!--ie8, ie9 does not support html5 placeholder, so we just show field title for that-->
+                                        <label class="control-label visible-ie8 visible-ie9">อื่นๆ</label>
+                                        <input class="form-control placeholder-no-fix" type="text" placeholder="อื่นๆ" name="orther_specify" value="{{ old('orther_specify')!=null ? old('orther_specify') : $user->orther_specify}}" disabled/>
+                                </div>
                                 <div class="form-group" hide student>
                                     <label class="control-label">รหัสนิสิต</label>
                                         <!--ie8, ie9 does not support html5 placeholder, so we just show field title for that-->
                                         <label class="control-label visible-ie8 visible-ie9">รหัสนิสิต</label>
-                                        <input class="form-control placeholder-no-fix" type="text" placeholder="รหัสนิสิต" name="student_id" value="{{ old('student_id')!=null ? old('student_id') : $user->student_id}}" />
+                                        <input class="form-control placeholder-no-fix" type="text" placeholder="รหัสนิสิต" name="student_id" value="{{ old('student_id')!=null ? old('student_id') : $user->student_id}}" disabled/>
                                 </div>
                                 <div class="form-group" hide student>
                                     <label class="control-label">อาจารย์ที่ปรึกษา</label>
                                         <!--ie8, ie9 does not support html5 placeholder, so we just show field title for that-->
                                         <label class="control-label visible-ie8 visible-ie9">อาจารย์ที่ปรึกษา</label>
-                                        <input class="form-control placeholder-no-fix" type="text" placeholder="อาจารย์ที่ปรึกษา" name="advisor" value="{{ old('advisor')!=null ? old('advisor') : $user->advisor}}" />
+                                        <input class="form-control placeholder-no-fix" type="text" placeholder="อาจารย์ที่ปรึกษา" name="advisor" value="{{ old('advisor')!=null ? old('advisor') : $user->advisor}}" disabled/>
                                 </div>
                                 <div class="form-group" hide student>
                                     <label class="control-label">หัวข้องานวิจัย</label>
                                         <!--ie8, ie9 does not support html5 placeholder, so we just show field title for that-->
                                         <label class="control-label visible-ie8 visible-ie9">หัวข้องานวิจัย</label>
-                                        <input class="form-control placeholder-no-fix" type="text" placeholder="หัวข้องานวิจัย" name="researchtopic" value="{{ old('researchtopic')!=null ? old('researchtopic') : $user->researchtopic}}" /> 
+                                        <input class="form-control placeholder-no-fix" type="text" placeholder="หัวข้องานวิจัย" name="researchtopic" value="{{ old('researchtopic')!=null ? old('researchtopic') : $user->researchtopic}}" disabled/> 
                                 </div>
                                 <div class="form-group department-panel" hide>
                                     <label class="control-label">อาจารย์ที่ปรึกษา</label>
                                         <label class="control-label visible-ie8 visible-ie9">ภาควิชา</label>
-                                        <select name="department" class="form-control">
+                                        <select name="department" class="form-control" disabled>
                                             <option value=''>ภาควิชา</option>
                                             @foreach($departments as $department)
                                             <option value='{{$department->id}}' @if(old( 'department')!=null) {{ old( 'department')== $department->id ? 'selected' : '' }} @elseif($user->department == $department->id) {{ 'selected' }} @endif > {{$department->name}}
@@ -239,19 +246,19 @@
                             <div class="form-group" hide outsider>
                                 <label class="control-label">มหาวิทยาลัย/บริษัท</label>
                                     <label class="control-label visible-ie8 visible-ie9">มหาวิทยาลัย/บริษัท</label>
-                                    <input class="form-control placeholder-no-fix" type="text" placeholder="มหาวิทยาลัย/บริษัท" name="company" value="{{ old('company')!=null ? old('company') : $user->company}}" />
+                                    <input class="form-control placeholder-no-fix" type="text" placeholder="มหาวิทยาลัย/บริษัท" name="company" value="{{ old('company')!=null ? old('company') : $user->company}}" disabled/>
                             </div>
                             <div class="form-group">
                                 <label class="control-label">เลขบัตรประจำตัวประชาชน</label>
                                     <!--ie8, ie9 does not support html5 placeholder, so we just show field title for that-->
                                     <label class="control-label visible-ie8 visible-ie9">เลขบัตรประจำตัวประชาชน</label>
-                                    <input class="form-control placeholder-no-fix" type="text" placeholder="เลขบัตรประจำตัวประชาชน" name="citizen_id" value="{{ old('citizen_id')!=null ? old('citizen_id') : $user->citizen_id}}" />
+                                    <input class="form-control placeholder-no-fix" type="text" placeholder="เลขบัตรประจำตัวประชาชน" name="citizen_id" value="{{ old('citizen_id')!=null ? old('citizen_id') : $user->citizen_id}}" disabled/>
                             </div>
                             <div class="form-group">
                                 <label class="control-label">Passport ID</label>
                                     <!--ie8, ie9 does not support html5 placeholder, so we just show field title for that-->
                                     <label class="control-label visible-ie8 visible-ie9">Passport ID</label>
-                                    <input class="form-control placeholder-no-fix" type="text" placeholder="Passport ID" name="passport_id" value="{{ old('passport_id')!=null ? old('passport_id') : $user->passport_id}}" disabled="true" />
+                                    <input class="form-control placeholder-no-fix" type="text" placeholder="Passport ID" name="passport_id" value="{{ old('passport_id')!=null ? old('passport_id') : $user->passport_id}}" disabled/>
                             </div>
                             <div class="form-group">
                                 <label class="control-label">ที่อยู่</label>

@@ -117,6 +117,9 @@
                                 ลำดับ
                             </td>
                             <td>
+                                ผู้ใช้งาน
+                            </td>
+                            <td>
                                 ชื่ออาจารย์
                             </td>
                             <td>
@@ -214,6 +217,12 @@
                             "pagingType": "full_numbers",
                             columns: [//`bookingid``bookingdate``bookingstarttime``bookingendtime``equipmentname``equipmentpicturename`
                                 {data: 'biobookingid', name: 'biobookingid'},
+                                {"bVisible": true, "bSearchable": false, "bSortable": false,
+                                    "mData": null,
+                                    "mRender": function (data, type, full) {
+                                        return  full.firstname + " " + full.lastname;
+                                    }
+                                },
                                 {data: 'bioteachername', name: 'bioteachername'},
                                 {"bVisible": true, "bSearchable": false, "bSortable": false,
                                     "mData": null,
@@ -238,11 +247,15 @@
                                     "mData": null,
                                     "mRender": function (data, type, full) {
                                         if (String(full.biobookingstatus) === '0') {
-                                            return '<span class="label label-sm label-info">ยังไม่ได้ใช้งาน</span>';
+                                            return '<span class="label label-sm label-info">อนุมัติ</span>';
                                         } else if (String(full.biobookingstatus) === '1') {
                                             return '<span class="label label-sm label-success">ใช้งานแล้ว</span>';
                                         } else if (String(full.biobookingstatus) === '-1') {
-                                            return '<span class="label label-sm label-danger">เลยกำหนดการใช้งาน</span>';
+                                            return '<span class="label label-sm label-danger">เลยกำหนดการนัดพบ</span>';
+                                        } else if (String(full.biobookingstatus) === '10') {
+                                            return '<span class="label label-sm label-info">รอการอนุมัติ</span>';
+                                        } else if (String(full.biobookingstatus) === '-10') {
+                                            return '<span class="label label-sm label-danger">ยกเลิก</span>';
                                         }
                                     }
                                 },
